@@ -7,10 +7,10 @@ import java.util.List;
 
 public class ClassDecl extends AST {
 
-    public final String name;
+    public final String name;  // className
     public final String superName; //May be null!
 
-    public final NodeList<VarDecl> vars;
+    public final NodeList<VarDecl> vars; // member fields
     public final NodeList<MethodDecl> methods;
 
     public ClassDecl(String name, String superName, NodeList<VarDecl> vars,

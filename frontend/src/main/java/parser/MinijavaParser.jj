@@ -1,7 +1,7 @@
 /**
  * JavaCC file
  */
- 
+
 options {
   JDK_VERSION = "1.6";
   STATIC = false;
@@ -12,6 +12,7 @@ package parser;
 import ast.*;
 import java.util.ArrayList;
 import java.util.List;
+import VarDecl.Kind.*;
 
 public class JCCMinijavaParser {
 }
@@ -30,7 +31,7 @@ SKIP :
 }
 
 TOKEN : /* KEYWORDS */
-{	
+{
 	< PRINT:		"System.out.println" >
 |	< RETURN: 		"return" >
 | 	< INT:			"int" >
@@ -71,7 +72,7 @@ TOKEN : /* SEPARATORS and OPERATORS*/
 | 	<DOT: "." >
 | 	<AND: "&&" >
 }
-	
+
 TOKEN :
 {   < INTEGER_LITERAL: ( <DIGIT> )+ >
 |   < IDENTIFIER: <LETTER> (<LETTER> | "_" | <DIGIT>)* >
@@ -79,57 +80,141 @@ TOKEN :
 |   < #DIGIT: ["0" - "9"] >
 }
 
-//Program Program() : {
-//	NodeList<Statement> ss = new NodeList<Statement>();
-//	Statement s;
-//	Expression e;
-//}
-//{
-//	( s=Statement()
-//		{ ss.add(s); }
-//	)*
-//	< PRINT > e = Expression()
-//	<EOF>
-//	{ /*return new Program(ss, new Print(e));*/ return new Program(null, new NodeList<ClassDecl>()); }
-//	//TODO: This is just to make the code compile
-//}
 
 Program Program() : {
     NodeList<AST> ss = new NodeList<AST>();
+    MainClass m;
+    ClassDecl c;
 }
 {
-    MainClass() ( ClassDeclaration() )* <EOF>
-	{ /*return new Program(ss, new Print(e));*/ return new Program(null, new NodeList<ClassDecl>()); }
-	//TODO: This is just to make the code compile
+    m = MainClass() ( c = ClassDeclaration() { ss.add(c); } )* <EOF>
+	{ return new Program(m, ss); }
 }
+
+
+MainClass MainClass() : {
+    String className;
+    String argName;
+    Statement statement;
+}
+{
+    <CLASS> className = Identifier() "{"
+    <PUBLIC> <STATIC> <VOID> <MAIN> "(" <STRING> "[" "]" argName = Identifier() ")"
+    "{" statement = Statement() "}" "}"
+    { return new MainClass(className, argName, statement); }
+}
+
+
+ClassDecl ClassDeclaration() : {
+    String className;
+    String superName = null; //May be null!
+    NodeList<VarDecl> vars = new NodeList<VarDecl>();
+    NodeList<MethodDecl> methods = new NodeList<MethodDecl>();
+    VarDecl field;
+    MethodDecl method;
+}
+{
+    <CLASS> className = Identifier() ( <EXTENDS> superName = Identifier() )? "{"
+    ( field = VarDeclaration(FIELD) { vars.add(field); } )*
+    ( method = MethodDeclaration() { methods.add(method); } )* "}"
+    { return new ClassDecl(className, superName, vas, methods); }
+}
+
+VarDecl VarDeclaration(VarDecl.Kind kind) : {
+    Type type;
+    String name;
+    int index = 0; // what's the use of index for fields and local variables ???
+}
+{
+    type = Type() name = Identifier() ";"
+    { return new VarDecl(kind, type, name, index); }
+}
+
+MethodDecl MethodDeclaration() : {
+    Type returnType;
+    String methodName;
+    NodeList<VarDecl> formals;
+    NodeList<VarDecl> locals;
+    NodeList<Statement> statements;
+    Expression returnExp;
+    VarDecl local;
+    Statement s;
+}
+{
+ <PUBLIC> returnType = Type() methodName = Identifier()
+ "(" ( type = Type() name = Identifier()
+ { formals.add(new VarDecl(type, name, formals.size())); }
+ // can I declare local variables not inside declaraction braces above???
+
+ ( "," t = Type() n = Identifier() )* )? ")"
+ { formals.add(new VarDecl(t, n, formals.size())); }
+
+ "{" ( local = VarDeclaration(LOCAL) { locals.add(local); } )*
+ ( s = Statement() { statements.add(s); } )*
+ <RETURN> returnExp = Expression() ";" "}"
+
+ { return new MethodDecl(returnType, methodName, formals, locals, statements, returnExp); }
+}
+
+Type Type() : {
+	Type t;
+}
+{
+    LOOKAHEAD(2) // due to common prefix
+      <INT> "[" "]" { t = new IntArrayType(); }
+    | <BOOLEAN>     { t = new BooleanType(); }
+    | <INT>         { t = new IntegerType(); }
+    | Identifier()  { t = new UnknownType(); }
+
+    { return t; }
+}
+
 
 Statement Statement() : {
-	Statement s = null; //TODO: should not be null ever!
+	Statement s = null; // this should not be null ever!
+	Expression exp;
+
+	NodeList<Statement> statements = new NodeList<Statement>(); // used for block
+
+    Statement thn;
+    Statement els;
+
+	Statement body; // used for while
+
+    String name;
+    Expression index;
+    Expression value;
 }
 {
-	s=Assign()
-	{ return s; }
-}
+	"{" ( s = Statement() { statements.add(s); } )* "}" { s = new Block(statements); }
+	| <IF> "(" exp = Expression() ")" thn = Statement() <ELSE> els = Statement() { s = new If(exp, thn, els); }
+	| <WHILE> "(" exp = Expression() ")" body = Statement()  { s = new While(exp, body); }
+	| <PRINT> "(" exp = Expression() ")" ";" { s = new Print(exp); }
+	| LOOKAHEAD(2) name = Identifier() "=" value = Expression() ";" { s = new Assign(name, value); }
+	| name = Identifier() "[" index = Expression() "]" "=" value = Expression() ";" { s = new ArrayAssign(name, index, value); }
 
-Statement Assign() : {
-	String name;
-	Expression value;
-}
-{	name=Identifier()
-	"="
-	value=Expression() ";"
-		{return new Assign(name, value); }
+	{ return s; }
 }
 
 
 Expression Expression() : {
 	Expression e, e2, e3;
 }
-{	e=CompExpression()
-	( "?" e2 = Expression()
-	  ":" e3 = Expression()
-		{	e = new Conditional(e, e2, e3); }
-	)?
+{
+        Expression() ( "&&" | "<" | "+" | "-" | "*" ) Expression()
+      | Expression() "[" Expression() "]" {  }
+      | Expression() "." "length"
+      | Expression() "." Identifier() "(" ( Expression() ( "," Expression() )* )? ")"
+      | <INTEGER_LITERAL>
+      | "true"
+      | "false"
+      | Identifier()
+      | "this"
+      | "new" "int" "[" Expression() "]"
+      | "new" Identifier() "(" ")"
+      | "!" Expression()
+      | "(" Expression() ")"
+
 	{ return e; }
 }
 

@@ -2,6 +2,7 @@ package ast;
 
 import visitor.Visitor;
 
+// represent the class with a main function (main class has only one method: the main function)
 public class MainClass extends AST {
 
     public final String className;

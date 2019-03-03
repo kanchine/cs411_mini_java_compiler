@@ -8,7 +8,7 @@ import java.util.List;
 public class MethodDecl extends AST {
 
     public final Type returnType;
-    public final String name;
+    public final String name; // method name
     public final NodeList<VarDecl> formals;
     public final NodeList<VarDecl> vars;
     public final NodeList<Statement> statements;
