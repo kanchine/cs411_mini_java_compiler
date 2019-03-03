@@ -31,14 +31,31 @@ SKIP :
 
 TOKEN : /* KEYWORDS */
 {	
-	< PRINT:		"print" >
+	< PRINT:		"System.out.println" >
 |	< RETURN: 		"return" >
 | 	< INT:			"int" >
 | 	< BOOLEAN: 		"boolean" >
+| 	< CLASS: 		"class" >
+|   < PUBLIC:       "public" >
+| 	< STATIC: 		"static" >
+| 	< VOID: 		"void" >
+| 	< MAIN: 		"main" >
+| 	< STRING: 		"String" >
+| 	< EXTENDS: 		"extends" >
+| 	< IF: 		    "if" >
+| 	< ELSE: 		"else" >
+| 	< WHILE: 		"while" >
+| 	< NEW: 			"new" >
+| 	< LENGTH: 		"length" >
+| 	< TRUE: 		"true" >
+| 	< FALSE: 		"false" >
+| 	< THIS: 		"this" >
 }
 TOKEN : /* SEPARATORS and OPERATORS*/
 {	<LPAREN: "(">
 |	<RPAREN: ")">
+|	<LBRACKET: "[">
+|	<RBRACKET: "]">
 |	<LBRACE: "{">
 |	<RBRACE: "}">
 |	<ASSIGN: "=">
@@ -51,6 +68,8 @@ TOKEN : /* SEPARATORS and OPERATORS*/
 | 	<COLON:	 ":" >
 | 	<COMMA:	"," >
 | 	<SEMICOLON:	 ";" >
+| 	<DOT: "." >
+| 	<AND: "&&" >
 }
 	
 TOKEN :
@@ -60,17 +79,26 @@ TOKEN :
 |   < #DIGIT: ["0" - "9"] >
 }
 
-Program Program() : { 
-	NodeList<Statement> ss = new NodeList<Statement>();
-	Statement s;
-	Expression e;
+//Program Program() : {
+//	NodeList<Statement> ss = new NodeList<Statement>();
+//	Statement s;
+//	Expression e;
+//}
+//{
+//	( s=Statement()
+//		{ ss.add(s); }
+//	)*
+//	< PRINT > e = Expression()
+//	<EOF>
+//	{ /*return new Program(ss, new Print(e));*/ return new Program(null, new NodeList<ClassDecl>()); }
+//	//TODO: This is just to make the code compile
+//}
+
+Program Program() : {
+    NodeList<AST> ss = new NodeList<AST>();
 }
 {
-	( s=Statement()
-		{ ss.add(s); }
-	)*
-	< PRINT > e = Expression()
-	<EOF>
+    MainClass() ( ClassDeclaration() )* <EOF>
 	{ /*return new Program(ss, new Print(e));*/ return new Program(null, new NodeList<ClassDecl>()); }
 	//TODO: This is just to make the code compile
 }
