@@ -12,7 +12,6 @@ package parser;
 import ast.*;
 import java.util.ArrayList;
 import java.util.List;
-import VarDecl.Kind.*;
 
 public class JCCMinijavaParser {
 }
@@ -82,13 +81,13 @@ TOKEN :
 
 
 Program Program() : {
-    NodeList<AST> ss = new NodeList<AST>();
+    NodeList<ClassDecl> classes = new NodeList<ClassDecl>();
     MainClass m;
     ClassDecl c;
 }
 {
-    m = MainClass() ( c = ClassDeclaration() { ss.add(c); } )* <EOF>
-	{ return new Program(m, ss); }
+    m = MainClass() ( c = ClassDeclaration() { classes.add(c); } )* <EOF>
+	{ return new Program(m, classes); }
 }
 
 
@@ -115,9 +114,9 @@ ClassDecl ClassDeclaration() : {
 }
 {
     <CLASS> className = Identifier() ( <EXTENDS> superName = Identifier() )? "{"
-    ( field = VarDeclaration(FIELD) { vars.add(field); } )*
+    ( field = VarDeclaration(VarDecl.Kind.FIELD) { vars.add(field); } )*
     ( method = MethodDeclaration() { methods.add(method); } )* "}"
-    { return new ClassDecl(className, superName, vas, methods); }
+    { return new ClassDecl(className, superName, vars, methods); }
 }
 
 VarDecl VarDeclaration(VarDecl.Kind kind) : {
@@ -133,12 +132,14 @@ VarDecl VarDeclaration(VarDecl.Kind kind) : {
 MethodDecl MethodDeclaration() : {
     Type returnType;
     String methodName;
-    NodeList<VarDecl> formals;
-    NodeList<VarDecl> locals;
-    NodeList<Statement> statements;
+    NodeList<VarDecl> formals = new NodeList<VarDecl>();
+    NodeList<VarDecl> locals = new NodeList<VarDecl>();
+    NodeList<Statement> statements = new NodeList<Statement>();
     Expression returnExp;
     VarDecl local;
     Statement s;
+    Type type;
+    String name;
 }
 {
  <PUBLIC> returnType = Type() methodName = Identifier()
@@ -146,10 +147,10 @@ MethodDecl MethodDeclaration() : {
  { formals.add(new VarDecl(type, name, formals.size())); }
  // can I declare local variables not inside declaraction braces above???
 
- ( "," t = Type() n = Identifier() )* )? ")"
- { formals.add(new VarDecl(t, n, formals.size())); }
+ ( "," type = Type() name = Identifier() { formals.add(new VarDecl(type, name, formals.size())); } )* )? ")"
 
- "{" ( local = VarDeclaration(LOCAL) { locals.add(local); } )*
+
+ "{" ( local = VarDeclaration(VarDecl.Kind.LOCAL) { locals.add(local); } )*
  ( s = Statement() { statements.add(s); } )*
  <RETURN> returnExp = Expression() ";" "}"
 
@@ -158,13 +159,14 @@ MethodDecl MethodDeclaration() : {
 
 Type Type() : {
 	Type t;
+	String id;
 }
 {
     LOOKAHEAD(2) // due to common prefix       is this use correct???
       <INT> "[" "]" { t = new IntArrayType(); }
     | <BOOLEAN>     { t = new BooleanType(); }
     | <INT>         { t = new IntegerType(); }
-    | Identifier()  { t = new ObjectType(); }
+    | id = Identifier()  { t = new ObjectType(id); }
 
     { return t; }
 }
@@ -186,14 +188,12 @@ Statement Statement() : {
     Expression value;
 }
 {
-	"{" ( s = Statement() { statements.add(s); } )* "}" { s = new Block(statements); }
-	| <IF> "(" exp = Expression() ")" thn = Statement() <ELSE> els = Statement() { s = new If(exp, thn, els); }
-	| <WHILE> "(" exp = Expression() ")" body = Statement()  { s = new While(exp, body); }
-	| <PRINT> "(" exp = Expression() ")" ";" { s = new Print(exp); }
-	| LOOKAHEAD(2) name = Identifier() "=" value = Expression() ";" { s = new Assign(name, value); }
-	| name = Identifier() "[" index = Expression() "]" "=" value = Expression() ";" { s = new ArrayAssign(name, index, value); }
-
-	{ return s; }
+	"{" ( s = Statement() { statements.add(s); } )* "}" { return new Block(statements); }
+	| <IF> "(" exp = Expression() ")" thn = Statement() <ELSE> els = Statement() { return new If(exp, thn, els); }
+	| <WHILE> "(" exp = Expression() ")" body = Statement()  { return new While(exp, body); }
+	| <PRINT> "(" exp = Expression() ")" ";" { return new Print(exp); }
+	| LOOKAHEAD(2) name = Identifier() "=" value = Expression() ";" { return new Assign(name, value); }
+	| name = Identifier() "[" index = Expression() "]" "=" value = Expression() ";" { return new ArrayAssign(name, index, value); }
 }
 
 
@@ -254,7 +254,7 @@ Expression NotExpr() : {
 	Expression e;
 }
 {    // not sure this production is implemented correctly ???
-     "!" e = NotExpr()          { return new Not(exp); }
+     "!" e = NotExpr()          { return new Not(e); }
 |    e = PrimaryExpression()	{ return new Not(e); }
 }
 
@@ -278,11 +278,16 @@ Expression PrimaryExpression() : {
 |   <NEW> id = Identifier() "(" ")"     { return new NewObject(id); }
 |   "(" e = Expression() ")"			{ return e; }
 
+|  (e = Expression()
+    ("["  index=Expression() "]"   { return new ArrayLookup(e, index); }
+    | "."
+        ("length"  { return new ArrayLength(e);}
+        | id = Identifier() "(" ( arg = Expression() { args.add(arg); } ( "," arg = Expression() { args.add(arg); } )* )? ")" { return new Call(e, id, args); }) ) )
 
-// TODO: these three access operation need lookahead(3) to resovle ambiguity, how to work around ???
-|   LOOKAHEAD(2) e=Expression() "[" index=Expression() "]"   { return new ArrayLookup(e, index); }
-|   LOOKAHEAD(2) Expression() "." "length"
-|   LOOKAHEAD(2) Expression() "." Identifier() "(" ( Expression() ( "," Expression() )* )? ")"
+//// these three access operation need lookahead(3) to resovle ambiguity, how to work around ???
+//|   LOOKAHEAD(2) e=Expression() "[" index=Expression() "]"   { return new ArrayLookup(e, index); }
+//|   LOOKAHEAD(2) Expression() "." "length"
+//|   LOOKAHEAD(2) Expression() "." Identifier() "(" ( Expression() ( "," Expression() )* )? ")"
 
 
 }
