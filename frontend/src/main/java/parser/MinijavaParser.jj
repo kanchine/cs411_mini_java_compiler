@@ -160,11 +160,11 @@ Type Type() : {
 	Type t;
 }
 {
-    LOOKAHEAD(2) // due to common prefix
+    LOOKAHEAD(2) // due to common prefix       is this use correct???
       <INT> "[" "]" { t = new IntArrayType(); }
     | <BOOLEAN>     { t = new BooleanType(); }
     | <INT>         { t = new IntegerType(); }
-    | Identifier()  { t = new UnknownType(); }
+    | Identifier()  { t = new ObjectType(); }
 
     { return t; }
 }
@@ -197,85 +197,96 @@ Statement Statement() : {
 }
 
 
-Expression Expression() : {
-	Expression e, e2, e3;
+// The given EBNF grammar on Expression production is non-LL(1) and doesn't specify operator precedence and associativity
+// We need to convert the given grammar into a LL(1) grammar that incorporates operator precedence and associativity
+// Java operator precedence and associativity:  https://introcs.cs.princeton.edu/java/11precedence/
+
+// For parsing anything with priority same or higher than &&
+Expression Expression() :
+{
+  Expression e1, e2;
 }
 {
-        Expression() ( "&&" | "<" | "+" | "-" | "*" ) Expression()
-      | Expression() "[" Expression() "]" {  }
-      | Expression() "." "length"
-      | Expression() "." Identifier() "(" ( Expression() ( "," Expression() )* )? ")"
-      | <INTEGER_LITERAL>
-      | "true"
-      | "false"
-      | Identifier()
-      | "this"
-      | "new" "int" "[" Expression() "]"
-      | "new" Identifier() "(" ")"
-      | "!" Expression()
-      | "(" Expression() ")"
-
-	{ return e; }
+  e1 = LessThanExpr() ("&&" e2 = LessThanExpr() { e1 = new And(e1, e2); } )*
+  { return e1; }
 }
 
 // For parsing anything with priority same or higher than <
-Expression CompExpression() : {
-	Expression e, e2;
+Expression LessThanExpr() :
+{
+  Expression e1, e2;
 }
-{ 	e=AddExpression()
-	( "<" e2=AddExpression()
-		{ e = new LessThan(e, e2); }
-	)?
-	{ return e; }
+{
+  e1 = AddMinusExpr() ( "<" e2 = AddMinusExpr() { e1 = new LessThan(e1, e2); } )*
+  { return e1; }
 }
-// For parsing anything with priority same or higher than +
-Expression AddExpression() : {
-	Expression e, e2;
-	Token op;
+
+// For parsing anything with priority same or higher than + and -
+Expression AddMinusExpr() :
+{
+  Expression e1, e2;
+  Token op;
 }
-{	e=MultExpression()
-	( 	(op="+"|op="-")
-		e2=MultExpression()
-			{ if (op.image.equals("+"))
-				e=new Plus(e, e2);
-			  else
-			  	e=new Minus(e, e2);
-			}
-	)*
-	{ return e; }
+{
+  e1 = MultExpr() ( (op="+"|op="-") e2 = MultExpr()
+    { if (op.image.equals("+"))
+        e1 = new Plus(e1, e2);
+      else
+        e1 = new Minus(e1, e2);
+    }
+  )*
+  { return e1; }
 }
 
 // For parsing anything with priority same or higher than *
-Expression MultExpression() :  {
-	Expression e, e2;
+Expression MultExpr() :
+{
+  Expression e1, e2;
 }
-{	e=NotExpression()
-	(	"*" e2=NotExpression()
-			{ e = new Times(e, e2); }
-	)*
-	{ return e; }
+{
+  e1 = NotExpr() ( "*" e2 = NotExpr() { e1 = new Times(e1, e2); } )*
+  { return e1; }
 }
 
-// For parsing anything with priority same or higher than ! expressions:
-Expression NotExpression() : {
+// For parsing anything with priority same or higher than ! expressions
+// ! operator is right-associative
+Expression NotExpr() : {
 	Expression e;
 }
-{ 	"!" e=NotExpression()
-		{ return new Not(e); }
-| 	e=PrimaryExpression()
-		{ return e; }
+{    // not sure this production is implemented correctly ???
+     "!" e = NotExpr()          { return new Not(exp); }
+|    e = PrimaryExpression()	{ return new Not(e); }
 }
 
 /* PrimaryExpression is the expression that has highest precedence.*/
 Expression PrimaryExpression() : {
 	Token t;
-	String i, f;
+	String id;
 	Expression e;
+
+	Expression index;
 }
-{ t=<INTEGER_LITERAL>					{ return new IntegerLiteral(t.image); }
-| i=Identifier()						{ return new IdentifierExp(i); }
-| "(" e=Expression() ")"				{ return e; }
+{
+    t = <INTEGER_LITERAL>				{ return new IntegerLiteral(t.image); }
+|   <TRUE>                              { return new BooleanLiteral(true); }
+|   <FALSE>                             { return new BooleanLiteral(false); }
+|   id = Identifier()					{ return new IdentifierExp(id); }
+|   t = <THIS>                          { return new This(); }
+|   LOOKAHEAD(2)
+    <NEW> <INTEGER_LITERAL> "[" e = Expression() "]"
+                                        { return new NewArray(e); }
+|   <NEW> id = Identifier() "(" ")"     { return new NewObject(id); }
+|   "(" e = Expression() ")"			{ return e; }
+
+
+// TODO: these three access operation need lookahead(3) to resovle ambiguity, how to work around ???
+|   LOOKAHEAD(2) e=Expression() "[" index=Expression() "]"   { return new ArrayLookup(e, index); }
+|   LOOKAHEAD(2) Expression() "." "length"
+|   LOOKAHEAD(2) Expression() "." Identifier() "(" ( Expression() ( "," Expression() )* )? ")"
+
+
 }
+
 
 String Identifier() : {
 	Token i;
