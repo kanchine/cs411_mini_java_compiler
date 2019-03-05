@@ -212,7 +212,15 @@ public class PrettyPrintVisitor implements Visitor<Void> {
 
     @Override
     public Void visit(MainClass n) {
-        // TODO Auto-generated method stub
+        out.println("class " + n.className + " {");
+        out.indent();
+        out.println("public static void main(String[] " + n.argName + ") {");
+        out.indent();
+        n.statement.accept(this);
+        out.outdent();
+        out.println("}");
+        out.outdent();
+        out.println("}");
         return null;
     }
 
@@ -242,7 +250,10 @@ public class PrettyPrintVisitor implements Visitor<Void> {
 
     @Override
     public Void visit(Block n) {
-        // TODO Auto-generated method stub
+        for(int idx = 0; idx < n.statements.size(); ++idx) {
+            n.statements.elementAt(idx).accept(this);
+            out.print(";\n");
+        }
         return null;
     }
 
