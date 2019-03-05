@@ -296,7 +296,7 @@ Expression PrimaryExpression() : {
 |   id = Identifier()					{ return new IdentifierExp(id); }
 |   t = <THIS>                          { return new This(); }
 |   LOOKAHEAD(2)
-    <NEW> <INTEGER_LITERAL> "[" e = Expression() "]"
+    <NEW> <INT> "[" e = Expression() "]"
                                         { return new NewArray(e); }
 |   <NEW> id = Identifier() "(" ")"     { return new NewObject(id); }
 |   "(" e = Expression() ")"			{ return e; }
