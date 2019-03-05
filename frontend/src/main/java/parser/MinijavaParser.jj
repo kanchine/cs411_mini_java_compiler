@@ -278,11 +278,11 @@ Expression PrimaryExpression() : {
 |   <NEW> id = Identifier() "(" ")"     { return new NewObject(id); }
 |   "(" e = Expression() ")"			{ return e; }
 
-|  (e = Expression()
-    ("["  index=Expression() "]"   { return new ArrayLookup(e, index); }
-    | "."
-        ("length"  { return new ArrayLength(e);}
-        | id = Identifier() "(" ( arg = Expression() { args.add(arg); } ( "," arg = Expression() { args.add(arg); } )* )? ")" { return new Call(e, id, args); }) ) )
+//|  (e = Expression()
+//    ("["  index=Expression() "]"   { return new ArrayLookup(e, index); }
+//    | "."
+//        ("length"  { return new ArrayLength(e);}
+//        | id = Identifier() "(" ( arg = Expression() { args.add(arg); } ( "," arg = Expression() { args.add(arg); } )* )? ")" { return new Call(e, id, args); }) ) )
 
 //// these three access operation need lookahead(3) to resovle ambiguity, how to work around ???
 //|   LOOKAHEAD(2) e=Expression() "[" index=Expression() "]"   { return new ArrayLookup(e, index); }
