@@ -150,7 +150,7 @@ MethodDecl MethodDeclaration() : {
  ( "," type = Type() name = Identifier() { formals.add(new VarDecl(type, name, formals.size())); } )* )? ")"
 
 
- "{" ( local = VarDeclaration(VarDecl.Kind.LOCAL) { locals.add(local); } )*
+ "{" (LOOKAHEAD(2) local = VarDeclaration(VarDecl.Kind.LOCAL) { locals.add(local); } )*  // need LOOKAHEAD(2) because VarDeclaration has the common prefix with previous production ( Type Identifier ...)?
  ( s = Statement() { statements.add(s); } )*
  <RETURN> returnExp = Expression() ";" "}"
 
@@ -158,17 +158,13 @@ MethodDecl MethodDeclaration() : {
 }
 
 Type Type() : {
-	Type t;
 	String id;
 }
 {
-    LOOKAHEAD(2) // due to common prefix       is this use correct???
-      <INT> "[" "]" { t = new IntArrayType(); }
-    | <BOOLEAN>     { t = new BooleanType(); }
-    | <INT>         { t = new IntegerType(); }
-    | id = Identifier()  { t = new ObjectType(id); }
-
-    { return t; }
+      LOOKAHEAD(2) <INT> "[" "]" { return new IntArrayType(); }  // need lookahead(2) due to common prefix
+    | <BOOLEAN>     { return new BooleanType(); }
+    | <INT>         { return new IntegerType(); }
+    | id = Identifier()  { return new ObjectType(id); }
 }
 
 
@@ -255,8 +251,36 @@ Expression NotExpr() : {
 }
 {    // not sure this production is implemented correctly ???
      "!" e = NotExpr()          { return new Not(e); }
-|    e = PrimaryExpression()	{ return new Not(e); }
+|    e = AccessExpr()	        { return e; }
 }
+
+// For parsing anything with priority same or higher than access expressions (array access, member access)
+Expression AccessExpr() : {
+	Expression e;
+}
+{
+    // first eliminate common prefix using left factoring. AccessTailExpr() represents stuff following common prefix
+    e = PrimaryExpression() ( e = AccessTailExpr(e) )*
+    { return e; }
+}
+
+// A helper production to handle common prefix in the following three productions
+// Expression ::=
+//      | Expression "[" Expression "]"
+//      | Expression "." "length"
+//      | Expression "." Identifier "(" ( Expression ( "," Expression )* )? ")"
+Expression AccessTailExpr(Expression e) : {
+	Expression index;
+	String id;
+    NodeList<Expression> args = new NodeList<Expression>();
+    Expression arg;
+}
+{
+    "["  index=Expression() "]"   { return new ArrayLookup(e, index); }
+    | LOOKAHEAD(2) "." <LENGTH> { return new ArrayLength(e);}
+    | "." id = Identifier() "(" ( arg = Expression() { args.add(arg); } ( "," arg = Expression() { args.add(arg); } )* )? ")" { return new Call(e, id, args); }
+}
+
 
 /* PrimaryExpression is the expression that has highest precedence.*/
 Expression PrimaryExpression() : {
@@ -264,7 +288,6 @@ Expression PrimaryExpression() : {
 	String id;
 	Expression e;
 
-	Expression index;
 }
 {
     t = <INTEGER_LITERAL>				{ return new IntegerLiteral(t.image); }
