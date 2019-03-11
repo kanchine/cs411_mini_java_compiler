@@ -140,8 +140,17 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
     @Override
     public ImpTable<Type> visit(VarDecl n) {
         if (n.kind == VarDecl.Kind.FIELD) {
+            // Prevent re-declaring the same variable name multiple times
+            if (classFields.lookup(n.name) != null) {
+                errors.duplicateDefinition(n.name);
+                return null;
+            }
             def(classFields, n.name, n.type);
         } else {
+            if (classFields.lookup(n.name) != null) {
+                errors.duplicateDefinition(n.name);
+                return null;
+            }
             def(methodScope, n.name, n.type);
         }
         return null;
@@ -193,6 +202,11 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(ClassDecl n) {
+        if (variables.lookup(n.name) != null) {
+            errors.duplicateDefinition(n.name);
+            return null;
+        }
+
         ClassType classType = new ClassType();
         classFields = classType.locals;
         classMethods = classType.methods;
@@ -213,12 +227,17 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(MethodDecl n) {
+        if (classMethods.lookup(n.name) != null) {
+            errors.duplicateDefinition(n.name);
+            return null;
+        }
+
         MethodType methodType = new MethodType();
         methodScope = methodType.locals;
         methodType.returnType = n.returnType;
         methodType.formals = n.formals;
 
-        def(classFields, n.name, methodType);
+        def(classMethods, n.name, methodType);
 
         n.formals.accept(this);
         n.vars.accept(this);
