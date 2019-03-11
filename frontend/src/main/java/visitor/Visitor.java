@@ -89,4 +89,9 @@ public interface Visitor<R> {
 
     R visit(Conditional n);
 
+    R visit(MethodType n);
+
+    R visit(ClassType n);
+
+    R visit(BlockType n);
 }

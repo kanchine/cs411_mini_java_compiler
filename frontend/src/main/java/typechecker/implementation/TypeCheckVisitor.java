@@ -138,6 +138,21 @@ public class TypeCheckVisitor implements Visitor<Type> {
     }
 
     @Override
+    public Type visit(MethodType n) {
+        return n;
+    }
+
+    @Override
+    public Type visit(ClassType n) {
+        return n;
+    }
+
+    @Override
+    public Type visit(BlockType n) {
+        return n;
+    }
+
+    @Override
     public Type visit(Plus n) {
         check(n.e1, new IntegerType());
         check(n.e2, new IntegerType());

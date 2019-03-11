@@ -206,4 +206,19 @@ public class DefaultVisitor<R> implements Visitor<R> {
     public R visit(NewObject n) {
         throw new Error("Not implemented");
     }
+
+    @Override
+    public R visit(MethodType n) {
+        throw new Error("Not implemented");
+    }
+
+    @Override
+    public R visit(ClassType n) {
+        throw new Error("Not implemented");
+    }
+
+    @Override
+    public R visit(BlockType n) {
+        throw new Error("Not implemented");
+    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public class Block extends Statement {
 
     public final NodeList<Statement> statements;
-
+    public BlockType blockType;
     public Block(NodeList<Statement> statements) {
         super();
         this.statements = statements;
