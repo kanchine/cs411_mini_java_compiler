@@ -39,6 +39,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
     private ImpTable<Type> classMethods = null;                    // Symbol table for class methods
     private ImpTable<Type> methodScope = null;                     // Symbol table for a particular method
     private ImpTable<Type> blockScope = null;                      // Symbol table for a particular block
+    private String className = null;
 
 
     public TypeCheckVisitor(ImpTable<Type> variables, ErrorReport errors) {
@@ -120,6 +121,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
     @Override
     public Type visit(Assign n) {
         // Check if expressionType is the same as the declared type
+        // TODO: make sure assign can be done to parent types
         check(n.value, lookup(n.name));
         return null;
     }
@@ -188,8 +190,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(IdentifierExp n) {
-        // TODO: this needs to be deferentiated by identier
-        Type type = variables.lookup(n.name);
+        Type type = lookup(n.name);
         if (type == null)
             type = new UnknownType();
         return type;
@@ -204,6 +205,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(FunctionDecl n) {
+        // We don't need to implement this
         throw new Error("Not implemented");
     }
 
@@ -215,7 +217,43 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(Call n) {
-        throw new Error("Not implemented");
+        MethodType methodType;
+        if (n.receiver instanceof This) {
+            // Check the method table in the current class
+            Type type = classMethods.lookup(n.name);
+            methodType = (MethodType) type;
+            n.setType(methodType.returnType);
+
+            if (methodType.formals.size() != n.rands.size())
+                errors.wrongNumberOfArguments(methodType.formals.size(), n.rands.size());
+            else {
+                for (int i = 0; i < methodType.formals.size(); ++i) {
+                    Type expectedType = methodType.formals.elementAt(i).type;
+                    check(n.rands.elementAt(i), expectedType);
+                }
+            }
+
+        } else if (n.receiver instanceof IdentifierExp) {
+            // retrieve the method table in the corresponding class
+            String name = ((IdentifierExp) n.receiver).name;
+            Type type = lookup(name);
+            ClassType classType = (ClassType) variables.lookup(((ObjectType) type).name);
+            methodType = (MethodType) classType.methods.lookup(n.name);
+            n.setType(methodType.returnType);
+
+            if (methodType.formals.size() != n.rands.size())
+                errors.wrongNumberOfArguments(methodType.formals.size(), n.rands.size());
+            else {
+                for (int i = 0; i < methodType.formals.size(); ++i) {
+                    Type expectedType = methodType.formals.elementAt(i).type;
+                    check(n.rands.elementAt(i), expectedType);
+                }
+            }
+        } else {
+            n.setType(new UnknownType());
+        }
+
+        return n.getType();
     }
 
     @Override
@@ -225,82 +263,115 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(MainClass n) {
-        throw new Error("Not implemented");
+        n.statement.accept(this);
+        return null;
     }
 
     @Override
     public Type visit(ClassDecl n) {
-        throw new Error("Not implemented");
+        classFields = n.classType.locals;
+        classMethods = n.classType.methods;
+        className = n.name;
+        n.vars.accept(this);
+        n.methods.accept(this);
+        classFields = null;
+        classMethods = null;
+        return null;
     }
 
     @Override
     public Type visit(MethodDecl n) {
-        throw new Error("Not implemented");
+        methodScope = n.methodType.locals;
+        n.vars.accept(this);
+        n.statements.accept(this);
+        check(n.returnExp, n.methodType.returnType);
+        methodScope = null;
+        return null;
     }
 
     @Override
     public Type visit(IntArrayType n) {
-        throw new Error("Not implemented");
+        return n;
     }
 
     @Override
     public Type visit(ObjectType n) {
-        throw new Error("Not implemented");
+        return n;
     }
 
     @Override
     public Type visit(Block n) {
-        throw new Error("Not implemented");
+        blockScope = n.blockType.locals;
+        n.statements.accept(this);
+        blockScope = null;
+        return null;
     }
 
     @Override
     public Type visit(If n) {
-        throw new Error("Not implemented");
+        n.tst.accept(this);
+        n.thn.accept(this);
+        n.els.accept(this);
+
+        return null;
     }
 
     @Override
     public Type visit(While n) {
-        throw new Error("Not implemented");
+        n.tst.accept(this);
+        n.body.accept(this);
+        return null;
     }
 
     @Override
     public Type visit(ArrayAssign n) {
-        throw new Error("Not implemented");
+        check(n.value, lookup(n.name));
+        return null;
     }
 
     @Override
     public Type visit(And n) {
-        throw new Error("Not implemented");
+        check(n.e1, new BooleanType());
+        check(n.e2, new BooleanType());
+
+        n.setType(new BooleanType());
+        return n.getType();
     }
 
     @Override
     public Type visit(ArrayLookup n) {
+        check(n.index, new IntegerType());
+        // TODO: not sure what is the array expression in the ArrayLookup node.
         throw new Error("Not implemented");
     }
 
     @Override
     public Type visit(ArrayLength n) {
+        // TODO: not sure what is the array expression in the ArrayLookup node.
         throw new Error("Not implemented");
     }
 
     @Override
     public Type visit(BooleanLiteral n) {
-        throw new Error("Not implemented");
+        n.setType(new BooleanType());
+        return n.getType();
     }
 
     @Override
     public Type visit(This n) {
+        // TODO: is there anything specific we need to do for the this node?
         throw new Error("Not implemented");
     }
 
     @Override
     public Type visit(NewArray n) {
-        throw new Error("Not implemented");
+        check(n.size, new IntegerType());
+        return null;
     }
 
     @Override
     public Type visit(NewObject n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     // lookup a name in local, class, or global scope. This lookup method is private to BuildSymbolTableVisitor
@@ -323,7 +394,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
         errors.undefinedId(name);
 
-        return type;
+        return null;
     }
 
 }
