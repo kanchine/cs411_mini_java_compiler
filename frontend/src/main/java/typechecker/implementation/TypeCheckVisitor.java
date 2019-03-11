@@ -415,8 +415,10 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(This n) {
-        //
-        throw new Error("Not implemented");
+        ClassType classType = (ClassType) variables.lookup(className);
+
+        n.setType(classType);
+        return n.getType();
     }
 
     @Override
