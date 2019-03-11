@@ -35,6 +35,10 @@ public class TypeCheckVisitor implements Visitor<Type> {
      * The symbol table from Phase 1.
      */
     private ImpTable<Type> variables;
+    private ImpTable<Type> classFields = null;                     // Symbol table for class fields
+    private ImpTable<Type> classMethods = null;                    // Symbol table for class methods
+    private ImpTable<Type> methodScope = null;                     // Symbol table for a particular method
+    private ImpTable<Type> blockScope = null;                      // Symbol table for a particular block
 
 
     public TypeCheckVisitor(ImpTable<Type> variables, ErrorReport errors) {
@@ -115,8 +119,8 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(Assign n) {
-        Type expressionType = n.value.accept(this);
-        variables.set(n.name, expressionType);
+        // Check if expressionType is the same as the declared type
+        check(n.value, lookup(n.name));
         return null;
     }
 
@@ -184,6 +188,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(IdentifierExp n) {
+        // TODO: this needs to be deferentiated by identier
         Type type = variables.lookup(n.name);
         if (type == null)
             type = new UnknownType();
@@ -204,6 +209,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(VarDecl n) {
+        // Nothing to be done here because type already set in building symbol table phrase
         return null;
     }
 
@@ -296,4 +302,28 @@ public class TypeCheckVisitor implements Visitor<Type> {
     public Type visit(NewObject n) {
         throw new Error("Not implemented");
     }
+
+    // lookup a name in local, class, or global scope. This lookup method is private to BuildSymbolTableVisitor
+    private Type lookup(String name) {
+        // first lookup in local symbol table, if not found, then lookup in global symbol table (variables and functions)
+        List<ImpTable<Type>> scopes = new ArrayList<>();
+        // set up scopes look up order
+        scopes.add(blockScope);
+        scopes.add(methodScope);
+        scopes.add(classFields);
+        Type type = null;  // the type associated with the input name
+
+        for (ImpTable<Type> scope : scopes) {
+            if (scope != null) {
+                type = scope.lookup(name);
+                if (type != null)
+                    return type;
+            }
+        }
+
+        errors.undefinedId(name);
+
+        return type;
+    }
+
 }

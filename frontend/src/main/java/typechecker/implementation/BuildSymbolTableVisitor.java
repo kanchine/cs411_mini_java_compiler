@@ -369,9 +369,7 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
             }
         }
 
-        if (type == null) {
-            errors.undefinedId(name);
-        }
+        errors.undefinedId(name);
 
         return type;
     }
