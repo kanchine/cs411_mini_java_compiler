@@ -67,6 +67,24 @@ public class PrettyPrintVisitor implements Visitor<Void> {
     }
 
     @Override
+    public Void visit(MethodType n) {
+        out.print("method");
+        return null;
+    }
+
+    @Override
+    public Void visit(ClassType n) {
+        out.print("class");
+        return null;
+    }
+
+    @Override
+    public Void visit(BlockType n) {
+        out.print("block");
+        return null;
+    }
+
+    @Override
     public Void visit(Print n) {
         out.print("System.out.println(");
         n.exp.accept(this);

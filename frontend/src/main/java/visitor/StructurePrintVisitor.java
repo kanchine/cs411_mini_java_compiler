@@ -67,6 +67,24 @@ public class StructurePrintVisitor implements Visitor<Void> {
     }
 
     @Override
+    public Void visit(MethodType n) {
+        out.println("MethodType");
+        return null;
+    }
+
+    @Override
+    public Void visit(ClassType n) {
+        out.println("ClassType");
+        return null;
+    }
+
+    @Override
+    public Void visit(BlockType n) {
+        out.println("BlockType");
+        return null;
+    }
+
+    @Override
     public Void visit(Print n) {
         out.println("Print");
         out.indent();

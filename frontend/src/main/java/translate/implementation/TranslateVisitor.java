@@ -148,6 +148,21 @@ public class TranslateVisitor implements Visitor<TRExp> {
     }
 
     @Override
+    public TRExp visit(MethodType n) {
+        throw new Error("Not implemented");
+    }
+
+    @Override
+    public TRExp visit(ClassType n) {
+        throw new Error("Not implemented");
+    }
+
+    @Override
+    public TRExp visit(BlockType n) {
+        throw new Error("Not implemented");
+    }
+
+    @Override
     public TRExp visit(Print n) {
         TRExp arg = n.exp.accept(this);
         return new Ex(IR.CALL(L_PRINT, arg.unEx()));
