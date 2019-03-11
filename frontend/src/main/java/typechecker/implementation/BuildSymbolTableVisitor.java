@@ -158,7 +158,7 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(Call n) {
-        // TODO: the expression in the call node should be an identifier, how do we locate the symbol table for that
+        // TODO: We need to keep finding the call method name up in the parent classes
         if (n.receiver instanceof This) {
             // Check the method table in the current class
             if (classMethods.lookup(n.name) == null)
@@ -174,7 +174,6 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
                 return null;
             }
 
-            // TODO: this is a bit ugly
             if (!(type instanceof ObjectType)) {
                 errors.typeError(n.receiver, new ObjectType(n.name), type);
                 return null;
@@ -196,6 +195,7 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
     @Override
     public ImpTable<Type> visit(MainClass n) {
         // TODO: we need a scope here as well
+        ClassType classType = new ClassType();
         n.statement.accept(this);
         return null;
     }
