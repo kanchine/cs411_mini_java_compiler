@@ -1,9 +1,48 @@
 package typechecker.implementation;
 
-import ast.*;
+import ast.AST;
+import ast.And;
+import ast.ArrayAssign;
+import ast.ArrayLength;
+import ast.ArrayLookup;
+import ast.Assign;
+import ast.Block;
+import ast.BlockType;
+import ast.BooleanLiteral;
+import ast.BooleanType;
+import ast.Call;
+import ast.ClassDecl;
+import ast.ClassType;
+import ast.Conditional;
+import ast.Expression;
+import ast.FunctionDecl;
+import ast.FunctionType;
+import ast.IdentifierExp;
+import ast.If;
+import ast.IntArrayType;
+import ast.IntegerLiteral;
+import ast.IntegerType;
+import ast.LessThan;
+import ast.MainClass;
+import ast.MethodDecl;
+import ast.MethodType;
+import ast.Minus;
+import ast.NewArray;
+import ast.NewObject;
+import ast.NodeList;
+import ast.Not;
+import ast.ObjectType;
+import ast.Plus;
+import ast.Print;
+import ast.Program;
+import ast.This;
+import ast.Times;
+import ast.Type;
+import ast.UnknownType;
+import ast.VarDecl;
+import ast.While;
 import typechecker.ErrorReport;
 import util.ImpTable;
-import util.Pair;
 import visitor.Visitor;
 
 import java.util.ArrayList;
@@ -67,7 +106,22 @@ public class TypeCheckVisitor implements Visitor<Type> {
     }
 
     private boolean assignableFrom(Type varType, Type valueType) {
-        return varType.equals(valueType);
+        if (varType instanceof ClassType && valueType instanceof ClassType) {
+            String varTypeName = ((ClassType) varType).name;
+            String valueTypeName = ((ClassType) valueType).name;
+
+            for (String ptr = valueTypeName; ptr != null; ) {
+                if (ptr.equals(varTypeName)) {
+                    return true;
+                }
+
+                ClassType currType = (ClassType) variables.lookup(ptr);
+                ptr = currType.superName;
+            }
+            return false;
+        } else {
+            return varType.equals(valueType);
+        }
     }
 
     ///////// Visitor implementation //////////////////////////////////////
@@ -120,8 +174,6 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(Assign n) {
-        // Check if expressionType is the same as the declared type
-        // TODO: make sure assign can be done to parent types
         check(n.value, lookup(n.name));
         return null;
     }
@@ -340,15 +392,19 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(ArrayLookup n) {
+        check(n.array, new IntArrayType());
         check(n.index, new IntegerType());
-        // TODO: not sure what is the array expression in the ArrayLookup node.
-        throw new Error("Not implemented");
+
+        n.setType(new IntegerType());
+        return n.getType();
     }
 
     @Override
     public Type visit(ArrayLength n) {
-        // TODO: not sure what is the array expression in the ArrayLookup node.
-        throw new Error("Not implemented");
+        check(n.array, new IntArrayType());
+
+        n.setType(new IntegerType());
+        return n.getType();
     }
 
     @Override
@@ -359,7 +415,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(This n) {
-        // TODO: is there anything specific we need to do for the this node?
+        //
         throw new Error("Not implemented");
     }
 
