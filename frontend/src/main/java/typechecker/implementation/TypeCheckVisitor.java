@@ -285,9 +285,9 @@ public class TypeCheckVisitor implements Visitor<Type> {
                 }
             }
 
-        } else if (n.receiver instanceof IdentifierExp) {
+        } else if (n.receiver instanceof NewObject) {
             // retrieve the method table in the corresponding class
-            String name = ((IdentifierExp) n.receiver).name;
+            String name = ((NewObject) n.receiver).typeName;
             Type type = lookup(name);
             ClassType classType = (ClassType) variables.lookup(((ObjectType) type).name);
             methodType = (MethodType) classType.methods.lookup(n.name);

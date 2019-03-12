@@ -201,8 +201,8 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
             tablePtr = classMethods;
         } else {
             Type type;
-            if (n.receiver instanceof IdentifierExp) {
-                String name = ((IdentifierExp) n.receiver).name;
+            if (n.receiver instanceof NewObject) {
+                String name = ((NewObject) n.receiver).typeName;
                 type = lookup(name);
             } else {
                 n.receiver.accept(this);   // typecheck the receiver
