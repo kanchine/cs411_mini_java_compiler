@@ -453,7 +453,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
     public Type visit(NewObject n) {
         if (variables.lookup(n.typeName) == null)
             errors.undefinedId(n.typeName);
-        return null;
+        return new ObjectType(n.typeName);
     }
 
     // lookup a name in local, class, or global scope. This lookup method is private to BuildSymbolTableVisitor
@@ -489,26 +489,15 @@ public class TypeCheckVisitor implements Visitor<Type> {
             Type type;
             if (n.receiver instanceof NewObject) {
                 String name = ((NewObject) n.receiver).typeName;
-                type = lookup(name);
+                type = variables.lookup(name);
             } else {
                 n.receiver.accept(this);   // typecheck the receiver
                 type = n.receiver.getType();
             }
 
-            if (type == null) {
-                errors.undefinedId(n.name);
-                return null;
-            }
-
-            if (!(type instanceof ObjectType)) {
-                errors.typeError(n.receiver, new ObjectType(n.name), type);
-                return null;
-            }
-
-            ObjectType objectType = (ObjectType) type;
-            ClassType classType = (ClassType) variables.lookup(objectType.name);
+            ClassType classType = (ClassType) type;
             if (classType == null) {
-                errors.undefinedId(objectType.name);
+                errors.undefinedId(classType.name);
                 return null;
             }
 
@@ -535,5 +524,4 @@ public class TypeCheckVisitor implements Visitor<Type> {
         errors.undefinedId(n.name);
         return null;
     }
-
 }
