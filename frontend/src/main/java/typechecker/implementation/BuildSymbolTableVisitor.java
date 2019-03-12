@@ -213,11 +213,10 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
         className = n.name;
 
         def(variables, n.name, classType);
+        def(classMethods, n.name, new MethodType());
 
         n.vars.accept(this);
         n.methods.accept(this);
-
-        def(classMethods, n.name, new MethodType());
 
         n.classType = classType;
         classFields = null;
