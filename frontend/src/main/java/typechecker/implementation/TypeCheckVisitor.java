@@ -491,8 +491,18 @@ public class TypeCheckVisitor implements Visitor<Type> {
                 String name = ((NewObject) n.receiver).typeName;
                 type = variables.lookup(name);
             } else {
-                n.receiver.accept(this);   // typecheck the receiver
-                type = n.receiver.getType();
+                // The receiver is an identifier
+                String name = ((IdentifierExp) n.receiver).name;
+                ObjectType identfierType = (ObjectType) lookup(name);
+                if (identfierType != null)
+                    n.receiver.setType(identfierType);
+                else {
+                    n.receiver.setType(new UnknownType());
+                    errors.undefinedId(name);
+                    return null;
+                }
+
+                type = variables.lookup(identfierType.name);
             }
 
             ClassType classType = (ClassType) type;
