@@ -87,19 +87,16 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(Assign n) {
-        n.value.accept(this);
-        if (lookup(n.name) == null)
-            errors.undefinedId(n.name);
+
         // We don't need this be cause we need to declare the variable before assigning
-//        def(methodScope, n.name, new UnknownType());
+        // def(methodScope, n.name, new UnknownType());
         return null;
     }
 
 
     @Override
     public ImpTable<Type> visit(IdentifierExp n) {
-        if (lookup(n.name) == null)
-            errors.undefinedId(n.name);
+
         return null;
     }
 
@@ -121,37 +118,31 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(LessThan n) {
-        n.e1.accept(this);
-        n.e2.accept(this);
+
         return null;
     }
 
     @Override
     public ImpTable<Type> visit(Conditional n) {
-        n.e1.accept(this);
-        n.e2.accept(this);
-        n.e3.accept(this);
+
         return null;
     }
 
     @Override
     public ImpTable<Type> visit(Plus n) {
-        n.e1.accept(this);
-        n.e2.accept(this);
+
         return null;
     }
 
     @Override
     public ImpTable<Type> visit(Minus n) {
-        n.e1.accept(this);
-        n.e2.accept(this);
+
         return null;
     }
 
     @Override
     public ImpTable<Type> visit(Times n) {
-        n.e1.accept(this);
-        n.e2.accept(this);
+
         return null;
     }
 
@@ -162,7 +153,7 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(Not not) {
-        not.e.accept(this);
+
         return null;
     }
 
@@ -194,57 +185,7 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(Call n) {
-        String namePtr;
-        ImpTable<Type> tablePtr;
-        if (n.receiver instanceof This) {
-            namePtr = className;
-            tablePtr = classMethods;
-        } else {
-            Type type;
-            if (n.receiver instanceof NewObject) {
-                String name = ((NewObject) n.receiver).typeName;
-                type = lookup(name);
-            } else {
-                n.receiver.accept(this);   // typecheck the receiver
-                type = n.receiver.getType();
-            }
-
-            if (type == null) {
-                errors.undefinedId(n.name);
-                return null;
-            }
-
-            if (!(type instanceof ObjectType)) {
-                errors.typeError(n.receiver, new ObjectType(n.name), type);
-                return null;
-            }
-
-            ObjectType objectType = (ObjectType) type;
-            ClassType classType = (ClassType) variables.lookup(objectType.name);
-            if (classType == null) {
-                errors.undefinedId(objectType.name);
-                return null;
-            }
-
-            namePtr = classType.name;
-            tablePtr = classType.methods;
-        }
-
-        while (namePtr != null) {
-            if (tablePtr.lookup(n.name) != null) {
-                return null;   // found the method name
-            }
-
-            ClassType classType = (ClassType) variables.lookup(namePtr);
-            namePtr = classType.superName;
-            if (namePtr != null) {
-                // update tablePtr
-                ClassType parentType = (ClassType) variables.lookup(namePtr);
-                tablePtr = parentType.methods;
-            }
-        }
-
-        errors.undefinedId(n.name);
+        // Method call should be checked in the second stage when all symbol tables are ready
         return null;
     }
 
@@ -275,6 +216,8 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
         n.vars.accept(this);
         n.methods.accept(this);
+
+        def(classMethods, n.name, new MethodType());
 
         n.classType = classType;
         classFields = null;
@@ -328,19 +271,14 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(While n) {
-        BlockType blockType = new BlockType();
-        blockScope = blockType.locals;
         n.tst.accept(this);
         n.body.accept(this);
-        blockScope = null;
         return null;
     }
 
     @Override
     public ImpTable<Type> visit(ArrayAssign n) {
-        n.value.accept(this);
-        if (lookup(n.name) == null)
-            errors.undefinedId(n.name);
+
         return null;
     }
 

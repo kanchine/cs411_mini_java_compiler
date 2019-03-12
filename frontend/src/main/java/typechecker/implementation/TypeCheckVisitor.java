@@ -174,7 +174,15 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(Assign n) {
-        check(n.value, lookup(n.name));
+        // Check variable referencing first
+        Type type = lookup(n.name);
+        Type valueType = n.value.accept(this);
+        if (type == null) {
+            errors.undefinedId(n.name);
+            return null;
+        }
+
+        check(n.value, valueType, type);
         return null;
     }
 
@@ -212,24 +220,33 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(Plus n) {
-        check(n.e1, new IntegerType());
-        check(n.e2, new IntegerType());
+        Type e1Type = n.e1.accept(this);
+        Type e2Type = n.e2.accept(this);
+
+        check(n.e1, e1Type, new IntegerType());
+        check(n.e2, e2Type, new IntegerType());
         n.setType(new IntegerType());
         return n.getType();
     }
 
     @Override
     public Type visit(Minus n) {
-        check(n.e1, new IntegerType());
-        check(n.e2, new IntegerType());
+        Type e1Type = n.e1.accept(this);
+        Type e2Type = n.e2.accept(this);
+
+        check(n.e1, e1Type, new IntegerType());
+        check(n.e2, e2Type, new IntegerType());
         n.setType(new IntegerType());
         return n.getType();
     }
 
     @Override
     public Type visit(Times n) {
-        check(n.e1, new IntegerType());
-        check(n.e2, new IntegerType());
+        Type e1Type = n.e1.accept(this);
+        Type e2Type = n.e2.accept(this);
+
+        check(n.e1, e1Type, new IntegerType());
+        check(n.e2, e2Type, new IntegerType());
         n.setType(new IntegerType());
         return n.getType();
     }
@@ -243,14 +260,18 @@ public class TypeCheckVisitor implements Visitor<Type> {
     @Override
     public Type visit(IdentifierExp n) {
         Type type = lookup(n.name);
-        if (type == null)
+
+        if (type == null) {
+            errors.undefinedId(n.name);
             type = new UnknownType();
+        }
         return type;
     }
 
     @Override
     public Type visit(Not n) {
-        check(n.e, new BooleanType());
+        Type eType = n.e.accept(this);
+        check(n.e, eType, new BooleanType());
         n.setType(new BooleanType());
         return n.getType();
     }
@@ -263,46 +284,29 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(VarDecl n) {
-        // Nothing to be done here because type already set in building symbol table phrase
+        // TODO need to check variables are not re-declared
         return null;
     }
 
     @Override
     public Type visit(Call n) {
-        MethodType methodType;
-        if (n.receiver instanceof This) {
-            // Check the method table in the current class
-            Type type = classMethods.lookup(n.name);
-            methodType = (MethodType) type;
-            n.setType(methodType.returnType);
-
-            if (methodType.formals.size() != n.rands.size())
-                errors.wrongNumberOfArguments(methodType.formals.size(), n.rands.size());
-            else {
-                for (int i = 0; i < methodType.formals.size(); ++i) {
-                    Type expectedType = methodType.formals.elementAt(i).type;
-                    check(n.rands.elementAt(i), expectedType);
-                }
-            }
-
-        } else if (n.receiver instanceof NewObject) {
-            // retrieve the method table in the corresponding class
-            String name = ((NewObject) n.receiver).typeName;
-            Type type = lookup(name);
-            ClassType classType = (ClassType) variables.lookup(((ObjectType) type).name);
-            methodType = (MethodType) classType.methods.lookup(n.name);
-            n.setType(methodType.returnType);
-
-            if (methodType.formals.size() != n.rands.size())
-                errors.wrongNumberOfArguments(methodType.formals.size(), n.rands.size());
-            else {
-                for (int i = 0; i < methodType.formals.size(); ++i) {
-                    Type expectedType = methodType.formals.elementAt(i).type;
-                    check(n.rands.elementAt(i), expectedType);
-                }
-            }
-        } else {
+        Type type = lookupMethods(n);
+        if (type == null) {
             n.setType(new UnknownType());
+            return n.getType();
+        }
+
+        MethodType methodType = (MethodType) type;
+
+        n.setType(methodType.returnType);
+
+        if (methodType.formals.size() != n.rands.size())
+            errors.wrongNumberOfArguments(methodType.formals.size(), n.rands.size());
+        else {
+            for (int i = 0; i < methodType.formals.size(); ++i) {
+                Type expectedType = methodType.formals.elementAt(i).type;
+                check(n.rands.elementAt(i), expectedType);
+            }
         }
 
         return n.getType();
@@ -377,14 +381,25 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(ArrayAssign n) {
-        check(n.value, lookup(n.name));
+        Type valueType = n.value.accept(this);
+        Type type = lookup(n.name);
+        if (type == null) {
+            errors.undefinedId(n.name);
+            return null;
+        }
+
+        check(n.value, new IntArrayType(), type);
+        check(n.value, new IntegerType(), valueType);
         return null;
     }
 
     @Override
     public Type visit(And n) {
-        check(n.e1, new BooleanType());
-        check(n.e2, new BooleanType());
+        Type e1Type = n.e1.accept(this);
+        Type e2Type = n.e2.accept(this);
+
+        check(n.e1, e1Type, new BooleanType());
+        check(n.e2, e2Type, new BooleanType());
 
         n.setType(new BooleanType());
         return n.getType();
@@ -392,8 +407,11 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(ArrayLookup n) {
-        check(n.array, new IntArrayType());
-        check(n.index, new IntegerType());
+        Type arrayType = n.array.accept(this);
+        Type indexType = n.index.accept(this);
+
+        check(n.array, arrayType, new IntArrayType());
+        check(n.index, indexType, new IntegerType());
 
         n.setType(new IntegerType());
         return n.getType();
@@ -401,7 +419,9 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(ArrayLength n) {
-        check(n.array, new IntArrayType());
+        Type arrayType = n.array.accept(this);
+
+        check(n.array, arrayType, new IntArrayType());
 
         n.setType(new IntegerType());
         return n.getType();
@@ -423,12 +443,16 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(NewArray n) {
-        check(n.size, new IntegerType());
-        return null;
+        Type sizeType = n.size.accept(this);
+        check(n.size, sizeType, new IntegerType());
+        n.setType(new IntArrayType());
+        return n.getType();
     }
 
     @Override
     public Type visit(NewObject n) {
+        if (variables.lookup(n.typeName) == null)
+            errors.undefinedId(n.typeName);
         return null;
     }
 
@@ -452,6 +476,63 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
         errors.undefinedId(name);
 
+        return null;
+    }
+
+    private Type lookupMethods(Call n) {
+        String namePtr;
+        ImpTable<Type> tablePtr;
+        if (n.receiver instanceof This) {
+            namePtr = className;
+            tablePtr = classMethods;
+        } else {
+            Type type;
+            if (n.receiver instanceof NewObject) {
+                String name = ((NewObject) n.receiver).typeName;
+                type = lookup(name);
+            } else {
+                n.receiver.accept(this);   // typecheck the receiver
+                type = n.receiver.getType();
+            }
+
+            if (type == null) {
+                errors.undefinedId(n.name);
+                return null;
+            }
+
+            if (!(type instanceof ObjectType)) {
+                errors.typeError(n.receiver, new ObjectType(n.name), type);
+                return null;
+            }
+
+            ObjectType objectType = (ObjectType) type;
+            ClassType classType = (ClassType) variables.lookup(objectType.name);
+            if (classType == null) {
+                errors.undefinedId(objectType.name);
+                return null;
+            }
+
+            namePtr = classType.name;
+            tablePtr = classType.methods;
+        }
+
+        while (namePtr != null) {
+            Type methodType = tablePtr.lookup(n.name);
+            if (methodType != null) {
+                return methodType;   // found the method name
+            }
+
+            ClassType classType = (ClassType) variables.lookup(namePtr);
+
+            namePtr = classType.superName;
+            if (namePtr != null) {
+                // update tablePtr
+                ClassType parentType = (ClassType) variables.lookup(namePtr);
+                tablePtr = parentType.methods;
+            }
+        }
+
+        errors.undefinedId(n.name);
         return null;
     }
 
