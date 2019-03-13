@@ -171,7 +171,7 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
             }
             def(classFields, n.name, n.type);
         } else {
-            if (classFields.lookup(n.name) != null) {
+            if (methodScope.lookup(n.name) != null) {
                 errors.duplicateDefinition(n.name);
                 return null;
             }
