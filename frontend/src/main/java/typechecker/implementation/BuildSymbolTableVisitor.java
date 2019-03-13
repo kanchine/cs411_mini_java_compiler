@@ -27,7 +27,6 @@ import ast.NewArray;
 import ast.NewObject;
 import ast.NodeList;
 import ast.Not;
-import ast.ObjectType;
 import ast.Plus;
 import ast.Print;
 import ast.Program;
@@ -212,10 +211,12 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
         className = n.name;
 
         def(variables, n.name, classType);
-        def(classMethods, n.name, new MethodType());
 
         n.vars.accept(this);
         n.methods.accept(this);
+
+        if(classMethods.lookup(n.name) == null)
+            def(classMethods, n.name, new MethodType());
 
         n.classType = classType;
         classFields = null;
