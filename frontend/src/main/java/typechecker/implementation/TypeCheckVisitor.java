@@ -111,9 +111,9 @@ public class TypeCheckVisitor implements Visitor<Type> {
     }
 
     private boolean assignableFrom(Type varType, Type valueType) {
-        if (varType instanceof ClassType && valueType instanceof ClassType) {
-            String varTypeName = ((ClassType) varType).name;
-            String valueTypeName = ((ClassType) valueType).name;
+        if (varType instanceof ObjectType && valueType instanceof ObjectType) {
+            String varTypeName = ((ObjectType) varType).name;
+            String valueTypeName = ((ObjectType) valueType).name;
 
             for (String ptr = valueTypeName; ptr != null; ) {
                 if (ptr.equals(varTypeName)) {
@@ -268,9 +268,11 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
         if (type == null) {
             errors.undefinedId(n.name);
+            Type test = lookup(n.name);
             type = new UnknownType();
         }
-        return type;
+        n.setType(type);
+        return n.getType();
     }
 
     @Override
@@ -289,7 +291,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(VarDecl n) {
-        // TODO need to check variables are not re-declared
+        // TODO need to check variables are not re-declared in the current scope
         return null;
     }
 
