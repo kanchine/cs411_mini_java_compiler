@@ -340,12 +340,12 @@ public class TypeCheckTest {
                         "}");
     }
 
-
+    // TODO: need more failure tests
 
 
     // --------------------------------------------------
     // Test group 4: expressions
-
+    // TODO: need more failure tests
 
 
 
