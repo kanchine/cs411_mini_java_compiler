@@ -1,5 +1,7 @@
 package test.translate.typechecker;
 
+import ast.BooleanType;
+import ast.IntegerType;
 import ast.Type;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import util.SampleCode;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static parser.Parser.parseExp;
 
 /**
@@ -81,6 +84,22 @@ public class TypeCheckTest {
         }
     }
 
+    // a helper method that expect input program to produce some type error
+    // but doesn't care what the error is
+    private void expectError(String input) {
+        boolean typeCheckError = false;
+        try{
+            TypeChecker.parseAndCheck(input);
+        } catch (TypeCheckerException e){
+            typeCheckError = true;
+        } catch (Exception e) {
+            typeCheckError = false;
+            System.out.println(e);
+        }
+
+        assertTrue(typeCheckError);
+    }
+
 
     private static final String defaultMainClass = mainClass("{}"); // used in composing test program for convenience
     private static String mainClass(String stm) {
@@ -95,6 +114,7 @@ public class TypeCheckTest {
 
     ////// Jerry's tests //////
 
+    // --------------------------------------------------
     // Test group 1: duplicate identifier definitions in the same scope
 
     @Test
@@ -147,12 +167,16 @@ public class TypeCheckTest {
     }
 
     @Test
-    public void duplicateMethods() throws Exception {
-        accept( defaultMainClass +
+    public void sameMethodAndFieldName() throws Exception {
+        accept(defaultMainClass +
                 "class MyClass {\n" +
                 "   int same;\n" +
                 "   public int same() { return 0; }\n" +
                 "}");
+    }
+
+    @Test
+    public void duplicateMethods() throws Exception {
         expect( ErrorMessage.duplicateDefinition("same"),
                 defaultMainClass +
                         "class MyClass {\n" +
@@ -203,7 +227,9 @@ public class TypeCheckTest {
                 "}");
     }
 
+    // --------------------------------------------------
     // Test group 2: Undefined Types
+
     @Test
     public void goodFieldType() throws Exception {
         accept(defaultMainClass +
@@ -247,6 +273,12 @@ public class TypeCheckTest {
                         "   public Ghost getGhost() { return foo; }\n" +
                         "   public int getZero() { return 0; }\n" +
                         "}");
+
+        expect(typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class Foo {\n" +
+                        "   public int test() { return false; }\n" +
+                        "}");
     }
 
     @Test
@@ -264,10 +296,58 @@ public class TypeCheckTest {
                         "class Foo {\n" +
                         "   Foo foo;\n" +
                         "   public Foo getFoo() { return foo; }\n" +
-                        "   public Foo getGhost(Ghost Ghost) { return foo; }\n" +
+                        "   public Foo getGhost(Ghost ghost) { return foo; }\n" +
                         "   public int getZero() { return 0; }\n" +
                         "}");
     }
+
+    @Test
+    public void goodLocalType() throws Exception {
+        accept(defaultMainClass +
+                "class Foo {\n" +
+                "   public Foo getFoo(Foo foo1) { Foo foo2; return foo2; }\n" +
+                "}\n");
+    }
+
+    @Test
+    public void badLocalType() throws Exception {
+        expect(ErrorMessage.undefinedId("Ghost"),
+                defaultMainClass +
+                        "class Foo {\n" +
+                        "   public Foo getFoo(Foo foo) { Ghost ghost; int a; int b; return foo; }\n" +
+                        "}");
+    }
+
+
+    // --------------------------------------------------
+    // Test group 3: statements
+
+    @Test public void badPrint() throws Exception {
+        // In minijava, println can only print integer. see textbook page 484
+        expect( typeError("true", new IntegerType(), new BooleanType()),
+                "class Main {\n" +
+                        "   public static void main(String[] args) {\n" +
+                        "      System.out.println(true);\n" +
+                        "   }\n" +
+                        "}");
+        expect( typeError("boolVar", new IntegerType(), new BooleanType()),
+                defaultMainClass+
+                        "class Classy {\n" +
+                        "   public int foo(boolean boolValue) {\n" +
+                        "      System.out.println(boolValue);\n" +
+                        "      return 0;\n" +
+                        "   }\n" +
+                        "}");
+    }
+
+
+
+
+    // --------------------------------------------------
+    // Test group 4: expressions
+
+
+
 
 
 
