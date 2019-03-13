@@ -567,6 +567,29 @@ public class Test3Parse {
                 "}");
     }
 
+    @Test
+    // reference: https://piazza.com/class/jqczq8eyb2usy?cid=275
+    public void mainCanBeUsedAsIdentifier() throws Exception {
+        accept("class Main {\n" +
+                "  public static void main(String[] args) {\n" +
+                "      System.out.println(new Test().test(true));\n" +
+                "  }\n" +
+                "}\n" +
+                "class Test {\n" +
+                "  public int test(boolean flag) {\n" +
+                "      if (true) System.out.println(99); else {}\n" +
+                "      return 9999;\n" +
+                "  }\n" +
+                "}\n" +
+                "class A {\n" +
+                "  public int foo() {\n" +
+                "    int main;\n" +
+                "    main = 1;\n" +
+                "    return main;\n" +
+                "  }\n" +
+                "}"
+        );
+    }
 
     /////////////////////////////////////////////////////////////////////////////////
     // Finally, check whether the parser accepts all the sample code.
