@@ -87,7 +87,6 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(Assign n) {
-
         // We don't need this be cause we need to declare the variable before assigning
         // def(methodScope, n.name, new UnknownType());
         return null;

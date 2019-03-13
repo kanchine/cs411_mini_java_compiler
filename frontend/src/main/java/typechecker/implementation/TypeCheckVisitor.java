@@ -100,8 +100,13 @@ public class TypeCheckVisitor implements Visitor<Type> {
     /**
      * Check whether two types in an expression are the same
      */
+//    private void check(Expression exp, Type t1, Type t2) {
+//        if (!t1.equals(t2))
+//            errors.typeError(exp, t1, t2);
+//    }
+
     private void check(Expression exp, Type t1, Type t2) {
-        if (!t1.equals(t2))
+        if (!assignableFrom(t1, t2))
             errors.typeError(exp, t1, t2);
     }
 
@@ -290,7 +295,18 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(Call n) {
-        Type type = lookupMethods(n);
+        Type rType = n.receiver.accept(this);
+        String name;
+        if (rType instanceof ObjectType)
+            name = ((ObjectType) rType).name;
+        else {
+            errors.typeError(n.receiver, new ObjectType(""), rType);
+            n.setType(new UnknownType());
+            return n.getType();
+        }
+
+        Type type = lookupMethods(n, name);
+
         if (type == null) {
             n.setType(new UnknownType());
             return n.getType();
@@ -337,6 +353,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(MethodDecl n) {
+        // TODO need to correctly reject overloading
         methodScope = n.methodType.locals;
         n.vars.accept(this);
         n.statements.accept(this);
@@ -437,7 +454,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
     public Type visit(This n) {
         ClassType classType = (ClassType) variables.lookup(className);
 
-        n.setType(classType);
+        n.setType(new ObjectType(classType.name));
         return n.getType();
     }
 
@@ -479,41 +496,10 @@ public class TypeCheckVisitor implements Visitor<Type> {
         return null;
     }
 
-    private Type lookupMethods(Call n) {
-        String namePtr;
-        ImpTable<Type> tablePtr;
-        if (n.receiver instanceof This) {
-            namePtr = className;
-            tablePtr = classMethods;
-        } else {
-            Type type;
-            if (n.receiver instanceof NewObject) {
-                String name = ((NewObject) n.receiver).typeName;
-                type = variables.lookup(name);
-            } else {
-                // The receiver is an identifier
-                String name = ((IdentifierExp) n.receiver).name;
-                ObjectType identfierType = (ObjectType) lookup(name);
-                if (identfierType != null)
-                    n.receiver.setType(identfierType);
-                else {
-                    n.receiver.setType(new UnknownType());
-                    errors.undefinedId(name);
-                    return null;
-                }
-
-                type = variables.lookup(identfierType.name);
-            }
-
-            ClassType classType = (ClassType) type;
-            if (classType == null) {
-                errors.undefinedId(classType.name);
-                return null;
-            }
-
-            namePtr = classType.name;
-            tablePtr = classType.methods;
-        }
+    private Type lookupMethods(Call n, String typeName) {
+        ClassType receiverType = (ClassType) variables.lookup(typeName);
+        String namePtr = receiverType.name;
+        ImpTable<Type> tablePtr = receiverType.methods;
 
         while (namePtr != null) {
             Type methodType = tablePtr.lookup(n.name);
@@ -532,6 +518,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
         }
 
         errors.undefinedId(n.name);
+
         return null;
     }
 }
