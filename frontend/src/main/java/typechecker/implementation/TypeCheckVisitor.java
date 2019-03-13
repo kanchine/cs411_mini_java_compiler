@@ -45,6 +45,7 @@ import typechecker.ErrorReport;
 import util.ImpTable;
 import visitor.Visitor;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -291,7 +292,6 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(VarDecl n) {
-        // TODO need to check variables are not re-declared in the current scope
         return null;
     }
 
@@ -362,8 +362,30 @@ public class TypeCheckVisitor implements Visitor<Type> {
     @Override
     public Type visit(MethodDecl n) {
         // TODO need to correctly reject overloading  (same method name but different parameter list)
-        //  1. reject overloading in current class
+        //  1. reject overloading in current class (This part is done in the BuildSymbolTableVisitor, we prevent user to
+        //  define methods of same name in the current class)
         //  2. reject overloading between current and parent class
+        ClassType currClassType = (ClassType) variables.lookup(className);
+        currClassType = (ClassType) variables.lookup(currClassType.superName);
+        while (currClassType != null) {
+            MethodType methodType = (MethodType) currClassType.methods.lookup(n.name);
+            if (methodType != null) {
+                if (methodType.formals.size() != n.methodType.formals.size() || !methodType.returnType.equals(n.methodType.returnType)) {
+                    errors.duplicateDefinition(n.name);
+                    return null;
+                }
+
+                for (int idx = 0; idx < methodType.formals.size(); ++idx) {
+                    if (methodType.formals.elementAt(idx).type.equals(n.methodType.formals.elementAt(idx))) {
+                        errors.duplicateDefinition(n.name);
+                        return null;
+                    }
+                }
+            }
+
+            currClassType = (ClassType) variables.lookup(currClassType.superName);
+        }
+
         methodScope = n.methodType.locals;
         n.vars.accept(this);
         n.statements.accept(this);
@@ -491,6 +513,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
         scopes.add(blockScope);
         scopes.add(methodScope);
         scopes.add(classFields);
+
         Type type = null;  // the type associated with the input name
 
         for (ImpTable<Type> scope : scopes) {
