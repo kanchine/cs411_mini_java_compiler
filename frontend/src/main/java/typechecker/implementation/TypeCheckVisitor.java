@@ -45,7 +45,6 @@ import typechecker.ErrorReport;
 import util.ImpTable;
 import visitor.Visitor;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,14 +193,14 @@ public class TypeCheckVisitor implements Visitor<Type> {
     @Override
     public Type visit(Assign n) {
         // Check variable referencing first
-        Type type = lookup(n.name);
+        Type type = lookupVariable(n.name);
         Type valueType = n.value.accept(this);
         if (type == null) {
             errors.undefinedId(n.name);
             return null;
         }
 
-        check(n.value, valueType, type);
+        check(n.value, type, valueType);
         return null;
     }
 
@@ -278,7 +277,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(IdentifierExp n) {
-        Type type = lookup(n.name);
+        Type type = lookupVariable(n.name);
 
         if (type == null) {
             errors.undefinedId(n.name);
@@ -383,7 +382,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
         //  1. reject overloading in current class (This part is done in the BuildSymbolTableVisitor, we prevent user to
         //  define methods of same name in the current class)
         //  2. reject overloading between current and parent class
-        ClassType currClassType = (ClassType) variables.lookup(className);
+        ClassType currClassType = (ClassType) variables.lookup(currentClassName);
         currClassType = (ClassType) variables.lookup(currClassType.superName);
         while (currClassType != null) {
             MethodType methodType = (MethodType) currClassType.methods.lookup(n.name);
@@ -449,7 +448,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
     @Override
     public Type visit(ArrayAssign n) {
         Type valueType = n.value.accept(this);
-        Type type = lookup(n.name);
+        Type type = lookupVariable(n.name);
         if (type == null) {
             errors.undefinedId(n.name);
             return null;
@@ -503,7 +502,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
     @Override
     public Type visit(This n) {
         // obsolete code
-        // ClassType classType = (ClassType) variables.lookup(currentClassName);
+        // ClassType classType = (ClassType) variables.lookupVariable(currentClassName);
         // n.setType(new ObjectType(classType.name));
 
         ObjectType type = new ObjectType(currentClassName);
@@ -526,14 +525,26 @@ public class TypeCheckVisitor implements Visitor<Type> {
         return new ObjectType(n.typeName);
     }
 
-    // lookup a variable name in block, method, or class scope
-    private Type lookup(String name) {
-        // lookup order: block -> method -> class scope (only lookup the next scope if not found in previous scope)
+    // lookupVariable a variable name in block, method, or class scope
+    private Type lookupVariable(String name) {
+        // lookup order: block -> method -> class scope -> parent class fields (only look up the next scope if not found in previous scope)
         List<ImpTable<Type>> scopes = new ArrayList<>();
         // set up scopes look up order
         scopes.add(blockScope);
         scopes.add(methodScope);
         scopes.add(classFields);
+
+        ClassType currClassType = (ClassType) variables.lookup(currentClassName);
+        if (currClassType == null) {
+            System.out.println(" currentClassName is null, but it shouldn't happen\n");
+            return null;
+        }
+
+        ClassType superClassType = (ClassType) variables.lookup(currClassType.superName);
+        while (superClassType != null) {
+            scopes.add(superClassType.locals);
+            superClassType = (ClassType) variables.lookup(superClassType.superName);
+        }
 
         Type type = null;  // the type associated with the input name
 
@@ -544,8 +555,6 @@ public class TypeCheckVisitor implements Visitor<Type> {
                     return type;
             }
         }
-
-        errors.undefinedId(name);
 
         return null;
     }

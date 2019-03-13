@@ -17,4 +17,11 @@ public class MethodType extends Type {
     public boolean equals(Object other) {
         return this.getClass() == other.getClass();
     }
+
+    @Override
+    public String toString() {
+        return "MethodType {\n" +
+                "locals=" + locals + "\n" +
+                "}";
+    }
 }

@@ -18,4 +18,12 @@ public class ClassType extends Type {
     public <R> R accept(Visitor<R> v) {
         return v.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "ClassType {\n" +
+                "locals=" + locals + "\n" +
+                "methods=" + methods + "\n" +
+                '}';
+    }
 }
