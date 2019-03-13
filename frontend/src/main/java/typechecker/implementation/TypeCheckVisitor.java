@@ -78,7 +78,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
     private ImpTable<Type> classMethods = null;                    // Symbol table for class methods
     private ImpTable<Type> methodScope = null;                     // Symbol table for a particular method
     private ImpTable<Type> blockScope = null;                      // Symbol table for a particular block
-    private String className = null;
+    private String currentClassName = null;
 
 
     public TypeCheckVisitor(ImpTable<Type> variables, ErrorReport errors) {
@@ -110,19 +110,28 @@ public class TypeCheckVisitor implements Visitor<Type> {
             errors.typeError(exp, t1, t2);
     }
 
+    // input may be null. need null check to avoid NullPointerException
     private boolean assignableFrom(Type varType, Type valueType) {
-        if (varType instanceof ObjectType && valueType instanceof ObjectType) {
+        if (varType == valueType) {
+            return true;
+        } else if (varType == null || valueType == null) {
+            return false;
+        } else if (varType instanceof ObjectType && valueType instanceof ObjectType) {
             String varTypeName = ((ObjectType) varType).name;
             String valueTypeName = ((ObjectType) valueType).name;
 
-            for (String ptr = valueTypeName; ptr != null; ) {
-                if (ptr.equals(varTypeName)) {
+            while (valueTypeName != null) {
+                if (valueTypeName.equals(varTypeName)) {
                     return true;
                 }
 
-                ClassType currType = (ClassType) variables.lookup(ptr);
-                ptr = currType.superName;
+                ClassType valueClassType = (ClassType) variables.lookup(valueTypeName);
+                if (valueClassType == null) {
+                    return false;
+                }
+                valueTypeName = valueClassType.superName;
             }
+
             return false;
         } else {
             return varType.equals(valueType);
@@ -144,6 +153,10 @@ public class TypeCheckVisitor implements Visitor<Type> {
         //		variables = applyInheritance(variables);
         n.mainClass.accept(this);
         n.classes.accept(this);
+
+        // reset context variables
+        currentClassName = null;
+
         return null;
     }
 
@@ -268,7 +281,6 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
         if (type == null) {
             errors.undefinedId(n.name);
-            Type test = lookup(n.name);
             type = new UnknownType();
         }
         n.setType(type);
@@ -343,7 +355,9 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(MainClass n) {
+        currentClassName = n.className;
         n.statement.accept(this);
+        currentClassName = null;
         return null;
     }
 
@@ -351,11 +365,15 @@ public class TypeCheckVisitor implements Visitor<Type> {
     public Type visit(ClassDecl n) {
         classFields = n.classType.locals;
         classMethods = n.classType.methods;
-        className = n.name;
+        currentClassName = n.name;
+
         n.vars.accept(this);
         n.methods.accept(this);
+
         classFields = null;
         classMethods = null;
+        currentClassName = null;
+
         return null;
     }
 
@@ -462,9 +480,12 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(This n) {
-        ClassType classType = (ClassType) variables.lookup(className);
+        // obsolete code
+        // ClassType classType = (ClassType) variables.lookup(currentClassName);
+        // n.setType(new ObjectType(classType.name));
 
-        n.setType(new ObjectType(classType.name));
+        ObjectType type = new ObjectType(currentClassName);
+        n.setType(type);
         return n.getType();
     }
 
@@ -483,9 +504,9 @@ public class TypeCheckVisitor implements Visitor<Type> {
         return new ObjectType(n.typeName);
     }
 
-    // lookup a name in local, class, or global scope. This lookup method is private to BuildSymbolTableVisitor
+    // lookup a variable name in block, method, or class scope
     private Type lookup(String name) {
-        // first lookup in local symbol table, if not found, then lookup in global symbol table (variables and functions)
+        // lookup order: block -> method -> class scope (only lookup the next scope if not found in previous scope)
         List<ImpTable<Type>> scopes = new ArrayList<>();
         // set up scopes look up order
         scopes.add(blockScope);
