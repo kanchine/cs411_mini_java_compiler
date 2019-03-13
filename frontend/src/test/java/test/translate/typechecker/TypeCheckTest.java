@@ -1,7 +1,5 @@
 package test.translate.typechecker;
 
-import ast.BooleanType;
-import ast.IntegerType;
 import ast.Type;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -82,4 +80,196 @@ public class TypeCheckTest {
             Assertions.assertEquals(expect, e.getFirstMessage());
         }
     }
+
+
+    private static final String defaultMainClass = mainClass("{}"); // used in composing test program for convenience
+    private static String mainClass(String stm) {
+        return
+                "class Main { \n" +
+                        "   public static void main(String[] args) {\n" +
+                        "      "+ stm +"\n"+
+                        "   }\n" +
+                        "}\n";
+    }
+
+
+    ////// Jerry's tests //////
+
+    // Test group 1: duplicate identifier definitions in the same scope
+
+    @Test
+    public void duplicateClassName() throws Exception {
+        // Duplicate with the Main class name
+        expect( ErrorMessage.duplicateDefinition("Main"),
+                defaultMainClass +
+                        "class Main {}");
+
+        // Duplicate class name
+        expect( ErrorMessage.duplicateDefinition("Other"),
+                defaultMainClass +
+                        "class Other {}\n" +
+                        "class Other {}");
+    }
+
+    @Test
+    public void duplicateFields() throws Exception {
+        // If names are diff it should be ok:
+        accept(defaultMainClass +
+                "class MyClass {\n" +
+                "   int x;\n" +
+                "   int y;\n" +
+                "   int z;\n" +
+                "}");
+        // Same names in diff classes should be ok
+        accept(defaultMainClass +
+                "class MyClass {\n" +
+                "   int x;\n" +
+                "}\n" +
+                "class OtherClass {\n" +
+                "   int x;\n" +
+                "}\n" +
+                "");
+        // Same names in same class
+        expect( ErrorMessage.duplicateDefinition("same"),
+                defaultMainClass +
+                        "class MyClass {\n" +
+                        "   int same;\n" +
+                        "   int same;\n" +
+                        "}");
+        // Same names in same class = bad even if not consecutive locations.
+        expect( ErrorMessage.duplicateDefinition("same"),
+                defaultMainClass +
+                        "class MyClass {\n" +
+                        "   int same;\n" +
+                        "   int diff;\n" +
+                        "   int same;\n" +
+                        "}");
+    }
+
+    @Test
+    public void duplicateMethods() throws Exception {
+        accept( defaultMainClass +
+                "class MyClass {\n" +
+                "   int same;\n" +
+                "   public int same() { return 0; }\n" +
+                "}");
+        expect( ErrorMessage.duplicateDefinition("same"),
+                defaultMainClass +
+                        "class MyClass {\n" +
+                        "   public int same() { return 1; }\n" +
+                        "   public int same() { return 0; }\n" +
+                        "}");
+        expect( ErrorMessage.duplicateDefinition("same"),
+                defaultMainClass +
+                        "class MyClass {\n" +
+                        "   public int same() { return 1; }\n" +
+                        "   public int diff() { return 1; }\n" +
+                        "   public int same() { return 0; }\n" +
+                        "}");
+        // Overloading is not supported
+        expect( ErrorMessage.duplicateDefinition("same"),
+                defaultMainClass +
+                        "class MyClass {\n" +
+                        "   public int same() { return 1; }\n" +
+                        "   public int same(int x) { return x; }\n" +
+                        "}");
+    }
+
+    @Test public void sameMethodAndLocal() throws Exception {
+        // Methods fields and locals are in different name spaces
+        accept( defaultMainClass +
+                "class MyClass {\n" +
+                "   int foo;\n" +
+                "   public int foo(int foo) { return foo; }\n" +
+                "}");
+    }
+
+    @Test
+    public void sameLocalNameAndParamName() throws Exception {
+        expect( ErrorMessage.duplicateDefinition("same"),
+                defaultMainClass +
+                        "class MyClass {\n" +
+                        "   public int foo(int same) { int same; return same; }\n" +
+                        "}");
+    }
+    @Test
+    // Same name between field and local or between field and parameter
+    public void sameLocalNameAndFieldName() throws Exception {
+        accept(defaultMainClass +
+                "class MyClass {\n" +
+                "   int x;\n" +
+                "   int y;\n" +
+                "   public int foo(int x) { int y; return x; }\n" +
+                "}");
+    }
+
+    // Test group 2: Undefined Types
+    @Test
+    public void goodFieldType() throws Exception {
+        accept(defaultMainClass +
+                "class Foo {\n" +
+                "   int i;\n" +
+                "   Foo foo;\n" +
+                "   Bar bar;\n" +
+                "}\n" +
+                "class Bar {\n" +
+                "   Foo foo;\n" +
+                "   Bar bar;\n" +
+                "}");
+    }
+    @Test
+    public void badFieldType() throws Exception {
+        expect(ErrorMessage.undefinedId("Ghost"),
+                defaultMainClass +
+                        "class Foo {\n" +
+                        "   Bar f;\n" +
+                        "}");
+    }
+
+    @Test
+    public void goodReturnType() throws Exception {
+        accept(defaultMainClass +
+                "class Foo {\n" +
+                "   public Bar getBar() { return bar; }\n" +
+                "}\n" +
+                "class Bar {\n" +
+                "   public Foo getFoo() { return foo; }\n" +
+                "}");
+    }
+    
+    @Test
+    public void badReturnType() throws Exception {
+        expect(ErrorMessage.undefinedId("Ghost"),
+                defaultMainClass +
+                        "class Foo {\n" +
+                        "   Foo foo;\n" +
+                        "   public Foo getFoo() { return foo; }\n" +
+                        "   public Ghost getGhost() { return foo; }\n" +
+                        "   public int getZero() { return 0; }\n" +
+                        "}");
+    }
+
+    @Test
+    public void goodParamType() throws Exception {
+        accept(	defaultMainClass+
+                "class Foo {\n" +
+                "   public Foo getFoo(Foo foo) { return foo; }\n" +
+                "}\n");
+    }
+
+    @Test
+    public void badParamType() throws Exception {
+        expect(ErrorMessage.undefinedId("Ghost"),
+                defaultMainClass+
+                        "class Foo {\n" +
+                        "   Foo foo;\n" +
+                        "   public Foo getFoo() { return foo; }\n" +
+                        "   public Foo getGhost(Ghost Ghost) { return foo; }\n" +
+                        "   public int getZero() { return 0; }\n" +
+                        "}");
+    }
+
+
+
+
 }
