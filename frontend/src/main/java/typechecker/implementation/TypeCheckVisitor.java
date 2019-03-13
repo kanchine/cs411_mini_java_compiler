@@ -175,18 +175,11 @@ public class TypeCheckVisitor implements Visitor<Type> {
         return n;
     }
 
-    /**
-     * Can't use check, because print allows either Integer or Boolean types
-     */
     @Override
     public Type visit(Print n) {
         Type actual = n.exp.accept(this);
-        if (!assignableFrom(new IntegerType(), actual) && !assignableFrom(new BooleanType(), actual)) {
-            List<Type> l = new ArrayList<Type>();
-            l.add(new IntegerType());
-            l.add(new BooleanType());
-            errors.typeError(n.exp, l, actual);
-        }
+        check(n.exp, new IntegerType(), actual);
+
         return null;
     }
 
@@ -303,6 +296,13 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(VarDecl n) {
+        if (n.type instanceof ObjectType) {
+            ObjectType objectType = (ObjectType) n.type;
+            if (variables.lookup(objectType.name) == null) {
+                // variable is of a type that does not exist
+                errors.undefinedId(objectType.name);
+            }
+        }
         return null;
     }
 
@@ -404,9 +404,20 @@ public class TypeCheckVisitor implements Visitor<Type> {
         }
 
         methodScope = n.methodType.locals;
+        n.formals.accept(this);
         n.vars.accept(this);
         n.statements.accept(this);
+
+        // if return type doesn't exist, throw an error
+        if (n.methodType.returnType instanceof ObjectType) {
+            ObjectType objectType = (ObjectType) n.methodType.returnType;
+            if (variables.lookup(objectType.name) == null) {
+                errors.undefinedId(objectType.name);
+                return null;
+            }
+        }
         check(n.returnExp, n.methodType.returnType);
+
         methodScope = null;
         return null;
     }
