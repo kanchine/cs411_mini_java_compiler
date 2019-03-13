@@ -297,6 +297,10 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(Call n) {
+        // check the following:
+        // 1. the speicified method name exsits for the specifier receiver (look up current class and parent class)
+        // 2. argument list of Call matches the parameter list of method declaration found in step 1
+
         Type rType = n.receiver.accept(this);
         String name;
         if (rType instanceof ObjectType)
@@ -310,6 +314,8 @@ public class TypeCheckVisitor implements Visitor<Type> {
         Type type = lookupMethods(n, name);
 
         if (type == null) {
+            // method name is not found
+            errors.undefinedId(n.name);
             n.setType(new UnknownType());
             return n.getType();
         }
@@ -318,9 +324,9 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
         n.setType(methodType.returnType);
 
-        if (methodType.formals.size() != n.rands.size())
+        if (methodType.formals.size() != n.rands.size()) {
             errors.wrongNumberOfArguments(methodType.formals.size(), n.rands.size());
-        else {
+        } else {
             for (int i = 0; i < methodType.formals.size(); ++i) {
                 Type expectedType = methodType.formals.elementAt(i).type;
                 check(n.rands.elementAt(i), expectedType);
@@ -355,7 +361,9 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(MethodDecl n) {
-        // TODO need to correctly reject overloading
+        // TODO need to correctly reject overloading  (same method name but different parameter list)
+        //  1. reject overloading in current class
+        //  2. reject overloading between current and parent class
         methodScope = n.methodType.locals;
         n.vars.accept(this);
         n.statements.accept(this);
@@ -498,29 +506,24 @@ public class TypeCheckVisitor implements Visitor<Type> {
         return null;
     }
 
-    private Type lookupMethods(Call n, String typeName) {
-        ClassType receiverType = (ClassType) variables.lookup(typeName);
-        String namePtr = receiverType.name;
-        ImpTable<Type> tablePtr = receiverType.methods;
 
-        while (namePtr != null) {
-            Type methodType = tablePtr.lookup(n.name);
+    private Type lookupMethods(Call n, String receiverTypeName) {
+        ClassType receiverType = (ClassType) variables.lookup(receiverTypeName);
+
+        // check whether the receiver class exists
+        while (receiverType != null) {
+            // check whether the receiver class has this method name
+            Type methodType = receiverType.methods.lookup(n.name);
             if (methodType != null) {
-                return methodType;   // found the method name
+                // found the method name
+                return methodType;
             }
 
-            ClassType classType = (ClassType) variables.lookup(namePtr);
-
-            namePtr = classType.superName;
-            if (namePtr != null) {
-                // update tablePtr
-                ClassType parentType = (ClassType) variables.lookup(namePtr);
-                tablePtr = parentType.methods;
-            }
+            // If not found, check whether the receiver's parent class has this method name in the next iteration
+            receiverType = (ClassType) variables.lookup(receiverType.superName);
         }
-
-        errors.undefinedId(n.name);
 
         return null;
     }
+
 }
