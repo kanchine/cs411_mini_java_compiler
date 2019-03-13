@@ -245,7 +245,7 @@ public class TypeCheckTest {
     }
     @Test
     public void badFieldType() throws Exception {
-        expect(ErrorMessage.undefinedId("Ghost"),
+        expect(ErrorMessage.undefinedId("Bar"),
                 defaultMainClass +
                         "class Foo {\n" +
                         "   Bar f;\n" +
@@ -330,7 +330,7 @@ public class TypeCheckTest {
                         "      System.out.println(true);\n" +
                         "   }\n" +
                         "}");
-        expect( typeError("boolVar", new IntegerType(), new BooleanType()),
+        expect( typeError("boolValue", new IntegerType(), new BooleanType()),
                 defaultMainClass+
                         "class Classy {\n" +
                         "   public int foo(boolean boolValue) {\n" +
