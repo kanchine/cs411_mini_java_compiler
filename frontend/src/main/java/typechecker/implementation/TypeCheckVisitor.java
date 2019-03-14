@@ -447,6 +447,8 @@ public class TypeCheckVisitor implements Visitor<Type> {
     @Override
     public Type visit(If n) {
         n.tst.accept(this);
+        check(n.tst, new BooleanType());
+
         n.thn.accept(this);
         n.els.accept(this);
 
@@ -456,7 +458,10 @@ public class TypeCheckVisitor implements Visitor<Type> {
     @Override
     public Type visit(While n) {
         n.tst.accept(this);
+        check(n.tst, new BooleanType());
+
         n.body.accept(this);
+
         return null;
     }
 
