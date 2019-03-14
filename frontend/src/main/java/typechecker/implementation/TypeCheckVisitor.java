@@ -398,7 +398,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
                 }
 
                 for (int idx = 0; idx < methodType.formals.size(); ++idx) {
-                    if (methodType.formals.elementAt(idx).type.equals(n.methodType.formals.elementAt(idx))) {
+                    if (!methodType.formals.elementAt(idx).type.equals(n.methodType.formals.elementAt(idx).type)) {
                         errors.duplicateDefinition(n.name);
                         return null;
                     }
