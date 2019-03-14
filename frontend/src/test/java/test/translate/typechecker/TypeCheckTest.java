@@ -380,24 +380,10 @@ public class TypeCheckTest {
     }
 
     @Test
-    public void ifValidOneBranch() throws Exception {
+    public void ifValid() throws Exception {
         accept(defaultMainClass +
                 "class C {\n" +
-                "    public int f(bool b, int x, int y) {\n" +
-                "        if (b) {\n" +
-                "            System.out.println(x + y);\n" +
-                "        }\n" +
-                "        return 0;\n" +
-                "    }\n" +
-                "}"
-        );
-    }
-
-    @Test
-    public void ifValidTwoBranch() throws Exception {
-        accept(defaultMainClass +
-                "class C {\n" +
-                "    public int f(bool b, int x, int y) {\n" +
+                "    public int f(boolean b, int x, int y) {\n" +
                 "        if (b) {\n" +
                 "            System.out.println(x + y);\n" +
                 "        } else {\n" +
@@ -413,9 +399,13 @@ public class TypeCheckTest {
     public void nestedIfValid() throws Exception {
         accept(defaultMainClass +
                 "class C {\n" +
-                "    public int f(bool b, bool c, int x, int y) {\n" +
+                "    public int f(boolean b, boolean c, int x, int y) {\n" +
                 "        if (b) {\n" +
-                "            if (c) {System.out.println(x + y);}\n" +
+                "            if (c) {\n" +
+                "                System.out.println(x + y);\n" +
+                "            } else {\n" +
+                "                System.out.println(x * y);\n" +
+                "            }\n" +
                 "        } else {\n" +
                 "            if (c) {\n" +
                 "                System.out.println(x * y);}\n" +
@@ -442,6 +432,8 @@ public class TypeCheckTest {
                 "            return x + 2;\n" +
                 "        } else if (x < 30) {\n" +
                 "            System.out.println(x + 3);\n" +
+                "        } else {\n" +
+                "            System.out.println(x + 4);\n" +
                 "        }\n" +
                 "        return 0;\n" +
                 "    }\n" +
@@ -455,6 +447,7 @@ public class TypeCheckTest {
                 "class C {\n" +
                 "    public int f(int x) {\n" +
                 "        if (x < 0) {\n" +
+                "        } else {\n" +
                 "        }\n" +
                 "        return 0;\n" +
                 "    }\n" +
@@ -471,6 +464,8 @@ public class TypeCheckTest {
                         "    public int f(int cond, int x, int y) {\n" +
                         "        if (cond) {\n" +
                         "            System.out.println(x + y);\n" +
+                        "        } else {\n" +
+                        "            System.out.println(x * y);\n" +
                         "        }\n" +
                         "        return 0;\n" +
                         "    }\n" +
@@ -487,6 +482,8 @@ public class TypeCheckTest {
                         "    public int f(int x, int y) {\n" +
                         "        if (100) {\n" +
                         "            System.out.println(x + y);\n" +
+                        "        } else {\n" +
+                        "            System.out.println(x * y);\n" +
                         "        }\n" +
                         "        return 0;\n" +
                         "    }\n" +
@@ -503,22 +500,8 @@ public class TypeCheckTest {
                         "    public int f(C cond, int x, int y) {\n" +
                         "        if (cond) {\n" +
                         "            System.out.println(x + y);\n" +
-                        "        }\n" +
-                        "        return 0;\n" +
-                        "    }\n" +
-                        "}"
-        );
-    }
-
-    @Test
-    public void ifOneBranchWrongReturnType() throws Exception {
-        expect(
-                typeError("false", new IntegerType(), new BooleanType()),
-                defaultMainClass +
-                        "class C {\n" +
-                        "    public int f(boolean cond, int x, int y) {\n" +
-                        "        if (cond) {\n" +
-                        "            return false;\n" +
+                        "        } else {\n" +
+                        "            System.out.println(x * y);\n" +
                         "        }\n" +
                         "        return 0;\n" +
                         "    }\n" +
@@ -570,7 +553,11 @@ public class TypeCheckTest {
                         "class C {\n" +
                         "    public int f(boolean cond, int x, int y) {\n" +
                         "        if (cond) {\n" +
-                        "            if (!cond) {System.out.println(0);} else {return false;}\n" +
+                        "            if (!cond) {\n" +
+                        "                System.out.println(0);\n" +
+                        "            } else {\n" +
+                        "                return false;\n" +
+                        "            }\n" +
                         "        } else {\n" +
                         "            return 0;\n" +
                         "        }\n" +
@@ -584,7 +571,7 @@ public class TypeCheckTest {
     public void whileValid() throws Exception {
         accept(defaultMainClass +
                 "class C {\n" +
-                "    public int f(bool b, int x, int y) {\n" +
+                "    public int f(boolean b, int x, int y) {\n" +
                 "        while (b) {\n" +
                 "            System.out.println(x + y);\n" +
                 "        }\n" +
@@ -598,7 +585,7 @@ public class TypeCheckTest {
     public void nestedWhileValid() throws Exception {
         accept(defaultMainClass +
                 "class C {\n" +
-                "    public int f(bool b, int x, int y) {\n" +
+                "    public int f(boolean b, int x, int y) {\n" +
                 "        while (b) {\n" +
                 "            while (true) {\n" +
                 "                System.out.println(x + y);\n" +
