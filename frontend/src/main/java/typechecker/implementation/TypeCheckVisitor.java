@@ -473,7 +473,10 @@ public class TypeCheckVisitor implements Visitor<Type> {
             return null;
         }
 
+        n.index.accept(this);
+
         check(n.value, new IntArrayType(), type);
+        check(n.index, new IntegerType(), n.index.getType());
         check(n.value, new IntegerType(), valueType);
         return null;
     }
