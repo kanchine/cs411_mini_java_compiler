@@ -1590,7 +1590,7 @@ public class TypeCheckTest {
 
     @Test 
     public void arrayAssign() throws Exception {
-        expect(typeError("0", new IntArrayType(), new IntegerType()),
+        expect(typeError("a", new IntArrayType(), new IntegerType()),
                 defaultMainClass +
                         "class Foo {\n" +
                         "   int a;\n" +
@@ -1635,6 +1635,33 @@ public class TypeCheckTest {
                         "   public int test() {\n" +
                         "       a[false] = 0;\n" +
                         "       return 0;\n"+
+                        "   }\n" +
+                        "}");
+    }
+
+    @Test
+    public void arrayAssignCase4() throws Exception {
+        expect(typeError("a", new ObjectType("Bar"), new IntArrayType()),
+                defaultMainClass +
+                        "class Bar {}\n" +
+                        "class Foo {\n" +
+                        "   public int test(Bar a) {\n" +
+                        "       System.out.println(a[0]);\n" +
+                        "       return 0;\n" +
+                        "   }\n" +
+                        "}");
+    }
+
+    @Test
+    public void arrayLookup() throws Exception {
+        expect(typeError("a", new ObjectType("Bar"), new IntArrayType()),
+                defaultMainClass +
+                        "class Bar {}\n" +
+                        "class Foo {\n" +
+                        "   public int test(Bar a) {\n" +
+                        "       int x;" +
+                        "       x = a[0];\n" +
+                        "       return x;\n" +
                         "   }\n" +
                         "}");
     }
