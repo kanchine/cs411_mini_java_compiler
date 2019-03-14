@@ -1590,35 +1590,44 @@ public class TypeCheckTest {
 
     @Test 
     public void arrayAssign() throws Exception {
-        expect( typeError("a", new IntArrayType(), new IntegerType()),
-                defaultMainClass+
+        expect(typeError("0", new IntArrayType(), new IntegerType()),
+                defaultMainClass +
                         "class Foo {\n" +
                         "   int a;\n" +
                         "   public int test() {\n" +
                         "       a[2] = 0;\n" +
-                        "       return 0;\n"+
+                        "       return 0;\n" +
                         "   }\n" +
                         "}");
+    }
 
-        expect( typeError("false", new IntegerType(), new BooleanType()),
-                defaultMainClass+
+    @Test
+    public void arrayAssignCase1() throws Exception {
+        expect(typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
                         "class Foo {\n" +
                         "   int[] a;\n" +
                         "   public int test() {\n" +
                         "       a[2] = false;\n" +
-                        "       return 0;\n"+
+                        "       return 0;\n" +
                         "   }\n" +
                         "}");
+    }
 
-        expect( ErrorMessage.undefinedId("a"),
-                defaultMainClass+
+    @Test
+    public void arrayAssignCase2() throws Exception {
+        expect(ErrorMessage.undefinedId("a"),
+                defaultMainClass +
                         "class Foo {\n" +
                         "   public int test() {\n" +
                         "       a[2] = 0;\n" +
-                        "       return 0;\n"+
+                        "       return 0;\n" +
                         "   }\n" +
                         "}");
+    }
 
+    @Test
+    public void arrayAssignCase3() throws Exception {
         expect( typeError("false", new IntegerType(), new BooleanType()),
                 defaultMainClass+
                         "class Foo {\n" +
@@ -1628,8 +1637,5 @@ public class TypeCheckTest {
                         "       return 0;\n"+
                         "   }\n" +
                         "}");
-
     }
-
-
 }
