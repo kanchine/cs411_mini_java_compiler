@@ -354,6 +354,10 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(MainClass n) {
+        if (variables.lookup(n.className) != null) {
+            errors.duplicateDefinition(n.className);
+            return null;
+        }
         currentClassName = n.className;
         n.statement.accept(this);
         currentClassName = null;

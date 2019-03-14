@@ -189,8 +189,6 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(MainClass n) {
-        // TODO: we need a scope here as well
-        ClassType classType = new ClassType();
         n.statement.accept(this);
         return null;
     }
@@ -199,7 +197,6 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
     public ImpTable<Type> visit(ClassDecl n) {
         if (variables.lookup(n.name) != null) {
             errors.duplicateDefinition(n.name);
-            return null;
         }
 
         ClassType classType = new ClassType();
@@ -230,7 +227,6 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
     public ImpTable<Type> visit(MethodDecl n) {
         if (classMethods.lookup(n.name) != null) {
             errors.duplicateDefinition(n.name);
-            return null;
         }
 
         MethodType methodType = new MethodType();
