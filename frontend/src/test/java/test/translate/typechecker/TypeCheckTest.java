@@ -647,7 +647,471 @@ public class TypeCheckTest {
         );
     }
 
+    @Test
+    public void whileBodyError() throws Exception {
+        expect(
+                typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f() {\n" +
+                        "        while (true) {\n" +
+                        "            System.out.println(false);\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void nestedWhileWrong() throws Exception {
+        expect(
+                typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean b) {\n" +
+                        "        while (true) {\n" +
+                        "            while (b) {\n" +
+                        "                System.out.println(false);\n" +
+                        "            }\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void validIntParamAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x) {\n" +
+                "        x = 0;\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validIntLocalAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x) {\n" +
+                "        int y;\n" +
+                "        y = 1;\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validBooleanParamTrueAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(boolean b) {\n" +
+                "        b = true;\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validBooleanParamFalseAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(boolean b) {\n" +
+                "        b = false;\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validBooleanLocalAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f() {\n" +
+                "        boolean b;\n" +
+                "        b = false;\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validClassParamAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(C c) {\n" +
+                "        c = new C();\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validClassLocalAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f() {\n" +
+                "        C c;\n" +
+                "        c = new C();\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validSubclassParamAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {}\n" +
+                "class D extends C {}\n" +
+                "class E {\n" +
+                "    public int f(C c) {\n" +
+                "        c = new D();\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validSubclassLocalAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {}\n" +
+                "class D extends C {}\n" +
+                "class E {\n" +
+                "    public int f() {\n" +
+                "        C c;\n" +
+                "        c = new D();\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validSubSubclassParamAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {}\n" +
+                "class D extends C {}\n" +
+                "class E extends D {}\n" +
+                "class F {\n" +
+                "    public int f(C c) {\n" +
+                "        c = new E();\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validSubSubclassLocalAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {}\n" +
+                "class D extends C {}\n" +
+                "class E extends D {}\n" +
+                "class F {\n" +
+                "    public int f() {\n" +
+                "        C c;\n" +
+                "        c = new E();\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validArrayParamAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int[] array) {\n" +
+                "        array = new int[5];\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validArrayLocalAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f() {\n" +
+                "        int[] array;\n" +
+                "        array = new int[5];\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validArrayParamMemberAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int[] array) {\n" +
+                "        array[0] = 10;\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validArrayLocalMemberAssign() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f() {\n" +
+                "        int[] array\n;" +
+                "        array = new int[5];\n" +
+                "        array[0] = 10;\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidIntParamAssign() throws Exception {
+        expect(
+                typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(int x) {\n" +
+                        "        x = false;\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidBooleanParamAssign() throws Exception {
+        expect(
+                typeError("0", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean x) {\n" +
+                        "        x = 0;\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidIntLocalAssign() throws Exception {
+        expect(
+                typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f() {\n" +
+                        "        int x;\n" +
+                        "        x = false;\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidBooleanLocalAssign() throws Exception {
+        expect(
+                typeError("0", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f() {\n" +
+                        "        boolean x;\n" +
+                        "        x = 0;\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidUnrelatedClassParamAssign() throws Exception {
+        expect(
+                typeError("new D()", new ObjectType("C"), new ObjectType("D")),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D {}\n" +
+                        "class E {\n" +
+                        "    public int f(C c) {\n" +
+                        "        c = new D();\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidUnrelatedClassLocalAssign() throws Exception {
+        expect(
+                typeError("new D()", new ObjectType("C"), new ObjectType("D")),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D {}\n" +
+                        "class E {\n" +
+                        "    public int f() {\n" +
+                        "        C c;\n" +
+                        "        c = new D();\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidChildClassParamAssign() throws Exception {
+        expect(
+                typeError("new C()", new ObjectType("D"), new ObjectType("C")),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D extends C {}\n" +
+                        "class E {\n" +
+                        "    public int f(D d) {\n" +
+                        "        d = new C();\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidChildClassLocalAssign() throws Exception {
+        expect(
+                typeError("new C()", new ObjectType("D"), new ObjectType("C")),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D extends C {}\n" +
+                        "class E {\n" +
+                        "    public int f() {\n" +
+                        "        D d;\n" +
+                        "        d = new C();\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidSubChildClassParamAssign() throws Exception {
+        expect(
+                typeError("new C()", new ObjectType("E"), new ObjectType("C")),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D extends C {}\n" +
+                        "class E extends D {}\n" +
+                        "class F {\n" +
+                        "    public int f(E e) {\n" +
+                        "        e = new C();\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidSubChildClassLocalAssign() throws Exception {
+        expect(
+                typeError("new C()", new ObjectType("E"), new ObjectType("C")),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D extends C {}\n" +
+                        "class E extends D {}\n" +
+                        "class F {\n" +
+                        "    public int f() {\n" +
+                        "        E e;\n" +
+                        "        e = new C();\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidSiblingClassParamAssign() throws Exception {
+        expect(
+                typeError("new E()", new ObjectType("D"), new ObjectType("E")),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D extends C {}\n" +
+                        "class E extends C {}\n" +
+                        "class F {\n" +
+                        "    public int f(D d) {\n" +
+                        "        d = new E();\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidSiblingClassLocalAssign() throws Exception {
+        expect(
+                typeError("new E()", new ObjectType("D"), new ObjectType("E")),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D extends C {}\n" +
+                        "class E extends C {}\n" +
+                        "class F {\n" +
+                        "    public int f() {\n" +
+                        "        D d;\n" +
+                        "        d = new E();\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    // TODO: add some function call cases with param assignments
+
+    // ------------------------------
+    // Test group 4: Return types
+
+    // TODO: add some failure cases
+
+    @Test
+    public void validReturnSubclass() throws Exception {
+        accept(defaultMainClass +
+                "class C {}\n" +
+                "class D extends C {}\n" +
+                "class E {\n" +
+                "    public C f() {\n" +
+                "        C c;\n" +
+                "        c = new D();\n" +
+                "        return c;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void validReturnSubSubclass() throws Exception {
+        accept(defaultMainClass +
+                "class C {}\n" +
+                "class D extends C {}\n" +
+                "class E extends D {}\n" +
+                "class F {\n" +
+                "    public C f() {\n" +
+                "        C c;\n" +
+                "        c = new E();\n" +
+                "        return c;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
     // --------------------------------------------------
-    // Test group 4: expressions
+    // Test group 5: expressions
     // TODO: need more failure tests
 }
