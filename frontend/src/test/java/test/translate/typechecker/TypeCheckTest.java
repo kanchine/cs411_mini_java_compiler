@@ -2,6 +2,7 @@ package test.translate.typechecker;
 
 import ast.BooleanType;
 import ast.IntegerType;
+import ast.ObjectType;
 import ast.Type;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -344,7 +345,7 @@ public class TypeCheckTest {
     @Test
     public void badPrintObject() throws Exception {
         expect(
-                typeError("theC", new IntegerType(), new BooleanType()),
+                typeError("theC", new IntegerType(), new ObjectType("C")),
                 defaultMainClass +
                         "class C {\n" +
                         "    public int foo(C theC) {\n" +
@@ -494,7 +495,7 @@ public class TypeCheckTest {
     @Test
     public void ifObjectCondition() throws Exception {
         expect(
-                typeError("cond", new BooleanType(), new IntegerType()),
+                typeError("cond", new BooleanType(), new ObjectType("C")),
                 defaultMainClass +
                         "class C {\n" +
                         "    public int f(C cond, int x, int y) {\n" +
@@ -633,7 +634,7 @@ public class TypeCheckTest {
     @Test
     public void whileObjectCondition() throws Exception {
         expect(
-                typeError("cond", new BooleanType(), new IntegerType()),
+                typeError("cond", new BooleanType(), new ObjectType("C")),
                 defaultMainClass +
                         "class C {\n" +
                         "    public int f(C cond, int x, int y) {\n" +
