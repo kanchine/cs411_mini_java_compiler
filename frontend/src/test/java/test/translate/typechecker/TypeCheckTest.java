@@ -1571,4 +1571,65 @@ public class TypeCheckTest {
                 "}"
         );
     }
+
+
+    @Test 
+    public void inheritanceWithMethodOverriding() throws Exception {
+        // Overriding is only allowed if method signatures match exactly
+        // this is overloading
+        expectError(
+                defaultMainClass+
+                        "class Foo extends Bar {\n" +
+                        "   public int test(boolean b, int i) { return i; }\n" +
+                        "}\n" +
+                        "class Bar {\n" +
+                        "   public int test(int i, boolean b) { return i; }\n" +
+                        "}");
+
+    }
+
+    @Test 
+    public void arrayAssign() throws Exception {
+        expect( typeError("a", new IntArrayType(), new IntegerType()),
+                defaultMainClass+
+                        "class Foo {\n" +
+                        "   int a;\n" +
+                        "   public int test() {\n" +
+                        "       a[2] = 0;\n" +
+                        "       return 0;\n"+
+                        "   }\n" +
+                        "}");
+
+        expect( typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass+
+                        "class Foo {\n" +
+                        "   int[] a;\n" +
+                        "   public int test() {\n" +
+                        "       a[2] = false;\n" +
+                        "       return 0;\n"+
+                        "   }\n" +
+                        "}");
+
+        expect( ErrorMessage.undefinedId("a"),
+                defaultMainClass+
+                        "class Foo {\n" +
+                        "   public int test() {\n" +
+                        "       a[2] = 0;\n" +
+                        "       return 0;\n"+
+                        "   }\n" +
+                        "}");
+
+        expect( typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass+
+                        "class Foo {\n" +
+                        "   int[] a;\n" +
+                        "   public int test() {\n" +
+                        "       a[false] = 0;\n" +
+                        "       return 0;\n"+
+                        "   }\n" +
+                        "}");
+
+    }
+
+
 }
