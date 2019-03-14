@@ -1489,4 +1489,86 @@ public class TypeCheckTest {
                         "}"
         );
     }
+
+    // --------------------------------
+    // Test group 6: Recursion
+
+    @Test
+    public void factorial() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int factorial(int x) {\n" +
+                "        int result;\n" +
+                "        if (x < 1) {\n" +
+                "            result = 1;\n" +
+                "        } else {\n" +
+                "            result = x * this.factorial(x - 1);\n" +
+                "        }\n" +
+                "        return result;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void fibonacci() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int fibonacci(int x) {\n" +
+                "        int result;\n" +
+                "        if (x < 2) {\n" +
+                "            result = 1;\n" +
+                "        } else {\n" +
+                "            result = this.fibonacci(x - 1) + this.fibonacci(x - 2);\n" +
+                "        }\n" +
+                "        return result;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void mutualRecursionSameClass() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x) {\n" +
+                "        int result;\n" +
+                "        if (x < 2) {\n" +
+                "            result = 1;\n" +
+                "        } else {\n" +
+                "            result = this.f(x - 1) + this.g(x - 2);\n" +
+                "        }\n" +
+                "        return result;\n" +
+                "    }\n" +
+                "    public int g(int x) {\n" +
+                "        return this.f(x);\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void mutualRecursionDifferentClass() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x) {\n" +
+                "        int result;\n" +
+                "        D d;\n" +
+                "        if (x < 2) {\n" +
+                "            result = 1;\n" +
+                "        } else {\n" +
+                "            result = this.f(x - 1) + d.g(x - 2);\n" +
+                "        }\n" +
+                "        return result;\n" +
+                "    }\n" +
+                "}\n" +
+                "class D {\n" +
+                "    public int g(int x) {\n" +
+                "        C c;\n" +
+                "        c = new C();\n" +
+                "        return c.f(x);\n" +
+                "    }\n" +
+                "}"
+        );
+    }
 }
