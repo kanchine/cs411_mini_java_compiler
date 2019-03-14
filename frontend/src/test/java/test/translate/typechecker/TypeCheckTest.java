@@ -408,7 +408,7 @@ public class TypeCheckTest {
                 "            }\n" +
                 "        } else {\n" +
                 "            if (c) {\n" +
-                "                System.out.println(x * y);}\n" +
+                "                System.out.println(x * y);\n" +
                 "            } else {\n" +
                 "                System.out.println(x + y);\n" +
                 "            }\n" +
@@ -425,11 +425,11 @@ public class TypeCheckTest {
                 "class C {\n" +
                 "    public int f(int x) {\n" +
                 "        if (x < 0) {\n" +
-                "            return x;\n" +
+                "            System.out.println(x);\n" +
                 "        } else if (x < 10) {\n" +
                 "            System.out.println(x + 1);\n" +
                 "        } else if (x < 20) {\n" +
-                "            return x + 2;\n" +
+                "            System.out.println(x + 2);\n" +
                 "        } else if (x < 30) {\n" +
                 "            System.out.println(x + 3);\n" +
                 "        } else {\n" +
@@ -510,16 +510,16 @@ public class TypeCheckTest {
     }
 
     @Test
-    public void ifLeftBranchWrongReturnType() throws Exception {
+    public void ifLeftBranchError() throws Exception {
         expect(
                 typeError("false", new IntegerType(), new BooleanType()),
                 defaultMainClass +
                         "class C {\n" +
                         "    public int f(boolean cond, int x, int y) {\n" +
                         "        if (cond) {\n" +
-                        "            return false;\n" +
+                        "            System.out.println(false);\n" +
                         "        } else {\n" +
-                        "            return 0;\n" +
+                        "            System.out.println(0);\n" +
                         "        }\n" +
                         "        return 0;\n" +
                         "    }\n" +
@@ -528,16 +528,16 @@ public class TypeCheckTest {
     }
 
     @Test
-    public void ifRightBranchWrongReturnType() throws Exception {
+    public void ifRightBranchError() throws Exception {
         expect(
                 typeError("false", new IntegerType(), new BooleanType()),
                 defaultMainClass +
                         "class C {\n" +
                         "    public int f(boolean cond, int x, int y) {\n" +
                         "        if (cond) {\n" +
-                        "            return 0;\n" +
+                        "            System.out.println(0);\n" +
                         "        } else {\n" +
-                        "            return false;\n" +
+                        "            System.out.println(false);\n" +
                         "        }\n" +
                         "        return 0;\n" +
                         "    }\n" +
@@ -556,10 +556,10 @@ public class TypeCheckTest {
                         "            if (!cond) {\n" +
                         "                System.out.println(0);\n" +
                         "            } else {\n" +
-                        "                return false;\n" +
+                        "                System.out.println(false);\n" +
                         "            }\n" +
                         "        } else {\n" +
-                        "            return 0;\n" +
+                        "            System.out.println(0);\n" +
                         "        }\n" +
                         "        return 0;\n" +
                         "    }\n" +
