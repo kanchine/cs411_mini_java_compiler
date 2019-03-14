@@ -1659,7 +1659,8 @@ public class TypeCheckTest {
                         "class Bar {}\n" +
                         "class Foo {\n" +
                         "   public int test(Bar a) {\n" +
-                        "       int x = a[0];\n" +
+                        "       int x;" +
+                        "       x = a[0];\n" +
                         "       return x;\n" +
                         "   }\n" +
                         "}");
