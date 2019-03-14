@@ -199,6 +199,14 @@ public class TypeCheckTest {
                         "   public int same() { return 1; }\n" +
                         "   public int same(int x) { return x; }\n" +
                         "}");
+
+        expect( ErrorMessage.duplicateDefinition("same"),
+                defaultMainClass + "class Class {\n" +
+                        "public int same() {return 1; }" +
+                        "}\n" +
+                        "class MyClass extends Class {\n" +
+                        "   public int same(int x) { return x; }\n" +
+                        "}");
     }
 
     @Test public void sameMethodAndLocal() throws Exception {
@@ -1076,6 +1084,22 @@ public class TypeCheckTest {
 
     // function call tests with subclasses assigned to parameters are in the
     // sample test
+
+    // TODO: add some function call cases with param assignments
+    @Test
+    public void validFunctionCallParamSubSubclass() throws Exception {
+        accept(mainClass("System.out.println(new F().f(new E()));") +
+                "class C {}\n" +
+                "class D extends C {}\n" +
+                "class E extends D {}\n" +
+                "class F {\n" +
+                "    public int f(C p) {\n" +
+
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
 
     // ------------------------------
     // Test group 4: Return types
