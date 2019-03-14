@@ -257,10 +257,10 @@ public class TypeCheckTest {
     public void goodReturnType() throws Exception {
         accept(defaultMainClass +
                 "class Foo {\n" +
-                "   public Bar getBar() { return bar; }\n" +
+                "   public Bar getBar() { return new Bar(); }\n" +
                 "}\n" +
                 "class Bar {\n" +
-                "   public Foo getFoo() { return foo; }\n" +
+                "   public Foo getFoo() { return new Foo(); }\n" +
                 "}");
     }
     

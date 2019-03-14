@@ -315,8 +315,6 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
 
     @Override
     public ImpTable<Type> visit(NewObject n) {
-        if (variables.lookup(n.typeName) == null)
-            errors.undefinedId(n.typeName);
 
         return null;
     }
@@ -340,28 +338,5 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
         } catch (DuplicateException e) {
             errors.duplicateDefinition(name);
         }
-    }
-
-    // lookup a name in local, class, or global scope. This lookup method is private to BuildSymbolTableVisitor
-    private Type lookup(String name) {
-        // first lookup in local symbol table, if not found, then lookup in global symbol table (variables and functions)
-        List<ImpTable<Type>> scopes = new ArrayList<>();
-        // set up scopes look up order
-        scopes.add(blockScope);
-        scopes.add(methodScope);
-        scopes.add(classFields);
-        Type type = null;  // the type associated with the input name
-
-        for (ImpTable<Type> scope : scopes) {
-            if (scope != null) {
-                type = scope.lookup(name);
-                if (type != null)
-                    return type;
-            }
-        }
-
-        errors.undefinedId(name);
-
-        return null;
     }
 }
