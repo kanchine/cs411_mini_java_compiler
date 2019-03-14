@@ -1,6 +1,7 @@
 package test.translate.typechecker;
 
 import ast.BooleanType;
+import ast.IntArrayType;
 import ast.IntegerType;
 import ast.ObjectType;
 import ast.Type;
@@ -1073,7 +1074,8 @@ public class TypeCheckTest {
         );
     }
 
-    // TODO: add some function call cases with param assignments
+    // function call tests with subclasses assigned to parameters are in the
+    // sample test
 
     // ------------------------------
     // Test group 4: Return types
@@ -1113,5 +1115,354 @@ public class TypeCheckTest {
 
     // --------------------------------------------------
     // Test group 5: expressions
-    // TODO: need more failure tests
+
+    @Test
+    public void validAnd() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public boolean f(boolean x, boolean y) {\n" +
+                "        return x && y;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidAndLeftParameter() throws Exception {
+        expect(
+                typeError("x", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public boolean f(int x, boolean y) {\n" +
+                        "        return x && y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidAndRightParameter() throws Exception {
+        expect(
+                typeError("y", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public boolean f(boolean x, int y) {\n" +
+                        "        return x && y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidAndBothParameters() throws Exception {
+        expect(
+                typeError("x", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public boolean f(int x, int y) {\n" +
+                        "        return x && y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void validLessThan() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public boolean f(int x, int y) {\n" +
+                "        return x < y;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidLessThanLeftParameter() throws Exception {
+        expect(
+                typeError("x", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public boolean f(boolean x, int y) {\n" +
+                        "        return x < y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidLessThanRightParameter() throws Exception {
+        expect(
+                typeError("y", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public boolean f(int x, boolean y) {\n" +
+                        "        return x < y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidLessThanBothParameters() throws Exception {
+        expect(
+                typeError("x", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public boolean f(boolean x, boolean y) {\n" +
+                        "        return x < y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void validAdd() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x, int y) {\n" +
+                "        return x + y;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidAddLeftParameter() throws Exception {
+        expect(
+                typeError("x", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean x, int y) {\n" +
+                        "        return x + y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidAddRightParameter() throws Exception {
+        expect(
+                typeError("y", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(int x, boolean y) {\n" +
+                        "        return x + y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidAddBothParameters() throws Exception {
+        expect(
+                typeError("x", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean x, boolean y) {\n" +
+                        "        return x + y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void validSubtract() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x, int y) {\n" +
+                "        return x - y;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidSubtractLeftParameter() throws Exception {
+        expect(
+                typeError("x", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean x, int y) {\n" +
+                        "        return x - y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidSubtractRightParameter() throws Exception {
+        expect(
+                typeError("y", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(int x, boolean y) {\n" +
+                        "        return x - y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidSubtractBothParameters() throws Exception {
+        expect(
+                typeError("x", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean x, boolean y) {\n" +
+                        "        return x - y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void validMultiply() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x, int y) {\n" +
+                "        return x * y;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidMultiplyLeftParameter() throws Exception {
+        expect(
+                typeError("x", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean x, int y) {\n" +
+                        "        return x * y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidMultiplyRightParameter() throws Exception {
+        expect(
+                typeError("y", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(int x, boolean y) {\n" +
+                        "        return x * y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void invalidMultiplyBothParameters() throws Exception {
+        expect(
+                typeError("x", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean x, boolean y) {\n" +
+                        "        return x * y;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void validArrayMember() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int[] array) {\n" +
+                "        return array[0];\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidArrayMember() throws Exception {
+        expect(
+                typeError("c", new ObjectType("C"), new IntArrayType()),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D {\n" +
+                        "    public int f(C c) {\n" +
+                        "        return c[0];\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void validArrayLength() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int[] array) {\n" +
+                "        return array.length;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidArrayLength() throws Exception {
+        expect(
+                typeError("c", new ObjectType("C"), new IntArrayType()),
+                defaultMainClass +
+                        "class C {}\n" +
+                        "class D {\n" +
+                        "    public int f(C c) {\n" +
+                        "        return c.length;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    // function call test is written by Edwin
+
+    @Test
+    public void validThis() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public C f() {\n" +
+                "        return this;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidThis() throws Exception {
+        expect(
+                typeError("this", new ObjectType("C"), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f() {\n" +
+                        "        return this + 1;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void validNot() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public boolean f(boolean x) {\n" +
+                "        return !x;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void invalidNot() throws Exception {
+        expect(
+                typeError("x", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public boolean f(int x) {\n" +
+                        "        return !x;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
 }
