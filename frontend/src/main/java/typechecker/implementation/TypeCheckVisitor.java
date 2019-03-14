@@ -340,7 +340,8 @@ public class TypeCheckVisitor implements Visitor<Type> {
         } else {
             for (int i = 0; i < methodType.formals.size(); ++i) {
                 Type expectedType = methodType.formals.elementAt(i).type;
-                check(n.rands.elementAt(i), expectedType);
+                Type actualType = n.rands.elementAt(i).accept(this);
+                check(n.rands.elementAt(i), expectedType, actualType);
             }
         }
 

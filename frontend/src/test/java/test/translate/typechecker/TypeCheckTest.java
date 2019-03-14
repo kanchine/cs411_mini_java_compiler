@@ -1074,6 +1074,20 @@ public class TypeCheckTest {
     }
 
     // TODO: add some function call cases with param assignments
+    @Test
+    public void validFunctionCallParamSubSubclass() throws Exception {
+        accept(mainClass("System.out.println(new F().f(new E()));") +
+                "class C {}\n" +
+                "class D extends C {}\n" +
+                "class E extends D {}\n" +
+                "class F {\n" +
+                "    public int f(C p) {\n" +
+
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
 
     // ------------------------------
     // Test group 4: Return types
