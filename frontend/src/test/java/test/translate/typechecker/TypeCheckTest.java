@@ -1590,7 +1590,7 @@ public class TypeCheckTest {
 
     @Test 
     public void arrayAssign() throws Exception {
-        expect(typeError("0", new IntArrayType(), new IntegerType()),
+        expect(typeError("a", new IntArrayType(), new IntegerType()),
                 defaultMainClass +
                         "class Foo {\n" +
                         "   int a;\n" +

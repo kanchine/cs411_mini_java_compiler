@@ -466,6 +466,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(ArrayAssign n) {
+        Type indexType = n.index.accept(this);
         Type valueType = n.value.accept(this);
         Type type = lookupVariable(n.name);
         if (type == null) {
@@ -473,10 +474,12 @@ public class TypeCheckVisitor implements Visitor<Type> {
             return null;
         }
 
-        n.index.accept(this);
+        if (!type.equals(new IntArrayType())) {
+            errors.typeError(new IdentifierExp(n.name), new IntArrayType(), type);
+            return null;
+        }
 
-        check(n.value, new IntArrayType(), type);
-        check(n.index, new IntegerType(), n.index.getType());
+        check(n.index, new IntegerType(), indexType);
         check(n.value, new IntegerType(), valueType);
         return null;
     }
