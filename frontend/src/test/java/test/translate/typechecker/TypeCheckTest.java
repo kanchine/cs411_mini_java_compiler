@@ -322,7 +322,8 @@ public class TypeCheckTest {
     // --------------------------------------------------
     // Test group 3: statements
 
-    @Test public void badPrint() throws Exception {
+    @Test
+    public void badPrint() throws Exception {
         // In minijava, println can only print integer. see textbook page 484
         expect( typeError("true", new IntegerType(), new BooleanType()),
                 "class Main {\n" +
@@ -340,16 +341,325 @@ public class TypeCheckTest {
                         "}");
     }
 
-    // TODO: need more failure tests
+    @Test
+    public void badPrintObject() throws Exception {
+        expect(
+                typeError("theC", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int foo(C theC) {\n" +
+                        "        System.out.println(theC);\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
 
+    @Test
+    public void goodPrintLiteral() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public boolean f(int x) {\n" +
+                "        System.out.println(12345);\n" +
+                "        return true;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void goodPrintVariable() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x) {\n" +
+                "        System.out.println(x);\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void ifValidOneBranch() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(bool b, int x, int y) {\n" +
+                "        if (b) {\n" +
+                "            System.out.println(x + y);\n" +
+                "        }\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void ifValidTwoBranch() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(bool b, int x, int y) {\n" +
+                "        if (b) {\n" +
+                "            System.out.println(x + y);\n" +
+                "        } else {\n" +
+                "            System.out.println(x * y);\n" +
+                "        }\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void nestedIfValid() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(bool b, bool c, int x, int y) {\n" +
+                "        if (b) {\n" +
+                "            if (c) {System.out.println(x + y);}\n" +
+                "        } else {\n" +
+                "            if (c) {\n" +
+                "                System.out.println(x * y);}\n" +
+                "            } else {\n" +
+                "                System.out.println(x + y);\n" +
+                "            }\n" +
+                "        }\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void longIfValid() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x) {\n" +
+                "        if (x < 0) {\n" +
+                "            return x;\n" +
+                "        } else if (x < 10) {\n" +
+                "            System.out.println(x + 1);\n" +
+                "        } else if (x < 20) {\n" +
+                "            return x + 2;\n" +
+                "        } else if (x < 30) {\n" +
+                "            System.out.println(x + 3);\n" +
+                "        }\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void emptyIfValid() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(int x) {\n" +
+                "        if (x < 0) {\n" +
+                "        }\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void ifIntegerCondition() throws Exception {
+        expect(
+                typeError("cond", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(int cond, int x, int y) {\n" +
+                        "        if (cond) {\n" +
+                        "            System.out.println(x + y);\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void ifIntegerLiteralCondition() throws Exception {
+        expect(
+                typeError("100", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(int x, int y) {\n" +
+                        "        if (100) {\n" +
+                        "            System.out.println(x + y);\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void ifObjectCondition() throws Exception {
+        expect(
+                typeError("cond", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(C cond, int x, int y) {\n" +
+                        "        if (cond) {\n" +
+                        "            System.out.println(x + y);\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void ifOneBranchWrongReturnType() throws Exception {
+        expect(
+                typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean cond, int x, int y) {\n" +
+                        "        if (cond) {\n" +
+                        "            return false;\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void ifLeftBranchWrongReturnType() throws Exception {
+        expect(
+                typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean cond, int x, int y) {\n" +
+                        "        if (cond) {\n" +
+                        "            return false;\n" +
+                        "        } else {\n" +
+                        "            return 0;\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void ifRightBranchWrongReturnType() throws Exception {
+        expect(
+                typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean cond, int x, int y) {\n" +
+                        "        if (cond) {\n" +
+                        "            return 0;\n" +
+                        "        } else {\n" +
+                        "            return false;\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void nestedIfWrong() throws Exception {
+        expect(
+                typeError("false", new IntegerType(), new BooleanType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(boolean cond, int x, int y) {\n" +
+                        "        if (cond) {\n" +
+                        "            if (!cond) {System.out.println(0);} else {return false;}\n" +
+                        "        } else {\n" +
+                        "            return 0;\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void whileValid() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(bool b, int x, int y) {\n" +
+                "        while (b) {\n" +
+                "            System.out.println(x + y);\n" +
+                "        }\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void nestedWhileValid() throws Exception {
+        accept(defaultMainClass +
+                "class C {\n" +
+                "    public int f(bool b, int x, int y) {\n" +
+                "        while (b) {\n" +
+                "            while (true) {\n" +
+                "                System.out.println(x + y);\n" +
+                "            }\n" +
+                "            System.out.println(x + y);\n" +
+                "        }\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void whileIntegerCondition() throws Exception {
+        expect(
+                typeError("cond", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(int cond, int x, int y) {\n" +
+                        "        while (cond) {\n" +
+                        "            System.out.println(x + y);\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void whileIntegerLiteralCondition() throws Exception {
+        expect(
+                typeError("100", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(int x, int y) {\n" +
+                        "        while (100) {\n" +
+                        "            System.out.println(x + y);\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void whileObjectCondition() throws Exception {
+        expect(
+                typeError("cond", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f(C cond, int x, int y) {\n" +
+                        "        while (cond) {\n" +
+                        "            System.out.println(x + y);\n" +
+                        "        }\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
 
     // --------------------------------------------------
     // Test group 4: expressions
     // TODO: need more failure tests
-
-
-
-
-
-
 }
