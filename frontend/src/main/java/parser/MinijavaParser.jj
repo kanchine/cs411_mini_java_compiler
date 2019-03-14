@@ -320,6 +320,8 @@ String Identifier() : {
 	Token i;
 }
 {
-	i = <IDENTIFIER>
-	{ return i.image; }
+	i = <IDENTIFIER>  { return i.image; }
+|   i = "main"        { return i.image; }
+|   i = "String"        { return i.image; }
+|   i = "length"        { return i.image; }
 }
