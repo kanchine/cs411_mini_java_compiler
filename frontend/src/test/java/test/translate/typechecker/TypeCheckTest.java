@@ -198,6 +198,14 @@ public class TypeCheckTest {
                         "   public int same() { return 1; }\n" +
                         "   public int same(int x) { return x; }\n" +
                         "}");
+
+        expect( ErrorMessage.duplicateDefinition("same"),
+                defaultMainClass + "class Class {\n" +
+                        "public int same() {return 1; }" +
+                        "}\n" +
+                        "class MyClass extends Class {\n" +
+                        "   public int same(int x) { return x; }\n" +
+                        "}");
     }
 
     @Test public void sameMethodAndLocal() throws Exception {
