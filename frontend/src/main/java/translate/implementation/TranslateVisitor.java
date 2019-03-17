@@ -1,28 +1,77 @@
 package translate.implementation;
 
-import ast.*;
+import ast.AST;
+import ast.And;
+import ast.ArrayAssign;
+import ast.ArrayLength;
+import ast.ArrayLookup;
+import ast.Assign;
+import ast.Block;
+import ast.BlockType;
+import ast.BooleanLiteral;
+import ast.BooleanType;
+import ast.Call;
+import ast.ClassDecl;
+import ast.ClassType;
+import ast.Conditional;
+import ast.Expression;
+import ast.FunctionDecl;
+import ast.FunctionType;
+import ast.IdentifierExp;
+import ast.If;
+import ast.IntArrayType;
+import ast.IntegerLiteral;
+import ast.IntegerType;
+import ast.LessThan;
+import ast.MainClass;
+import ast.MethodDecl;
+import ast.MethodType;
+import ast.Minus;
+import ast.NewArray;
+import ast.NewObject;
+import ast.NodeList;
+import ast.Not;
+import ast.ObjectType;
+import ast.Plus;
+import ast.Print;
+import ast.Program;
+import ast.Statement;
+import ast.This;
+import ast.Times;
+import ast.Type;
+import ast.UnknownType;
+import ast.VarDecl;
+import ast.While;
 import ir.frame.Access;
 import ir.frame.Frame;
 import ir.temp.Label;
 import ir.temp.Temp;
 import ir.tree.BINOP.Op;
-import ir.tree.*;
+import ir.tree.CJUMP;
 import ir.tree.CJUMP.RelOp;
-import translate.DataFragment;
+import ir.tree.IR;
+import ir.tree.IRExp;
+import ir.tree.IRStm;
+import ir.tree.TEMP;
 import translate.Fragments;
 import translate.ProcFragment;
-import translate.implementation.Cx;
-import translate.implementation.Ex;
-import translate.implementation.Nx;
-import translate.implementation.TRExp;
 import util.FunTable;
 import util.List;
 import util.Lookup;
-import util.Pair;
 import visitor.Visitor;
 
-import static ir.tree.IR.*;
-import static translate.TranslatorLabels.*;
+import static ir.tree.IR.CALL;
+import static ir.tree.IR.CMOVE;
+import static ir.tree.IR.ESEQ;
+import static ir.tree.IR.FALSE;
+import static ir.tree.IR.JUMP;
+import static ir.tree.IR.LABEL;
+import static ir.tree.IR.MOVE;
+import static ir.tree.IR.SEQ;
+import static ir.tree.IR.TEMP;
+import static ir.tree.IR.TRUE;
+import static translate.TranslatorLabels.L_MAIN;
+import static translate.TranslatorLabels.L_PRINT;
 
 
 /**
@@ -106,22 +155,34 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(Program n) {
-        throw new Error("Not implemented");
+        frame = newFrame(L_MAIN, 0);
+        currentEnv = FunTable.theEmpty();
+
+        TRExp classes = n.classes.accept(this);
+        TRExp mainClass = n.mainClass.accept(this);
+
+        IRStm body = SEQ(
+                classes.unNx(),
+                mainClass.unNx()
+        );
+        frags.add(new ProcFragment(frame, frame.procEntryExit1(body)));
+
+        return null;   // TODO: this was based off of Functions. need to check if this is correct.
     }
 
     @Override
     public TRExp visit(BooleanType n) {
-        throw new Error("Not implemented");
+        return null;   // TODO: should we return null for all Types?
     }
 
     @Override
     public TRExp visit(IntegerType n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     @Override
     public TRExp visit(UnknownType n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     private TRExp visitStatements(NodeList<Statement> statements) {
@@ -135,6 +196,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(Conditional n) {
+        // TODO: not sure what there is to do here.
         //TODO: This is eager, as in functions-starter!
         TRExp c = n.e1.accept(this);
         TRExp t = n.e2.accept(this);
@@ -149,23 +211,23 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(MethodType n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     @Override
     public TRExp visit(ClassType n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     @Override
     public TRExp visit(BlockType n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     @Override
     public TRExp visit(Print n) {
         TRExp arg = n.exp.accept(this);
-        return new Ex(IR.CALL(L_PRINT, arg.unEx()));
+        return new Ex(CALL(L_PRINT, arg.unEx()));
     }
 
     @Override
@@ -288,13 +350,30 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(Call n) {
-        throw new Error("Not implemented");
-    }
+        String name = n.name;
+        Label label = functionLabel(name);
 
+        List<IRExp> arguments = List.list();
+        TRExp receiver = n.receiver.accept(this);
+        arguments.add(receiver.unEx());
+
+        for (int index = 0; index < n.rands.size(); index++) {
+            Expression expression = n.rands.elementAt(index);
+            TRExp argument = expression.accept(this);
+
+            arguments.add(argument.unEx());
+        }
+
+        return new Ex(CALL(label, arguments));
+
+        // TODO: if we use this pattern of
+        // passing the object we called the method on as the first argument,
+        // we need to follow the pattern when implementing method declaration.
+    }
 
     @Override
     public TRExp visit(FunctionType n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     /**
@@ -322,12 +401,12 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(IntArrayType n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     @Override
     public TRExp visit(ObjectType n) {
-        throw new Error("Not implemented");
+        return null;
     }
 
     @Override
@@ -337,12 +416,43 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(If n) {
-        throw new Error("Not implemented");
+        TRExp test = n.tst.accept(this);
+        TRExp then = n.thn.accept(this);
+        TRExp _else = n.els.accept(this);
+
+        Label thenLabel = Label.gen();
+        Label elseLabel = Label.gen();
+        Label doneLabel = Label.gen();
+
+        return new Nx(SEQ(
+                test.unCx(thenLabel, elseLabel),
+                LABEL(thenLabel),
+                then.unNx(),
+                JUMP(doneLabel),
+                LABEL(elseLabel),
+                _else.unNx(),
+                JUMP(doneLabel),
+                LABEL(doneLabel)
+        ));
     }
 
     @Override
     public TRExp visit(While n) {
-        throw new Error("Not implemented");
+        TRExp test = n.tst.accept(this);
+        TRExp body = n.body.accept(this);
+
+        Label startLabel = Label.gen();
+        Label bodyLabel = Label.gen();
+        Label doneLabel = Label.gen();
+
+        return new Nx(SEQ(
+                LABEL(startLabel),
+                test.unCx(bodyLabel, doneLabel),
+                LABEL(bodyLabel),
+                body.unNx(),
+                JUMP(startLabel),
+                LABEL(doneLabel)
+        ));
     }
 
     @Override
@@ -352,7 +462,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(And n) {
-        throw new Error("Not implemented");
+        return numericOp(Op.AND, n.e1, n.e2);
     }
 
     @Override
@@ -367,7 +477,11 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(BooleanLiteral n) {
-        throw new Error("Not implemented");
+        if (n.value) {
+            return new Ex(IR.TRUE);
+        } else {
+            return new Ex(IR.FALSE);
+        }
     }
 
     @Override
