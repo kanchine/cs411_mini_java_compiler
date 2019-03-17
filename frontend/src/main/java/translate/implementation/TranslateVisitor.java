@@ -196,17 +196,16 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(Conditional n) {
-        // TODO: not sure what there is to do here.
-        //TODO: This is eager, as in functions-starter!
         TRExp c = n.e1.accept(this);
         TRExp t = n.e2.accept(this);
         TRExp f = n.e3.accept(this);
 
         TEMP v = TEMP(new Temp());
-        return new Ex(ESEQ(SEQ(
-                MOVE(v, f.unEx()),
-                CMOVE(RelOp.EQ, c.unEx(), TRUE, v, t.unEx())),
-                v));
+        Label tl = Label.gen();
+        Label fl = Label.gen();
+        Label j = Label.gen();
+
+        return new Ex(ESEQ(SEQ(SEQ(SEQ(SEQ(SEQ(SEQ(SEQ(c.unCx(tl, fl),LABEL(tl)), MOVE(v, t.unEx())),JUMP(j)), LABEL(fl)), MOVE(v, f.unEx())), JUMP(j)), LABEL(j)), v));
     }
 
     @Override
