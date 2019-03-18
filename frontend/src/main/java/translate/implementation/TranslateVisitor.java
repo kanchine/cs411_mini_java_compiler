@@ -405,8 +405,14 @@ public class TranslateVisitor implements Visitor<TRExp> {
         FunTable<IRExp> saveEnv = currentEnv;
 
         //Get the access information for each regular formal and add it to the environment.
+        //TODO the first element of the parameter list will be a pointer to the object
         for (int i = 0; i < n.formals.size(); i++) {
             putEnv(n.formals.elementAt(i).name, frame.getFormal(i));
+        }
+
+        for (int i = 0; i < n.vars.size(); i++) {
+            // TODO not sure the difference of getInArg and getOutArg,
+            putEnv(n.vars.elementAt(i).name, frame.getInArg(i));
         }
 
         TRExp stats = visitStatements(n.statements);
