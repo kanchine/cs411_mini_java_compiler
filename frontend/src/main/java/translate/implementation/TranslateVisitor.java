@@ -103,7 +103,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
      */
     private Frame frame;
 
-    private FunTable<Access> currentEnv;
+    private FunTable<IRExp> currentEnv;
 
     public TranslateVisitor(Lookup<Type> table, Frame frameFactory) {
         this.frags = new Fragments(frameFactory);
@@ -134,7 +134,11 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
 
     private void putEnv(String name, Access access) {
-        currentEnv = currentEnv.insert(name, access);
+        currentEnv = currentEnv.insert(name, access.exp(frame.FP()));
+    }
+
+    private void putEnv(String name, IRExp exp) {
+        currentEnv = currentEnv.insert(name, exp);
     }
 
     ////// Visitor ///////////////////////////////////////////////
@@ -308,8 +312,8 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(IdentifierExp n) {
-        Access var = currentEnv.lookup(n.name);
-        return new Ex(var.exp(frame.FP()));
+        IRExp var = currentEnv.lookup(n.name);
+        return new Ex(var);
     }
 
     @Override
@@ -335,7 +339,8 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(FunctionDecl n) {
-        throw new Error("Not implemented");
+
+        return null;
     }
 
 
@@ -395,7 +400,28 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(MethodDecl n) {
-        throw new Error("Not implemented");
+        Frame oldFrame = frame;
+        frame = newFrame(functionLabel(n.name), n.formals.size());
+        FunTable<IRExp> saveEnv = currentEnv;
+
+        //Get the access information for each regular formal and add it to the environment.
+        for (int i = 0; i < n.formals.size(); i++) {
+            putEnv(n.formals.elementAt(i).name, frame.getFormal(i));
+        }
+
+        TRExp stats = visitStatements(n.statements);
+        TRExp exp = n.returnExp.accept(this);
+
+        IRStm body = SEQ(
+                stats.unNx(),
+                MOVE(frame.RV(), exp.unEx()));
+        body = frame.procEntryExit1(body);
+        frags.add(new ProcFragment(frame, body));
+
+        frame = oldFrame;
+        currentEnv = saveEnv;
+
+        return null;
     }
 
     @Override
@@ -410,7 +436,8 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(Block n) {
-        throw new Error("Not implemented");
+        n.statements.accept(this);
+        return null;
     }
 
     @Override
