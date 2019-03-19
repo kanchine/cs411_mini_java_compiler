@@ -325,7 +325,14 @@ public class TranslateVisitor implements Visitor<TRExp> {
     @Override
     public TRExp visit(IdentifierExp n) {
         IRExp var = currentEnv.lookup(n.name);
-        return new Ex(var);
+
+        if (var == null) {
+            IRExp base = frame.getFormal(0).exp(frame.FP());
+            IRExp offset = IR.CONST(getFieldOffset(n.name, currClass));
+            return new Ex(IR.MEM(getMemLocation(base, offset)));
+        } else
+            return new Ex(var);
+
     }
 
     @Override
@@ -358,19 +365,19 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(VarDecl n) {
-        if (isInMethodScope) {
-            Access var = frame.getInArg(n.index);
-            putEnv(n.name, var);
-        } else {
-            Label label = Label.get(n.name);
-            IRData data = new IRData(label, List.list(IR.CONST(0)));  // can we directly initialize the location to the value specified in the program rather than CONST zero ???
-
-            // append this DataFragment to fragment list
-            DataFragment dataFragment = new DataFragment(frame, data);
-            frags.add(dataFragment);
-
-            currentEnv = currentEnv.insert(n.name, IR.MEM(IR.NAME(label)));
-        }
+//        if (isInMethodScope) {
+//            Access var = frame.getInArg(n.index);
+//            putEnv(n.name, var);
+//        } else {
+//            Label label = Label.get(n.name);
+//            IRData data = new IRData(label, List.list(IR.CONST(0)));  // can we directly initialize the location to the value specified in the program rather than CONST zero ???
+//
+//            // append this DataFragment to fragment list
+//            DataFragment dataFragment = new DataFragment(frame, data);
+//            frags.add(dataFragment);
+//
+//            currentEnv = currentEnv.insert(n.name, IR.MEM(IR.NAME(label)));
+//        }
 
         return null;
     }
@@ -567,7 +574,9 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(ArrayLength n) {
-        throw new Error("Not implemented");
+        IRExp base = n.array.accept(this).unEx();
+
+        return new Ex(IR.MEM(getMemLocation(base, IR.CONST(-1))));
     }
 
     @Override
@@ -581,12 +590,14 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(This n) {
-        throw new Error("Not implemented");
+        Access var =  frame.getFormal(0);
+        return new Ex(var.exp(frame.FP()));
     }
 
     @Override
     public TRExp visit(NewArray n) {
-        throw new Error("Not implemented");
+        TRExp size = n.size.accept(this);
+        return new Ex(IR.CALL(L_NEW_ARRAY, size.unEx()));
     }
 
     @Override
