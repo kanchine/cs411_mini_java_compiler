@@ -147,11 +147,9 @@ public class TranslateVisitor implements Visitor<TRExp> {
         IRStm result = IR.NOP;
         for (int i = 0; i < ns.size(); i++) {
             AST nextStm = ns.elementAt(i);
-            TRExp e = nextStm.accept(this);
-            // e will be null if the statement was in fact a function declaration
-            // just ignore these as they generate Fragments
-            if (e != null)
-                result = IR.SEQ(result, e.unNx());
+            TRExp stat = nextStm.accept(this);
+            if (stat != null)
+                result = IR.SEQ(result, stat.unNx());
         }
         return new Nx(result);
     }
@@ -360,19 +358,6 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(VarDecl n) {
-//        if (isInMethodScope) {
-//            Access var = frame.getInArg(n.index);
-//            putEnv(n.name, var);
-//        } else {
-//            Label label = Label.get(n.name);
-//            IRData data = new IRData(label, List.list(IR.CONST(0)));  // can we directly initialize the location to the value specified in the program rather than CONST zero ???
-//
-//            // append this DataFragment to fragment list
-//            DataFragment dataFragment = new DataFragment(frame, data);
-//            frags.add(dataFragment);
-//
-//            currentEnv = currentEnv.insert(n.name, IR.MEM(IR.NAME(label)));
-//        }
 
         return null;
     }
@@ -382,6 +367,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
     public TRExp visit(Call n) {
         String recType = "";
         ClassType currClass = (ClassType) allClasses.lookup(n.receiver.getType().toString());
+
         while (currClass != null) {
             if (currClass.methods.lookup(n.name) != null) {
                 recType = currClass.name;
@@ -390,6 +376,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
             currClass = (ClassType) allClasses.lookup(currClass.superName);
         }
+
         String name = recType + "#" + n.name;
         Label label = functionLabel(name);
 
@@ -428,9 +415,6 @@ public class TranslateVisitor implements Visitor<TRExp> {
     @Override
     public TRExp visit(ClassDecl n) {
         currClass = (ClassType) allClasses.lookup(n.name);
-        for (int i = 0; i < n.vars.size(); ++i) {
-            n.vars.elementAt(i).accept(this);
-        }
 
         n.methods.accept(this);
 
@@ -576,7 +560,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
         Temp temp = new Temp();
         return new Ex(
-                ESEQ(
+                    ESEQ(
                         SEQ(IR.CJUMP(RelOp.LT, offset, size, validIndex, invalidIndex),
 
                             LABEL(invalidIndex),
@@ -622,11 +606,12 @@ public class TranslateVisitor implements Visitor<TRExp> {
     @Override
     public TRExp visit(NewObject n) {
         ClassType curr = (ClassType) allClasses.lookup(n.typeName);
-        int numFields = curr.fields.size();
+        int numFields = 0;
 
         while (curr != null) {
             numFields += curr.fields.size();
             curr = (ClassType) allClasses.lookup(curr.superName);
+
         }
 
         TRExp size = new Ex(IR.CONST(numFields * 8));
@@ -640,19 +625,23 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     private int getFieldOffset(String name, ClassType currClass) {
         int offset = 0;
+        int total = 0;
+        boolean found = false;
 
         ClassType curr = currClass;
 
         while (curr != null) {
             for (int idx = 0; idx < currClass.fields.size(); ++idx) {
-                if (name.equals(curr.fields.elementAt(idx).name))
-                    return offset;
+                if (name.equals(curr.fields.elementAt(idx).name) && !found) {
+                    offset = total;
+                    found = true;
+                }
 
-                ++offset;
+                ++total;
             }
             curr = (ClassType) allClasses.lookup(curr.superName);
         }
 
-        return 0;
+        return total - offset - 1;
     }
 }

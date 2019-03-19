@@ -255,17 +255,17 @@ MethodFragment {
                SEQ(
                   MOVE(
                      MEM(BINOP(PLUS,
-                        CONST 16, 
+                        CONST 24, 
                         t1732)) <-
                      t1733), 
                   MOVE(
                      MEM(BINOP(PLUS,
-                        CONST 24, 
+                        CONST 16, 
                         t1732)) <-
                      CONST 0)), 
                MOVE(
                   MEM(BINOP(PLUS,
-                     CONST 32, 
+                     CONST 8, 
                      t1732)) <-
                   CONST 0)), 
             MOVE(
@@ -333,7 +333,7 @@ MethodFragment {
          SEQ(
             MOVE(
                MEM(BINOP(PLUS,
-                  CONST 8, 
+                  CONST 32, 
                   t1739)) <-
                t1740), 
             MOVE(
@@ -401,7 +401,7 @@ MethodFragment {
          SEQ(
             MOVE(
                MEM(BINOP(PLUS,
-                  CONST 0, 
+                  CONST 40, 
                   t1746)) <-
                t1747), 
             MOVE(
@@ -464,7 +464,7 @@ MethodFragment {
          MOVE(
             %rax <-
             MEM(BINOP(PLUS,
-               CONST 8, 
+               CONST 32, 
                t1753))), 
          SEQ(
             SEQ(
@@ -523,7 +523,7 @@ MethodFragment {
          MOVE(
             %rax <-
             MEM(BINOP(PLUS,
-               CONST 0, 
+               CONST 40, 
                t1759))), 
          SEQ(
             SEQ(
@@ -582,7 +582,7 @@ MethodFragment {
          MOVE(
             %rax <-
             MEM(BINOP(PLUS,
-               CONST 16, 
+               CONST 24, 
                t1765))), 
          SEQ(
             SEQ(
@@ -646,7 +646,7 @@ MethodFragment {
          SEQ(
             MOVE(
                MEM(BINOP(PLUS,
-                  CONST 16, 
+                  CONST 24, 
                   t1771)) <-
                t1772), 
             MOVE(
@@ -709,7 +709,7 @@ MethodFragment {
          MOVE(
             %rax <-
             MEM(BINOP(PLUS,
-               CONST 32, 
+               CONST 8, 
                t1778))), 
          SEQ(
             SEQ(
@@ -768,7 +768,7 @@ MethodFragment {
          MOVE(
             %rax <-
             MEM(BINOP(PLUS,
-               CONST 24, 
+               CONST 16, 
                t1784))), 
          SEQ(
             SEQ(
@@ -832,7 +832,7 @@ MethodFragment {
          SEQ(
             MOVE(
                MEM(BINOP(PLUS,
-                  CONST 24, 
+                  CONST 16, 
                   t1790)) <-
                t1791), 
             MOVE(
@@ -900,7 +900,7 @@ MethodFragment {
          SEQ(
             MOVE(
                MEM(BINOP(PLUS,
-                  CONST 32, 
+                  CONST 8, 
                   t1797)) <-
                t1798), 
             MOVE(
@@ -1629,7 +1629,7 @@ MethodFragment {
                                                                      NAME(_Tree#SetLeft),
                                                                      t1841,
                                                                      MEM(BINOP(PLUS,
-                                                                        CONST 40, 
+                                                                        CONST 0, 
                                                                         t1840)))), 
                                                                MOVE(
                                                                   t1843 <-
@@ -1649,7 +1649,7 @@ MethodFragment {
                                                                               NAME(_Tree#SetRight),
                                                                               t1841,
                                                                               MEM(BINOP(PLUS,
-                                                                                 CONST 40, 
+                                                                                 CONST 0, 
                                                                                  t1840)))), 
                                                                         MOVE(
                                                                            t1843 <-
@@ -1777,7 +1777,7 @@ MethodFragment {
                         NAME(_Tree#SetRight),
                         t1852,
                         MEM(BINOP(PLUS,
-                           CONST 40, 
+                           CONST 0, 
                            t1851))))), 
                MOVE(
                   t1854 <-
@@ -1896,7 +1896,7 @@ MethodFragment {
                         NAME(_Tree#SetLeft),
                         t1861,
                         MEM(BINOP(PLUS,
-                           CONST 40, 
+                           CONST 0, 
                            t1860))))), 
                MOVE(
                   t1863 <-
@@ -2435,7 +2435,7 @@ MethodFragment {
                         SEQ(
                            MOVE(
                               MEM(BINOP(PLUS,
-                                 CONST 8, 
+                                 CONST 0, 
                                  t1904)) <-
                               CALL(
                                  NAME(_Tree#GetRight),
@@ -2445,7 +2445,7 @@ MethodFragment {
                               CALL(
                                  NAME(_Tree#accept),
                                  MEM(BINOP(PLUS,
-                                    CONST 8, 
+                                    CONST 0, 
                                     t1904)),
                                  t1904))), 
                         SEQ(
@@ -2472,7 +2472,7 @@ MethodFragment {
                         SEQ(
                            MOVE(
                               MEM(BINOP(PLUS,
-                                 CONST 0, 
+                                 CONST 8, 
                                  t1904)) <-
                               CALL(
                                  NAME(_Tree#GetLeft),
@@ -2482,7 +2482,7 @@ MethodFragment {
                               CALL(
                                  NAME(_Tree#accept),
                                  MEM(BINOP(PLUS,
-                                    CONST 0, 
+                                    CONST 8, 
                                     t1904)),
                                  t1904))), 
                         SEQ(
@@ -2574,7 +2574,7 @@ MethodFragment {
                            SEQ(
                               MOVE(
                                  MEM(BINOP(PLUS,
-                                    CONST 0, 
+                                    CONST -8, 
                                     t1912)) <-
                                  CALL(
                                     NAME(_Tree#GetRight),
@@ -2584,7 +2584,7 @@ MethodFragment {
                                  CALL(
                                     NAME(_Tree#accept),
                                     MEM(BINOP(PLUS,
-                                       CONST 0, 
+                                       CONST -8, 
                                        t1912)),
                                     t1912))), 
                            SEQ(
@@ -2616,7 +2616,7 @@ MethodFragment {
                         SEQ(
                            MOVE(
                               MEM(BINOP(PLUS,
-                                 CONST 0, 
+                                 CONST -8, 
                                  t1912)) <-
                               CALL(
                                  NAME(_Tree#GetLeft),
@@ -2626,7 +2626,7 @@ MethodFragment {
                               CALL(
                                  NAME(_Tree#accept),
                                  MEM(BINOP(PLUS,
-                                    CONST 0, 
+                                    CONST -8, 
                                     t1912)),
                                  t1912))), 
                         SEQ(
