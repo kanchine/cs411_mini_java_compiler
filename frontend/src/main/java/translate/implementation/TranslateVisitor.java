@@ -547,17 +547,17 @@ public class TranslateVisitor implements Visitor<TRExp> {
         Label invalidIndex = Label.gen();
         Label done = Label.gen();
 
-        Temp val = new Temp();
+        Temp temp = new Temp();
         return new Nx(
                 SEQ(IR.CJUMP(RelOp.LT, index, size, validIndex, invalidIndex),
 
-                        LABEL(invalidIndex),
-                        MOVE(TEMP(val), CALL(L_ERROR, IR.CONST(1))),
-                        JUMP(done),
+                    LABEL(invalidIndex),
+                    MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
+                    JUMP(done),
 
-                        LABEL(validIndex),
-                        MOVE(IR.MEM(getMemLocation(var, index)), value),
-                        LABEL(done)
+                    LABEL(validIndex),
+                    MOVE(IR.MEM(getMemLocation(var, index)), value),
+                    LABEL(done)
                 )
         );
     }
@@ -569,7 +569,30 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(ArrayLookup n) {
-        throw new Error("Not implemented");
+        IRExp offset = n.index.accept(this).unEx();
+        IRExp base = n.array.accept(this).unEx();
+        IRExp size = IR.MEM(getMemLocation(base, IR.CONST(-1)));
+
+        Label validIndex = Label.gen();
+        Label invalidIndex = Label.gen();
+        Label done = Label.gen();
+
+        Temp temp = new Temp();
+        return new Ex(
+                    ESEQ(
+                        SEQ(IR.CJUMP(RelOp.LT, offset, size, validIndex, invalidIndex),
+
+                            LABEL(invalidIndex),
+                            MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
+                            JUMP(done),
+
+                            LABEL(validIndex),
+                            MOVE(TEMP(temp), IR.MEM(getMemLocation(base, offset))),
+                            LABEL(done)
+                        ),
+                        TEMP(temp)
+                    )
+        );
     }
 
     @Override
