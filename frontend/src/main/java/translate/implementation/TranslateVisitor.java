@@ -104,7 +104,6 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     private FunTable<IRExp> currentEnv;
 
-    private boolean isInMethodScope = false;
     private Lookup<ClassType> allClasses;
     private ClassType currClass = null;
 
@@ -441,7 +440,6 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(MethodDecl n) {
-        isInMethodScope = true;
         Frame oldFrame = frame;
         frame = newFrame(functionLabel(currClass.name + "#" + n.name), n.formals.size());
         FunTable<IRExp> saveEnv = currentEnv;
@@ -468,7 +466,6 @@ public class TranslateVisitor implements Visitor<TRExp> {
         frame = oldFrame;
         currentEnv = saveEnv;
 
-        isInMethodScope = false;
         return null;
     }
 
