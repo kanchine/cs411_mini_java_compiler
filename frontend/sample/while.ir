@@ -1,0 +1,154 @@
+MethodFragment {
+   X86_64Frame { label = _Foo$doit
+      nextLocalOffset = -8
+      formals = List {
+         t1879
+         t1880
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        MOVE(
+                           t1884 <-
+                           %rbx), 
+                        MOVE(
+                           t1885 <-
+                           %r12)), 
+                     MOVE(
+                        t1886 <-
+                        %r13)), 
+                  MOVE(
+                     t1887 <-
+                     %r14)), 
+               MOVE(
+                  t1888 <-
+                  %r15)), 
+            MOVE(
+               t1879 <-
+               %rdi)), 
+         MOVE(
+            t1880 <-
+            %rsi)), 
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  MOVE(
+                     t1881 <-
+                     CONST 0), 
+                  MOVE(
+                     t1882 <-
+                     CONST 1)), 
+               EXP(ESEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL L_1187, 
+                        CJUMP(LT,
+                           t1882,
+                           t1880,
+                           L_1185, L_1186)), 
+                     SEQ(
+                        SEQ(
+                           LABEL L_1185, 
+                           SEQ(
+                              SEQ(
+                                 MOVE(
+                                    t1881 <-
+                                    BINOP(PLUS,
+                                       t1881, 
+                                       t1882)), 
+                                 MOVE(
+                                    t1882 <-
+                                    BINOP(PLUS,
+                                       t1882, 
+                                       CONST 1))), 
+                              JUMP(NAME(L_1187)))), 
+                        LABEL L_1186)),
+                  t1883))), 
+            MOVE(
+               %rax <-
+               t1881)), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL bail_1184, 
+                        MOVE(
+                           %rbx <-
+                           t1884)), 
+                     MOVE(
+                        %r12 <-
+                        t1885)), 
+                  MOVE(
+                     %r13 <-
+                     t1886)), 
+               MOVE(
+                  %r14 <-
+                  t1887)), 
+            MOVE(
+               %r15 <-
+               t1888))))
+}
+MethodFragment {
+   X86_64Frame { label = cs411main
+      nextLocalOffset = -8
+      formals = List {
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  MOVE(
+                     t1889 <-
+                     %rbx), 
+                  MOVE(
+                     t1890 <-
+                     %r12)), 
+               MOVE(
+                  t1891 <-
+                  %r13)), 
+            MOVE(
+               t1892 <-
+               %r14)), 
+         MOVE(
+            t1893 <-
+            %r15)), 
+      SEQ(
+         EXP(CALL(
+            NAME(cs411println),
+            CALL(
+               NAME(_Foo$doit),
+               CALL(
+                  NAME(cs411newobject),
+                  CONST 0),
+               CONST 10))), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL bail_1183, 
+                        MOVE(
+                           %rbx <-
+                           t1889)), 
+                     MOVE(
+                        %r12 <-
+                        t1890)), 
+                  MOVE(
+                     %r13 <-
+                     t1891)), 
+               MOVE(
+                  %r14 <-
+                  t1892)), 
+            MOVE(
+               %r15 <-
+               t1893))))
+}

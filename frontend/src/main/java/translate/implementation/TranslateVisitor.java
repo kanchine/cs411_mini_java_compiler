@@ -49,7 +49,6 @@ import ir.temp.Temp;
 import ir.tree.*;
 import ir.tree.BINOP.Op;
 import ir.tree.CJUMP.RelOp;
-import translate.DataFragment;
 import translate.Fragments;
 import translate.ProcFragment;
 import util.FunTable;
@@ -57,19 +56,8 @@ import util.List;
 import util.Lookup;
 import visitor.Visitor;
 
-import java.util.Iterator;
-import java.util.Map;
-
-import static ir.tree.IR.CALL;
-import static ir.tree.IR.CMOVE;
-import static ir.tree.IR.ESEQ;
-import static ir.tree.IR.FALSE;
-import static ir.tree.IR.JUMP;
-import static ir.tree.IR.LABEL;
-import static ir.tree.IR.MOVE;
-import static ir.tree.IR.SEQ;
-import static ir.tree.IR.TEMP;
-import static ir.tree.IR.TRUE;
+import static ir.tree.IR.*;
+import ir.tree.*;
 import static translate.TranslatorLabels.*;
 
 
@@ -242,7 +230,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
         if (var == null) {
             IRExp base = frame.getFormal(0).exp(frame.FP());
-            IRExp offset = IR.CONST(getFieldOffset(n.name, currClass));
+            IRExp offset = CONST(getFieldOffset(n.name, currClass));
             TRExp value = n.value.accept(this);
 
             return new Nx(IR.MOVE(IR.MEM(getMemLocation(base, offset)), value.unEx()));
@@ -327,7 +315,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
         if (var == null) {
             IRExp base = frame.getFormal(0).exp(frame.FP());
-            IRExp offset = IR.CONST(getFieldOffset(n.name, currClass));
+            IRExp offset = CONST(getFieldOffset(n.name, currClass));
             return new Ex(IR.MEM(getMemLocation(base, offset)));
         } else
             return new Ex(var);
@@ -432,14 +420,12 @@ public class TranslateVisitor implements Visitor<TRExp> {
     @Override
     public TRExp visit(ClassDecl n) {
         currClass = (ClassType) allClasses.lookup(n.name);
-        FunTable<IRExp> saveEnv = currentEnv;
         for (int i = 0; i < n.vars.size(); ++i) {
             n.vars.elementAt(i).accept(this);
         }
 
         n.methods.accept(this);
 
-        currentEnv = saveEnv;
         currClass = null;
         return new Nx(IR.NOP);
     }
@@ -447,12 +433,12 @@ public class TranslateVisitor implements Visitor<TRExp> {
     @Override
     public TRExp visit(MethodDecl n) {
         Frame oldFrame = frame;
-        frame = newFrame(functionLabel(currClass.name + "#" + n.name), n.formals.size());
+        frame = newFrame(functionLabel(currClass.name + "#" + n.name), n.formals.size() + 1);
         FunTable<IRExp> saveEnv = currentEnv;
 
         //Get the access information for each regular formal and add it to the environment.
         for (int i = 0; i < n.formals.size(); i++) {
-            putEnv(n.formals.elementAt(i).name, frame.getFormal(i));
+            putEnv(n.formals.elementAt(i).name, frame.getFormal(i + 1));
         }
 
         for (int i = 0; i < n.vars.size(); i++) {
@@ -463,7 +449,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
         TRExp stats = visitStatements(n.statements);
         TRExp exp = n.returnExp.accept(this);
 
-        IRStm body = SEQ(
+        IRStm body = IR.SEQ(
                 stats.unNx(),
                 MOVE(frame.RV(), exp.unEx()));
         body = frame.procEntryExit1(body);
@@ -537,14 +523,14 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
         if (var == null) {
             IRExp base = frame.getFormal(0).exp(frame.FP());
-            IRExp offset = IR.CONST(getFieldOffset(n.name, currClass));
+            IRExp offset = CONST(getFieldOffset(n.name, currClass));
 
-            var = IR.MEM(getMemLocation(base, offset));
+            var = MEM(getMemLocation(base, offset));
         }
 
         IRExp index = n.index.accept(this).unEx();
         IRExp value = n.value.accept(this).unEx();
-        IRExp size = IR.MEM(getMemLocation(var, IR.CONST(-1)));
+        IRExp size = MEM(getMemLocation(var, CONST(-1)));
 
         Label validIndex = Label.gen();
         Label invalidIndex = Label.gen();
@@ -554,27 +540,27 @@ public class TranslateVisitor implements Visitor<TRExp> {
         return new Nx(
                 SEQ(IR.CJUMP(RelOp.LT, index, size, validIndex, invalidIndex),
 
-                    LABEL(invalidIndex),
-                    MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
-                    JUMP(done),
+                        LABEL(invalidIndex),
+                        MOVE(TEMP(temp), CALL(L_ERROR, CONST(1))),
+                        JUMP(done),
 
-                    LABEL(validIndex),
-                    MOVE(IR.MEM(getMemLocation(var, index)), value),
-                    LABEL(done)
+                        LABEL(validIndex),
+                        MOVE(IR.MEM(getMemLocation(var, index)), value),
+                        LABEL(done)
                 )
         );
     }
 
     @Override
     public TRExp visit(And n) {
-        return numericOp(Op.AND, n.e1, n.e2);
+        return relOp(RelOp.EQ, n.e1, n.e2);
     }
 
     @Override
     public TRExp visit(ArrayLookup n) {
         IRExp offset = n.index.accept(this).unEx();
         IRExp base = n.array.accept(this).unEx();
-        IRExp size = IR.MEM(getMemLocation(base, IR.CONST(-1)));
+        IRExp size = MEM(getMemLocation(base, CONST(-1)));
 
         Label validIndex = Label.gen();
         Label invalidIndex = Label.gen();
@@ -582,27 +568,26 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
         Temp temp = new Temp();
         return new Ex(
-                    ESEQ(
+                ESEQ(
                         SEQ(IR.CJUMP(RelOp.LT, offset, size, validIndex, invalidIndex),
 
-                            LABEL(invalidIndex),
-                            MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
-                            JUMP(done),
+                                LABEL(invalidIndex),
+                                MOVE(TEMP(temp), CALL(L_ERROR, CONST(1))),
+                                JUMP(done),
 
-                            LABEL(validIndex),
-                            MOVE(TEMP(temp), IR.MEM(getMemLocation(base, offset))),
-                            LABEL(done)
+                                LABEL(validIndex),
+                                MOVE(TEMP(temp), IR.MEM(getMemLocation(base, offset))),
+                                LABEL(done)
                         ),
                         TEMP(temp)
-                    )
+                )
         );
     }
 
     @Override
     public TRExp visit(ArrayLength n) {
         IRExp base = n.array.accept(this).unEx();
-
-        return new Ex(IR.MEM(getMemLocation(base, IR.CONST(-1))));
+        return new Ex(MEM(getMemLocation(base, CONST(-1))));
     }
 
     @Override
@@ -643,7 +628,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
     }
 
     private IRExp getMemLocation(IRExp base, IRExp offset) {
-        return IR.BINOP(Op.PLUS, IR.BINOP(Op.MUL, offset, IR.CONST(8)), base);
+        return IR.BINOP(Op.PLUS, IR.BINOP(Op.MUL, offset, CONST(8)), base);
     }
 
     private int getFieldOffset(String name, ClassType currClass) {

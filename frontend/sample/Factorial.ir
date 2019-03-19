@@ -1,0 +1,149 @@
+MethodFragment {
+   X86_64Frame { label = _Fac#ComputeFac
+      nextLocalOffset = -8
+      formals = List {
+         t810
+         t811
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        MOVE(
+                           t813 <-
+                           %rbx), 
+                        MOVE(
+                           t814 <-
+                           %r12)), 
+                     MOVE(
+                        t815 <-
+                        %r13)), 
+                  MOVE(
+                     t816 <-
+                     %r14)), 
+               MOVE(
+                  t817 <-
+                  %r15)), 
+            MOVE(
+               t810 <-
+               %rdi)), 
+         MOVE(
+            t811 <-
+            %rsi)), 
+      SEQ(
+         SEQ(
+            SEQ(
+               CJUMP(LT,
+                  t811,
+                  CONST 1,
+                  L_543, L_544), 
+               SEQ(
+                  LABEL L_543, 
+                  SEQ(
+                     MOVE(
+                        t812 <-
+                        CONST 1), 
+                     SEQ(
+                        JUMP(NAME(L_545)), 
+                        SEQ(
+                           LABEL L_544, 
+                           SEQ(
+                              MOVE(
+                                 t812 <-
+                                 BINOP(MUL,
+                                    t811, 
+                                    CALL(
+                                       NAME(_Fac#ComputeFac),
+                                       t810,
+                                       BINOP(MINUS,
+                                          t811, 
+                                          CONST 1)))), 
+                              SEQ(
+                                 JUMP(NAME(L_545)), 
+                                 LABEL L_545))))))), 
+            MOVE(
+               %rax <-
+               t812)), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL bail_542, 
+                        MOVE(
+                           %rbx <-
+                           t813)), 
+                     MOVE(
+                        %r12 <-
+                        t814)), 
+                  MOVE(
+                     %r13 <-
+                     t815)), 
+               MOVE(
+                  %r14 <-
+                  t816)), 
+            MOVE(
+               %r15 <-
+               t817))))
+}
+MethodFragment {
+   X86_64Frame { label = cs411main
+      nextLocalOffset = -8
+      formals = List {
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  MOVE(
+                     t818 <-
+                     %rbx), 
+                  MOVE(
+                     t819 <-
+                     %r12)), 
+               MOVE(
+                  t820 <-
+                  %r13)), 
+            MOVE(
+               t821 <-
+               %r14)), 
+         MOVE(
+            t822 <-
+            %r15)), 
+      SEQ(
+         EXP(CALL(
+            NAME(cs411println),
+            CALL(
+               NAME(_Fac#ComputeFac),
+               CALL(
+                  NAME(cs411newobject),
+                  CONST 0),
+               CONST 10))), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL bail_541, 
+                        MOVE(
+                           %rbx <-
+                           t818)), 
+                     MOVE(
+                        %r12 <-
+                        t819)), 
+                  MOVE(
+                     %r13 <-
+                     t820)), 
+               MOVE(
+                  %r14 <-
+                  t821)), 
+            MOVE(
+               %r15 <-
+               t822))))
+}
