@@ -6,6 +6,7 @@ import visitor.Visitor;
 public class ClassType extends Type {
     public ImpTable<Type> locals = new ImpTable<Type>();
     public ImpTable<Type> methods = new ImpTable<Type>();
+    public NodeList<VarDecl> fields;
     public String name;
     public String superName;
 

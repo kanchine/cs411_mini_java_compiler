@@ -204,6 +204,7 @@ public class BuildSymbolTableVisitor extends DefaultVisitor<ImpTable<Type>> {
         classMethods = classType.methods;
         classType.name = n.name;
         classType.superName = n.superName;
+        classType.fields = n.vars;
 
         className = n.name;
 
