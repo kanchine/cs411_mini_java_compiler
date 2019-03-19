@@ -547,6 +547,7 @@ public class TypeCheckVisitor implements Visitor<Type> {
     public Type visit(NewObject n) {
         if (variables.lookup(n.typeName) == null)
             errors.undefinedId(n.typeName);
+        n.setType(new ObjectType(n.typeName));
         return new ObjectType(n.typeName);
     }
 

@@ -104,10 +104,10 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     private FunTable<IRExp> currentEnv;
 
-    private Lookup<ClassType> allClasses;
+    private Lookup<Type> allClasses;
     private ClassType currClass = null;
 
-    public TranslateVisitor(Lookup<ClassType> table, Frame frameFactory) {
+    public TranslateVisitor(Lookup<Type> table, Frame frameFactory) {
         this.frags = new Fragments(frameFactory);
         this.frameFactory = frameFactory;
         this.allClasses = table;
@@ -384,7 +384,17 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(Call n) {
-        String name = n.name;
+        String recType = "";
+        ClassType currClass = (ClassType) allClasses.lookup(n.receiver.getType().toString());
+        while (currClass != null) {
+            if (currClass.methods.lookup(n.name) != null) {
+                recType = currClass.name;
+                break;
+            }
+
+            currClass = (ClassType) allClasses.lookup(currClass.superName);
+        }
+        String name = recType + "#" + n.name;
         Label label = functionLabel(name);
 
         List<IRExp> arguments = List.list();
@@ -398,11 +408,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
             arguments.add(argument.unEx());
         }
 
-        return new Ex(CALL(label, arguments));
-
-        // TODO: if we use this pattern of
-        // passing the object we called the method on as the first argument,
-        // we need to follow the pattern when implementing method declaration.
+        return new Ex(IR.CALL(label, arguments));
     }
 
     @Override
@@ -425,7 +431,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(ClassDecl n) {
-        currClass = allClasses.lookup(n.name);
+        currClass = (ClassType) allClasses.lookup(n.name);
         FunTable<IRExp> saveEnv = currentEnv;
         for (int i = 0; i < n.vars.size(); ++i) {
             n.vars.elementAt(i).accept(this);
@@ -622,7 +628,18 @@ public class TranslateVisitor implements Visitor<TRExp> {
 
     @Override
     public TRExp visit(NewObject n) {
-        throw new Error("Not implemented");
+        ClassType curr = (ClassType) allClasses.lookup(n.typeName);
+        int numFields = 0;
+
+        while (curr != null) {
+            numFields += curr.fields.size();
+
+            curr = (ClassType) allClasses.lookup(curr.superName);
+        }
+
+        TRExp size = new Ex(IR.CONST(numFields * 8));
+
+        return new Ex(IR.CALL(L_NEW_OBJECT, size.unEx()));
     }
 
     private IRExp getMemLocation(IRExp base, IRExp offset) {
@@ -635,15 +652,13 @@ public class TranslateVisitor implements Visitor<TRExp> {
         ClassType curr = currClass;
 
         while (curr != null) {
-
             for (int idx = 0; idx < currClass.fields.size(); ++idx) {
                 if (name.equals(curr.fields.elementAt(idx).name))
                     return offset;
 
                 ++offset;
             }
-
-            curr = allClasses.lookup(curr.superName);
+            curr = (ClassType) allClasses.lookup(curr.superName);
         }
 
         return 0;
