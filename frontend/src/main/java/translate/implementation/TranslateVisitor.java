@@ -435,7 +435,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
         n.methods.accept(this);
 
         currClass = null;
-        return new Nx(IR.NOP);
+        return null;
     }
 
     @Override
@@ -579,13 +579,13 @@ public class TranslateVisitor implements Visitor<TRExp> {
                 ESEQ(
                         SEQ(IR.CJUMP(RelOp.LT, offset, size, validIndex, invalidIndex),
 
-                                LABEL(invalidIndex),
-                                MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
-                                JUMP(done),
+                            LABEL(invalidIndex),
+                            MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
+                            JUMP(done),
 
-                                LABEL(validIndex),
-                                MOVE(TEMP(temp), IR.MEM(getMemLocation(base, offset))),
-                                LABEL(done)
+                            LABEL(validIndex),
+                            MOVE(TEMP(temp), IR.MEM(getMemLocation(base, offset))),
+                            LABEL(done)
                         ),
                         TEMP(temp)
                 )
@@ -622,11 +622,10 @@ public class TranslateVisitor implements Visitor<TRExp> {
     @Override
     public TRExp visit(NewObject n) {
         ClassType curr = (ClassType) allClasses.lookup(n.typeName);
-        int numFields = 0;
+        int numFields = curr.fields.size();
 
         while (curr != null) {
             numFields += curr.fields.size();
-
             curr = (ClassType) allClasses.lookup(curr.superName);
         }
 
