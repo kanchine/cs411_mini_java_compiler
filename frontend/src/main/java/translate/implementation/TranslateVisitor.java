@@ -46,15 +46,22 @@ import ir.frame.Access;
 import ir.frame.Frame;
 import ir.temp.Label;
 import ir.temp.Temp;
-import ir.tree.*;
 import ir.tree.BINOP.Op;
+import ir.tree.CJUMP;
 import ir.tree.CJUMP.RelOp;
+import ir.tree.IR;
+import ir.tree.IRExp;
+import ir.tree.IRStm;
+import ir.tree.TEMP;
 import translate.Fragments;
 import translate.ProcFragment;
 import util.FunTable;
 import util.List;
 import util.Lookup;
 import visitor.Visitor;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import static ir.tree.IR.CALL;
 import static ir.tree.IR.CMOVE;
@@ -66,7 +73,11 @@ import static ir.tree.IR.MOVE;
 import static ir.tree.IR.SEQ;
 import static ir.tree.IR.TEMP;
 import static ir.tree.IR.TRUE;
-import static translate.TranslatorLabels.*;
+import static translate.TranslatorLabels.L_ERROR;
+import static translate.TranslatorLabels.L_MAIN;
+import static translate.TranslatorLabels.L_NEW_ARRAY;
+import static translate.TranslatorLabels.L_NEW_OBJECT;
+import static translate.TranslatorLabels.L_PRINT;
 
 
 /**
@@ -624,24 +635,63 @@ public class TranslateVisitor implements Visitor<TRExp> {
     }
 
     private int getFieldOffset(String name, ClassType currClass) {
-        int offset = 0;
-        int total = 0;
-        boolean found = false;
+        java.util.List<NodeList<VarDecl>> parentFields = getParentFields(currClass);
 
-        ClassType curr = currClass;
+        // get the GREATEST index (SUB-most class) containing the name of the
+        // field we want to look up
+        int classIndex = getClassIndex(name, parentFields);
 
-        while (curr != null) {
-            for (int idx = 0; idx < currClass.fields.size(); ++idx) {
-                if (name.equals(curr.fields.elementAt(idx).name) && !found) {
-                    offset = total;
-                    found = true;
-                }
+        // get the number of fields in the STRICT parents of the class we found
+        // (STRICT means the superclass, the super-superclass, and so on)
+        int numParentFields = getNumParentFields(classIndex, parentFields);
 
-                ++total;
-            }
-            curr = (ClassType) allClasses.lookup(curr.superName);
+        // get the number of fields in the class we found that comes before the
+        // field we are looking up
+        int fieldIndex = getFieldIndex(name, parentFields.get(classIndex));
+
+        return numParentFields + fieldIndex;
+    }
+
+    private java.util.List<NodeList<VarDecl>> getParentFields(ClassType currClass) {
+        java.util.List<NodeList<VarDecl>> result = new ArrayList<NodeList<VarDecl>>();
+
+        ClassType ptr = currClass;
+        while (ptr != null) {
+            result.add(ptr.fields);
+            ptr = (ClassType) allClasses.lookup(ptr.superName);
         }
 
-        return total - offset - 1;
+        Collections.reverse(result);
+        return result;
+    }
+
+    private int getClassIndex(String name, java.util.List<NodeList<VarDecl>> parentFields) {
+        for (int i = parentFields.size() - 1; i >= 0; i--) {
+            NodeList<VarDecl> fields = parentFields.get(i);
+            for (int j = 0; j < fields.size(); j++) {
+                if (name.equals(fields.elementAt(j).name)) {
+                    return i;
+                }
+            }
+        }
+        throw new IllegalStateException();   // execution should never reach this point
+    }
+
+    private int getNumParentFields(int classIndex, java.util.List<NodeList<VarDecl>> parentFields) {
+        int result = 0;
+        for (int i = 0; i < classIndex; i++) {
+            NodeList<VarDecl> fields = parentFields.get(i);
+            result += fields.size();
+        }
+        return result;
+    }
+
+    private int getFieldIndex(String name, NodeList<VarDecl> fields) {
+        for (int i = 0; i < fields.size(); i++) {
+            if (name.equals(fields.elementAt(i).name)) {
+                return i;
+            }
+        }
+        throw new IllegalStateException();   // execution should never reach this point
     }
 }
