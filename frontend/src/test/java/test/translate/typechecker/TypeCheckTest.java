@@ -1743,7 +1743,7 @@ public class TypeCheckTest {
 
     @Test
     public void assignBooleanToIntArray() throws Exception {
-        expect(typeError("false", new BooleanType(), new IntegerType()),
+        expect(typeError("false", new IntegerType(), new BooleanType()),
                 defaultMainClass +
                         "class C {\n" +
                         "    public int f() {\n" +
