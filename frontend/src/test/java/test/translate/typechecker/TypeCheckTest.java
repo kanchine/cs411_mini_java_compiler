@@ -1680,7 +1680,7 @@ public class TypeCheckTest {
 
     @Test
     public void cyclicExtension() throws Exception {
-        expect(ErrorMessage.cyclicExtension("D"),
+        expect(ErrorMessage.cyclicExtension("C"),
                 defaultMainClass +
                         "class C extends D {}\n" +
                         "class D extends C {}\n"

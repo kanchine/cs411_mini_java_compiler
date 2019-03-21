@@ -47,6 +47,10 @@ public class ErrorReport {
             throw new TypeCheckerException(firstError);
     }
 
+    public void cyclicExtension(String name) {
+        report(ErrorMessage.cyclicExtension(name));
+    }
+
     public void duplicateDefinition(String name) {
         report(ErrorMessage.duplicateDefinition(name));
     }

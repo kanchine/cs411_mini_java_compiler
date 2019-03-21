@@ -367,6 +367,11 @@ public class TypeCheckVisitor implements Visitor<Type> {
 
     @Override
     public Type visit(ClassDecl n) {
+        if (isAncestorOrEqual(n.name, n.superName)) {
+            errors.cyclicExtension(n.name);   // check for cyclic extension
+            return null;
+        }
+
         classFields = n.classType.locals;
         classMethods = n.classType.methods;
         currentClassName = n.name;
@@ -379,6 +384,18 @@ public class TypeCheckVisitor implements Visitor<Type> {
         currentClassName = null;
 
         return null;
+    }
+
+    private boolean isAncestorOrEqual(String name0, String name1) {
+        ClassType ptr = (ClassType) variables.lookup(name1);
+        while (ptr != null) {
+            if (ptr.name.equals(name0)) {
+                return true;
+            }
+
+            ptr = (ClassType) variables.lookup(ptr.superName);
+        }
+        return false;
     }
 
     @Override
