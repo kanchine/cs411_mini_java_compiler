@@ -37,6 +37,10 @@ public class ErrorMessage {
         return new ErrorMessage("Multiply defined Identifier: " + name);
     }
 
+    public static ErrorMessage cyclicExtension(String className) {
+        return new ErrorMessage("Cyclic class extension: " + className);
+    }
+
     public static ErrorMessage typeError(Expression exp, Type expected,
                                          Type actual) {
         return new ErrorMessage(exp + " has type " + actual + " expected " + expected);

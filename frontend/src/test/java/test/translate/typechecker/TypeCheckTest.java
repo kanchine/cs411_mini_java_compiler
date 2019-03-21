@@ -1665,4 +1665,94 @@ public class TypeCheckTest {
                         "   }\n" +
                         "}");
     }
+
+    // -------------------------------------------------------------------------
+    // Test group 7: Stuff which we failed when we submitted the TypeChecker
+    // phase
+
+    @Test
+    public void extendsItself() throws Exception {
+        expect(ErrorMessage.cyclicExtension("C"),
+                defaultMainClass +
+                        "class C extends C {}\n"
+        );
+    }
+
+    @Test
+    public void cyclicExtension() throws Exception {
+        expect(ErrorMessage.cyclicExtension("D"),
+                defaultMainClass +
+                        "class C extends D {}\n" +
+                        "class D extends C {}\n"
+        );
+    }
+
+    @Test
+    public void overrideDifferentReturnType() throws Exception {
+        expect(ErrorMessage.duplicateDefinition("f"),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f() {\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "class D extends C {\n" +
+                        "    public boolean f() {\n" +
+                        "        return false;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void overrideDifferentReturnTypeSubclass() throws Exception {
+        accept(defaultMainClass +
+                "class A {}\n" +
+                "class B extends A {}\n" +
+                "class C {\n" +
+                "    public A f() {\n" +
+                "        return new A();\n" +
+                "    }\n" +
+                "}\n" +
+                "class D extends C {\n" +
+                "    public B f() {\n" +
+                "        return new B();\n" +
+                "    }\n" +
+                "}"
+        );
+    }
+
+    @Test
+    public void overrideDifferentReturnTypeSuperclass() throws Exception {
+        expect(ErrorMessage.duplicateDefinition("f"),
+                defaultMainClass +
+                        "class A {}\n" +
+                        "class B extends A {}\n" +
+                        "class C {\n" +
+                        "    public B f() {\n" +
+                        "        return new B();\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "class D extends C {\n" +
+                        "    public A f() {\n" +
+                        "        return new A();\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
+
+    @Test
+    public void assignBooleanToIntArray() throws Exception {
+        expect(typeError("false", new BooleanType(), new IntegerType()),
+                defaultMainClass +
+                        "class C {\n" +
+                        "    public int f() {\n" +
+                        "        int[] array;\n" +
+                        "        array[0] = 1;\n" +
+                        "        array[1] = false;\n" +
+                        "        return 0;\n" +
+                        "    }\n" +
+                        "}"
+        );
+    }
 }
