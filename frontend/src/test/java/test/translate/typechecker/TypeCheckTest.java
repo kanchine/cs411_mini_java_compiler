@@ -1706,19 +1706,20 @@ public class TypeCheckTest {
 
     @Test
     public void overrideDifferentReturnTypeSubclass() throws Exception {
-        accept(defaultMainClass +
-                "class A {}\n" +
-                "class B extends A {}\n" +
-                "class C {\n" +
-                "    public A f() {\n" +
-                "        return new A();\n" +
-                "    }\n" +
-                "}\n" +
-                "class D extends C {\n" +
-                "    public B f() {\n" +
-                "        return new B();\n" +
-                "    }\n" +
-                "}"
+        expect(ErrorMessage.duplicateDefinition("f"),
+                defaultMainClass +
+                        "class A {}\n" +
+                        "class B extends A {}\n" +
+                        "class C {\n" +
+                        "    public A f() {\n" +
+                        "        return new A();\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "class D extends C {\n" +
+                        "    public B f() {\n" +
+                        "        return new B();\n" +
+                        "    }\n" +
+                        "}"
         );
     }
 
