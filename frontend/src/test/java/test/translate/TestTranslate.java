@@ -627,6 +627,8 @@ public class TestTranslate {
         }
     }
 
+    /*
+
     @Test // Don't run this unless you are implementing inheritance support!
     public void testOptionalSampleCode() throws Exception {
         File[] files = SampleCode.sampleFiles("java");
@@ -636,6 +638,8 @@ public class TestTranslate {
                 test(f);
         }
     }
+
+    */
 
     protected Fragments test(File program) throws TypeCheckerException, Exception {
         System.out.println("Translating: " + program);

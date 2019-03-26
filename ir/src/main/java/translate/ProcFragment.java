@@ -28,7 +28,7 @@ public class ProcFragment extends Fragment {
     // memory is rather useful when you are debugging the compiler.
 
     private Frame frame;
-    public boolean beVerbose = false;
+    public boolean beVerbose = true;   // TODO: prints canonical IR
     public boolean onOneLine = false;
     public boolean elidable = false;
     public boolean justBody = true; // RG TomHackery

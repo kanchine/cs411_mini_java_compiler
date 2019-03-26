@@ -2,7 +2,7 @@ MethodFragment {
    X86_64Frame { label = __Test#go
       nextLocalOffset = -8
       formals = List {
-         t1568
+         t5218
       }
    }
    SEQ(
@@ -12,22 +12,22 @@ MethodFragment {
                SEQ(
                   SEQ(
                      MOVE(
-                        t1573 <-
+                        t5223 <-
                         %rbx), 
                      MOVE(
-                        t1574 <-
+                        t5224 <-
                         %r12)), 
                   MOVE(
-                     t1575 <-
+                     t5225 <-
                      %r13)), 
                MOVE(
-                  t1576 <-
+                  t5226 <-
                   %r14)), 
             MOVE(
-               t1577 <-
+               t5227 <-
                %r15)), 
          MOVE(
-            t1568 <-
+            t5218 <-
             %rdi)), 
       SEQ(
          SEQ(
@@ -37,80 +37,80 @@ MethodFragment {
                      SEQ(
                         SEQ(
                            MOVE(
-                              t1569 <-
+                              t5219 <-
                               CONST 0), 
                            MOVE(
-                              t1570 <-
+                              t5220 <-
                               CONST 6)), 
                         MOVE(
-                           t1571 <-
+                           t5221 <-
                            BINOP(PLUS,
-                              t1570, 
+                              t5220, 
                               CONST 1))), 
                      MOVE(
-                        t1571 <-
+                        t5221 <-
                         BINOP(MINUS,
-                           t1570, 
+                           t5220, 
                            CONST 1))), 
                   MOVE(
-                     t1572 <-
+                     t5222 <-
                      BINOP(PLUS,
-                        t1569, 
-                        t1570))), 
+                        t5219, 
+                        t5220))), 
                SEQ(
-                  LABEL _L_744, 
+                  LABEL _L_3108, 
                   SEQ(
                      CJUMP(LT,
-                        t1569,
+                        t5219,
                         CONST 10,
-                        _L_745, _L_746), 
+                        _L_3109, _L_3110), 
                      SEQ(
-                        LABEL _L_745, 
+                        LABEL _L_3109, 
                         SEQ(
                            SEQ(
                               MOVE(
-                                 t1569 <-
+                                 t5219 <-
                                  BINOP(PLUS,
-                                    t1569, 
+                                    t5219, 
                                     CONST 1)), 
                               MOVE(
-                                 t1571 <-
+                                 t5221 <-
                                  BINOP(MUL,
-                                    t1569, 
-                                    t1569))), 
+                                    t5219, 
+                                    t5219))), 
                            SEQ(
-                              JUMP(NAME(_L_744)), 
-                              LABEL _L_746)))))), 
+                              JUMP(NAME(_L_3108)), 
+                              LABEL _L_3110)))))), 
             MOVE(
                %rax <-
                BINOP(PLUS,
                   BINOP(MINUS,
-                     t1570, 
+                     t5220, 
                      BINOP(MUL,
-                        t1572, 
-                        t1570)), 
-                  t1572))), 
+                        t5222, 
+                        t5220)), 
+                  t5222))), 
          SEQ(
             SEQ(
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_743, 
+                        LABEL _bail_3107, 
                         MOVE(
                            %rbx <-
-                           t1573)), 
+                           t5223)), 
                      MOVE(
                         %r12 <-
-                        t1574)), 
+                        t5224)), 
                   MOVE(
                      %r13 <-
-                     t1575)), 
+                     t5225)), 
                MOVE(
                   %r14 <-
-                  t1576)), 
+                  t5226)), 
             MOVE(
                %r15 <-
-               t1577))))
+               t5227))))
 }
 MethodFragment {
    X86_64Frame { label = _cs411main
@@ -124,19 +124,19 @@ MethodFragment {
             SEQ(
                SEQ(
                   MOVE(
-                     t1578 <-
+                     t5228 <-
                      %rbx), 
                   MOVE(
-                     t1579 <-
+                     t5229 <-
                      %r12)), 
                MOVE(
-                  t1580 <-
+                  t5230 <-
                   %r13)), 
             MOVE(
-               t1581 <-
+               t5231 <-
                %r14)), 
          MOVE(
-            t1582 <-
+            t5232 <-
             %r15)), 
       SEQ(
          EXP(CALL(
@@ -151,20 +151,20 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_742, 
+                        LABEL _bail_3106, 
                         MOVE(
                            %rbx <-
-                           t1578)), 
+                           t5228)), 
                      MOVE(
                         %r12 <-
-                        t1579)), 
+                        t5229)), 
                   MOVE(
                      %r13 <-
-                     t1580)), 
+                     t5230)), 
                MOVE(
                   %r14 <-
-                  t1581)), 
+                  t5231)), 
             MOVE(
                %r15 <-
-               t1582))))
+               t5232))))
 }

@@ -1,15 +1,13 @@
 package test.codegen;
 
+import codegen.CodeGenerator;
 import ir.interp.InterpMode;
-
-import java.io.File;
-
 import org.junit.jupiter.api.AfterAll;
 import test.translate.TestTranslate;
 import translate.Fragments;
 import typechecker.TypeCheckerException;
 
-import codegen.CodeGenerator;
+import java.io.File;
 
 /**
  * Unfortunately, there's no good way that I can think of to test this phase
@@ -48,6 +46,7 @@ public class TestCodegen extends TestTranslate {
     protected Fragments test(File program) throws TypeCheckerException, Exception {
         Fragments translated = super.test(program);
         System.out.println("Generating assembly for " + program);
+        System.out.println(translated.toString());
         test(translated);
         return null; // doesn't matter right now.
     }

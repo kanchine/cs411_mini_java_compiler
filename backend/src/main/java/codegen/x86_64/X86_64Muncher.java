@@ -1,5 +1,25 @@
 package codegen.x86_64;
 
+import codegen.assem.A_LABEL;
+import codegen.assem.A_MOVE;
+import codegen.assem.A_OPER;
+import codegen.assem.Instr;
+import codegen.muncher.MunchRule;
+import codegen.muncher.Muncher;
+import codegen.muncher.MuncherRules;
+import codegen.patterns.Matched;
+import codegen.patterns.Pat;
+import codegen.patterns.Wildcard;
+import ir.frame.Frame;
+import ir.temp.Label;
+import ir.temp.Temp;
+import ir.tree.CJUMP.RelOp;
+import ir.tree.IR;
+import ir.tree.IRExp;
+import ir.tree.IRStm;
+import util.IndentingWriter;
+import util.List;
+
 import static codegen.patterns.IRPat.CALL;
 import static codegen.patterns.IRPat.CJUMP;
 import static codegen.patterns.IRPat.CMOVE;
@@ -21,26 +41,6 @@ import static ir.frame.x86_64.X86_64Frame.arguments;
 import static ir.frame.x86_64.X86_64Frame.callerSave;
 import static ir.frame.x86_64.X86_64Frame.special;
 import static util.List.list;
-
-import util.IndentingWriter;
-import util.List;
-import ir.frame.Frame;
-import ir.temp.Label;
-import ir.temp.Temp;
-import ir.tree.IR;
-import ir.tree.IRExp;
-import ir.tree.IRStm;
-import ir.tree.CJUMP.RelOp;
-import codegen.assem.A_LABEL;
-import codegen.assem.A_MOVE;
-import codegen.assem.A_OPER;
-import codegen.assem.Instr;
-import codegen.muncher.MunchRule;
-import codegen.muncher.Muncher;
-import codegen.muncher.MuncherRules;
-import codegen.patterns.Matched;
-import codegen.patterns.Pat;
-import codegen.patterns.Wildcard;
 
 /**
  * This Muncher implements the munching rules for a subset
@@ -106,6 +106,118 @@ public class X86_64Muncher extends Muncher {
                 out.print("1|2|4|8");
             }
         };
+
+        // =====================================================================
+        // Larger tiles created by William
+
+        // x = x + 1
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(MEM(_e_), PLUS(MEM(_e_), CONST(1)))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp ptr = m.munch(c.get(_e_));
+                Temp value = new Temp();
+
+                m.emit(A_MOV_FROM_MEM(value, ptr));
+                m.emit(A_INC(value));
+                m.emit(A_MOV_TO_MEM(ptr, value));
+
+                return null;
+            }
+        });
+
+        // x = x - 1
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(MEM(_e_), MINUS(MEM(_e_), CONST(1)))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp ptr = m.munch(c.get(_e_));
+                Temp value = new Temp();
+
+                m.emit(A_MOV_FROM_MEM(value, ptr));
+                m.emit(A_DEC(value));
+                m.emit(A_MOV_TO_MEM(ptr, value));
+
+                return null;
+            }
+        });
+
+        // x = 0 - x
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(MEM(_e_), MINUS(CONST(0), MEM(_e_)))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                emitNeg(m, c, _e_);
+                return null;
+            }
+        });
+
+        // x = -1 * x
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(MEM(_e_), MUL(CONST(-1), MEM(_e_)))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                emitNeg(m, c, _e_);
+                return null;
+            }
+        });
+
+        /*
+        // a[i] = e
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(MEM(PLUS(_l_, MUL(_r_, CONST(8)))), _e_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                m.emit(A)
+
+                return null;
+            }
+        });
+
+        // e = a[i]
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(_e_, MEM(PLUS(_l_, MUL(_r_, CONST(8)))))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                return null;
+            }
+        });
+
+        // push x
+        // pushq %r10      %rsp--   M[%rsp] = %r10
+        sm.add(new MunchRule<IRStm, Void>(
+                null
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                return null;
+            }
+        });
+        */
+
+        // x = 0
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(_e_, CONST(0))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp ptr = m.munch(c.get(_e_));
+                Temp value = new Temp();
+
+                m.emit(A_XOR(value, value));
+                m.emit(A_MOV_TO_MEM(ptr, value));
+
+                return null;
+            }
+        });
+
+        // =====================================================================
 
         // A basic set of small tiles.
 
@@ -266,6 +378,60 @@ public class X86_64Muncher extends Muncher {
 
         });
     }
+
+    // =========================================================================
+    // Helper methods created by William
+
+    private static void emitNeg(Muncher m, Matched c, Pat<IRExp> _e_) {
+        Temp ptr = m.munch(c.get(_e_));
+        Temp value = new Temp();
+
+        m.emit(A_MOV_FROM_MEM(value, ptr));
+        m.emit(A_NEG(value));
+        m.emit(A_MOV_TO_MEM(ptr, value));
+    }
+
+    private static Instr A_INC(Temp value) {
+        return new A_OPER(
+                "inc    `s0",
+                list(value),
+                list(value)
+        );
+    }
+
+    private static Instr A_DEC(Temp value) {
+        return new A_OPER(
+                "dec    `s0",
+                list(value),
+                list(value)
+        );
+    }
+
+    private static Instr A_NEG(Temp value) {
+        return new A_OPER(
+                "neg    `s0",   // TODO: how are these represented?
+                list(value),
+                list(value)
+        );
+    }
+
+    /*
+    private static Instr A_MOVE_INDEX(Temp ptr, int index, int offset, Temp value) {
+        return new A_OPER(   // TODO: how to represent a MoveI2IM instruction?
+
+       )
+    }
+    */   // TODO
+
+    private static Instr A_XOR(Temp dest, Temp src) {
+        return new A_OPER(
+                "xorq    `s0, `d0",
+                list(dest),
+                list(src, dest)
+        );
+    }
+
+    // =========================================================================
 
     ///////// Helper methods to generate X86 assembly instructions //////////////////////////////////////
 
