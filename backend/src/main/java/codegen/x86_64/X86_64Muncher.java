@@ -114,8 +114,7 @@ public class X86_64Muncher extends Muncher {
 
         // =====================================================================
         // Larger tiles created by William
-
-        /*
+        
         // x = x + 1
         dm.add(new MunchRule<IRExp, Void>(
                 PLUS(_l_, CONST(1))
@@ -282,7 +281,6 @@ public class X86_64Muncher extends Muncher {
                 return null;
             }
         });
-        */
 
         // =====================================================================
 
