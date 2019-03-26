@@ -2,7 +2,7 @@ MethodFragment {
    X86_64Frame { label = __BT#Start
       nextLocalOffset = -8
       formals = List {
-         t993
+         t954
       }
    }
    SEQ(
@@ -12,22 +12,22 @@ MethodFragment {
                SEQ(
                   SEQ(
                      MOVE(
-                        t997 <-
+                        t958 <-
                         %rbx), 
                      MOVE(
-                        t998 <-
+                        t959 <-
                         %r12)), 
                   MOVE(
-                     t999 <-
+                     t960 <-
                      %r13)), 
                MOVE(
-                  t1000 <-
+                  t961 <-
                   %r14)), 
             MOVE(
-               t1001 <-
+               t962 <-
                %r15)), 
          MOVE(
-            t993 <-
+            t954 <-
             %rdi)), 
       SEQ(
          SEQ(
@@ -52,122 +52,122 @@ MethodFragment {
                                                                   SEQ(
                                                                      SEQ(
                                                                         MOVE(
-                                                                           t994 <-
+                                                                           t955 <-
                                                                            CALL(
                                                                               NAME(_cs411newobject),
                                                                               CONST 48)), 
                                                                         MOVE(
-                                                                           t995 <-
+                                                                           t956 <-
                                                                            CALL(
                                                                               NAME(__Tree#Init),
-                                                                              t994,
+                                                                              t955,
                                                                               CONST 16))), 
                                                                      MOVE(
-                                                                        t995 <-
+                                                                        t956 <-
                                                                         CALL(
                                                                            NAME(__Tree#Print),
-                                                                           t994))), 
+                                                                           t955))), 
                                                                   EXP(CALL(
                                                                      NAME(_cs411println),
                                                                      CONST 100000000))), 
                                                                MOVE(
-                                                                  t995 <-
+                                                                  t956 <-
                                                                   CALL(
                                                                      NAME(__Tree#Insert),
-                                                                     t994,
+                                                                     t955,
                                                                      CONST 8))), 
                                                             MOVE(
-                                                               t995 <-
+                                                               t956 <-
                                                                CALL(
                                                                   NAME(__Tree#Print),
-                                                                  t994))), 
+                                                                  t955))), 
                                                          MOVE(
-                                                            t995 <-
+                                                            t956 <-
                                                             CALL(
                                                                NAME(__Tree#Insert),
-                                                               t994,
+                                                               t955,
                                                                CONST 24))), 
                                                       MOVE(
-                                                         t995 <-
+                                                         t956 <-
                                                          CALL(
                                                             NAME(__Tree#Insert),
-                                                            t994,
+                                                            t955,
                                                             CONST 4))), 
                                                    MOVE(
-                                                      t995 <-
+                                                      t956 <-
                                                       CALL(
                                                          NAME(__Tree#Insert),
-                                                         t994,
+                                                         t955,
                                                          CONST 12))), 
                                                 MOVE(
-                                                   t995 <-
+                                                   t956 <-
                                                    CALL(
                                                       NAME(__Tree#Insert),
-                                                      t994,
+                                                      t955,
                                                       CONST 20))), 
                                              MOVE(
-                                                t995 <-
+                                                t956 <-
                                                 CALL(
                                                    NAME(__Tree#Insert),
-                                                   t994,
+                                                   t955,
                                                    CONST 28))), 
                                           MOVE(
-                                             t995 <-
+                                             t956 <-
                                              CALL(
                                                 NAME(__Tree#Insert),
-                                                t994,
+                                                t955,
                                                 CONST 14))), 
                                        MOVE(
-                                          t995 <-
+                                          t956 <-
                                           CALL(
                                              NAME(__Tree#Print),
-                                             t994))), 
+                                             t955))), 
                                     EXP(CALL(
                                        NAME(_cs411println),
                                        CALL(
                                           NAME(__Tree#Search),
-                                          t994,
+                                          t955,
                                           CONST 24)))), 
                                  EXP(CALL(
                                     NAME(_cs411println),
                                     CALL(
                                        NAME(__Tree#Search),
-                                       t994,
+                                       t955,
                                        CONST 12)))), 
                               EXP(CALL(
                                  NAME(_cs411println),
                                  CALL(
                                     NAME(__Tree#Search),
-                                    t994,
+                                    t955,
                                     CONST 16)))), 
                            EXP(CALL(
                               NAME(_cs411println),
                               CALL(
                                  NAME(__Tree#Search),
-                                 t994,
+                                 t955,
                                  CONST 50)))), 
                         EXP(CALL(
                            NAME(_cs411println),
                            CALL(
                               NAME(__Tree#Search),
-                              t994,
+                              t955,
                               CONST 12)))), 
                      MOVE(
-                        t995 <-
+                        t956 <-
                         CALL(
                            NAME(__Tree#Delete),
-                           t994,
+                           t955,
                            CONST 12))), 
                   MOVE(
-                     t995 <-
+                     t956 <-
                      CALL(
                         NAME(__Tree#Print),
-                        t994))), 
+                        t955))), 
                EXP(CALL(
                   NAME(_cs411println),
                   CALL(
                      NAME(__Tree#Search),
-                     t994,
+                     t955,
                      CONST 12)))), 
             MOVE(
                %rax <-
@@ -177,7 +177,400 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
+                        LABEL _bail_325, 
+                        MOVE(
+                           %rbx <-
+                           t958)), 
+                     MOVE(
+                        %r12 <-
+                        t959)), 
+                  MOVE(
+                     %r13 <-
+                     t960)), 
+               MOVE(
+                  %r14 <-
+                  t961)), 
+            MOVE(
+               %r15 <-
+               t962))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#Init
+      nextLocalOffset = -8
+      formals = List {
+         t963
+         t964
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        MOVE(
+                           t965 <-
+                           %rbx), 
+                        MOVE(
+                           t966 <-
+                           %r12)), 
+                     MOVE(
+                        t967 <-
+                        %r13)), 
+                  MOVE(
+                     t968 <-
+                     %r14)), 
+               MOVE(
+                  t969 <-
+                  %r15)), 
+            MOVE(
+               t963 <-
+               %rdi)), 
+         MOVE(
+            t964 <-
+            %rsi)), 
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  MOVE(
+                     MEM(BINOP(PLUS,
+                        CONST 16, 
+                        t963)) <-
+                     t964), 
+                  MOVE(
+                     MEM(BINOP(PLUS,
+                        CONST 24, 
+                        t963)) <-
+                     CONST 0)), 
+               MOVE(
+                  MEM(BINOP(PLUS,
+                     CONST 32, 
+                     t963)) <-
+                  CONST 0)), 
+            MOVE(
+               %rax <-
+               CONST 1)), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL _bail_326, 
+                        MOVE(
+                           %rbx <-
+                           t965)), 
+                     MOVE(
+                        %r12 <-
+                        t966)), 
+                  MOVE(
+                     %r13 <-
+                     t967)), 
+               MOVE(
+                  %r14 <-
+                  t968)), 
+            MOVE(
+               %r15 <-
+               t969))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#SetRight
+      nextLocalOffset = -8
+      formals = List {
+         t970
+         t971
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        MOVE(
+                           t972 <-
+                           %rbx), 
+                        MOVE(
+                           t973 <-
+                           %r12)), 
+                     MOVE(
+                        t974 <-
+                        %r13)), 
+                  MOVE(
+                     t975 <-
+                     %r14)), 
+               MOVE(
+                  t976 <-
+                  %r15)), 
+            MOVE(
+               t970 <-
+               %rdi)), 
+         MOVE(
+            t971 <-
+            %rsi)), 
+      SEQ(
+         SEQ(
+            MOVE(
+               MEM(BINOP(PLUS,
+                  CONST 8, 
+                  t970)) <-
+               t971), 
+            MOVE(
+               %rax <-
+               CONST 1)), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL _bail_327, 
+                        MOVE(
+                           %rbx <-
+                           t972)), 
+                     MOVE(
+                        %r12 <-
+                        t973)), 
+                  MOVE(
+                     %r13 <-
+                     t974)), 
+               MOVE(
+                  %r14 <-
+                  t975)), 
+            MOVE(
+               %r15 <-
+               t976))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#SetLeft
+      nextLocalOffset = -8
+      formals = List {
+         t977
+         t978
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        MOVE(
+                           t979 <-
+                           %rbx), 
+                        MOVE(
+                           t980 <-
+                           %r12)), 
+                     MOVE(
+                        t981 <-
+                        %r13)), 
+                  MOVE(
+                     t982 <-
+                     %r14)), 
+               MOVE(
+                  t983 <-
+                  %r15)), 
+            MOVE(
+               t977 <-
+               %rdi)), 
+         MOVE(
+            t978 <-
+            %rsi)), 
+      SEQ(
+         SEQ(
+            MOVE(
+               MEM(BINOP(PLUS,
+                  CONST 0, 
+                  t977)) <-
+               t978), 
+            MOVE(
+               %rax <-
+               CONST 1)), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL _bail_328, 
+                        MOVE(
+                           %rbx <-
+                           t979)), 
+                     MOVE(
+                        %r12 <-
+                        t980)), 
+                  MOVE(
+                     %r13 <-
+                     t981)), 
+               MOVE(
+                  %r14 <-
+                  t982)), 
+            MOVE(
+               %r15 <-
+               t983))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#GetRight
+      nextLocalOffset = -8
+      formals = List {
+         t984
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     MOVE(
+                        t985 <-
+                        %rbx), 
+                     MOVE(
+                        t986 <-
+                        %r12)), 
+                  MOVE(
+                     t987 <-
+                     %r13)), 
+               MOVE(
+                  t988 <-
+                  %r14)), 
+            MOVE(
+               t989 <-
+               %r15)), 
+         MOVE(
+            t984 <-
+            %rdi)), 
+      SEQ(
+         MOVE(
+            %rax <-
+            MEM(BINOP(PLUS,
+               CONST 8, 
+               t984))), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
                         LABEL _bail_329, 
+                        MOVE(
+                           %rbx <-
+                           t985)), 
+                     MOVE(
+                        %r12 <-
+                        t986)), 
+                  MOVE(
+                     %r13 <-
+                     t987)), 
+               MOVE(
+                  %r14 <-
+                  t988)), 
+            MOVE(
+               %r15 <-
+               t989))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#GetLeft
+      nextLocalOffset = -8
+      formals = List {
+         t990
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     MOVE(
+                        t991 <-
+                        %rbx), 
+                     MOVE(
+                        t992 <-
+                        %r12)), 
+                  MOVE(
+                     t993 <-
+                     %r13)), 
+               MOVE(
+                  t994 <-
+                  %r14)), 
+            MOVE(
+               t995 <-
+               %r15)), 
+         MOVE(
+            t990 <-
+            %rdi)), 
+      SEQ(
+         MOVE(
+            %rax <-
+            MEM(BINOP(PLUS,
+               CONST 0, 
+               t990))), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL _bail_330, 
+                        MOVE(
+                           %rbx <-
+                           t991)), 
+                     MOVE(
+                        %r12 <-
+                        t992)), 
+                  MOVE(
+                     %r13 <-
+                     t993)), 
+               MOVE(
+                  %r14 <-
+                  t994)), 
+            MOVE(
+               %r15 <-
+               t995))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#GetKey
+      nextLocalOffset = -8
+      formals = List {
+         t996
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     MOVE(
+                        t997 <-
+                        %rbx), 
+                     MOVE(
+                        t998 <-
+                        %r12)), 
+                  MOVE(
+                     t999 <-
+                     %r13)), 
+               MOVE(
+                  t1000 <-
+                  %r14)), 
+            MOVE(
+               t1001 <-
+               %r15)), 
+         MOVE(
+            t996 <-
+            %rdi)), 
+      SEQ(
+         MOVE(
+            %rax <-
+            MEM(BINOP(PLUS,
+               CONST 16, 
+               t996))), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL _bail_331, 
                         MOVE(
                            %rbx <-
                            t997)), 
@@ -195,7 +588,7 @@ MethodFragment {
                t1001))))
 }
 MethodFragment {
-   X86_64Frame { label = __Tree#Init
+   X86_64Frame { label = __Tree#SetKey
       nextLocalOffset = -8
       formals = List {
          t1002
@@ -232,23 +625,11 @@ MethodFragment {
             %rsi)), 
       SEQ(
          SEQ(
-            SEQ(
-               SEQ(
-                  MOVE(
-                     MEM(BINOP(PLUS,
-                        CONST 16, 
-                        t1002)) <-
-                     t1003), 
-                  MOVE(
-                     MEM(BINOP(PLUS,
-                        CONST 24, 
-                        t1002)) <-
-                     CONST 0)), 
-               MOVE(
-                  MEM(BINOP(PLUS,
-                     CONST 32, 
-                     t1002)) <-
-                  CONST 0)), 
+            MOVE(
+               MEM(BINOP(PLUS,
+                  CONST 16, 
+                  t1002)) <-
+               t1003), 
             MOVE(
                %rax <-
                CONST 1)), 
@@ -257,7 +638,7 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_330, 
+                        LABEL _bail_332, 
                         MOVE(
                            %rbx <-
                            t1004)), 
@@ -275,146 +656,10 @@ MethodFragment {
                t1008))))
 }
 MethodFragment {
-   X86_64Frame { label = __Tree#SetRight
+   X86_64Frame { label = __Tree#GetHas_Right
       nextLocalOffset = -8
       formals = List {
          t1009
-         t1010
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        MOVE(
-                           t1011 <-
-                           %rbx), 
-                        MOVE(
-                           t1012 <-
-                           %r12)), 
-                     MOVE(
-                        t1013 <-
-                        %r13)), 
-                  MOVE(
-                     t1014 <-
-                     %r14)), 
-               MOVE(
-                  t1015 <-
-                  %r15)), 
-            MOVE(
-               t1009 <-
-               %rdi)), 
-         MOVE(
-            t1010 <-
-            %rsi)), 
-      SEQ(
-         SEQ(
-            MOVE(
-               MEM(BINOP(PLUS,
-                  CONST 8, 
-                  t1009)) <-
-               t1010), 
-            MOVE(
-               %rax <-
-               CONST 1)), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_331, 
-                        MOVE(
-                           %rbx <-
-                           t1011)), 
-                     MOVE(
-                        %r12 <-
-                        t1012)), 
-                  MOVE(
-                     %r13 <-
-                     t1013)), 
-               MOVE(
-                  %r14 <-
-                  t1014)), 
-            MOVE(
-               %r15 <-
-               t1015))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#SetLeft
-      nextLocalOffset = -8
-      formals = List {
-         t1016
-         t1017
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        MOVE(
-                           t1018 <-
-                           %rbx), 
-                        MOVE(
-                           t1019 <-
-                           %r12)), 
-                     MOVE(
-                        t1020 <-
-                        %r13)), 
-                  MOVE(
-                     t1021 <-
-                     %r14)), 
-               MOVE(
-                  t1022 <-
-                  %r15)), 
-            MOVE(
-               t1016 <-
-               %rdi)), 
-         MOVE(
-            t1017 <-
-            %rsi)), 
-      SEQ(
-         SEQ(
-            MOVE(
-               MEM(BINOP(PLUS,
-                  CONST 0, 
-                  t1016)) <-
-               t1017), 
-            MOVE(
-               %rax <-
-               CONST 1)), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_332, 
-                        MOVE(
-                           %rbx <-
-                           t1018)), 
-                     MOVE(
-                        %r12 <-
-                        t1019)), 
-                  MOVE(
-                     %r13 <-
-                     t1020)), 
-               MOVE(
-                  %r14 <-
-                  t1021)), 
-            MOVE(
-               %r15 <-
-               t1022))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#GetRight
-      nextLocalOffset = -8
-      formals = List {
-         t1023
       }
    }
    SEQ(
@@ -424,29 +669,29 @@ MethodFragment {
                SEQ(
                   SEQ(
                      MOVE(
-                        t1024 <-
+                        t1010 <-
                         %rbx), 
                      MOVE(
-                        t1025 <-
+                        t1011 <-
                         %r12)), 
                   MOVE(
-                     t1026 <-
+                     t1012 <-
                      %r13)), 
                MOVE(
-                  t1027 <-
+                  t1013 <-
                   %r14)), 
             MOVE(
-               t1028 <-
+               t1014 <-
                %r15)), 
          MOVE(
-            t1023 <-
+            t1009 <-
             %rdi)), 
       SEQ(
          MOVE(
             %rax <-
             MEM(BINOP(PLUS,
-               CONST 8, 
-               t1023))), 
+               CONST 32, 
+               t1009))), 
          SEQ(
             SEQ(
                SEQ(
@@ -455,24 +700,152 @@ MethodFragment {
                         LABEL _bail_333, 
                         MOVE(
                            %rbx <-
-                           t1024)), 
+                           t1010)), 
                      MOVE(
                         %r12 <-
-                        t1025)), 
+                        t1011)), 
                   MOVE(
                      %r13 <-
-                     t1026)), 
+                     t1012)), 
                MOVE(
                   %r14 <-
-                  t1027)), 
+                  t1013)), 
             MOVE(
                %r15 <-
-               t1028))))
+               t1014))))
 }
 MethodFragment {
-   X86_64Frame { label = __Tree#GetLeft
+   X86_64Frame { label = __Tree#GetHas_Left
       nextLocalOffset = -8
       formals = List {
+         t1015
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     MOVE(
+                        t1016 <-
+                        %rbx), 
+                     MOVE(
+                        t1017 <-
+                        %r12)), 
+                  MOVE(
+                     t1018 <-
+                     %r13)), 
+               MOVE(
+                  t1019 <-
+                  %r14)), 
+            MOVE(
+               t1020 <-
+               %r15)), 
+         MOVE(
+            t1015 <-
+            %rdi)), 
+      SEQ(
+         MOVE(
+            %rax <-
+            MEM(BINOP(PLUS,
+               CONST 24, 
+               t1015))), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL _bail_334, 
+                        MOVE(
+                           %rbx <-
+                           t1016)), 
+                     MOVE(
+                        %r12 <-
+                        t1017)), 
+                  MOVE(
+                     %r13 <-
+                     t1018)), 
+               MOVE(
+                  %r14 <-
+                  t1019)), 
+            MOVE(
+               %r15 <-
+               t1020))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#SetHas_Left
+      nextLocalOffset = -8
+      formals = List {
+         t1021
+         t1022
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        MOVE(
+                           t1023 <-
+                           %rbx), 
+                        MOVE(
+                           t1024 <-
+                           %r12)), 
+                     MOVE(
+                        t1025 <-
+                        %r13)), 
+                  MOVE(
+                     t1026 <-
+                     %r14)), 
+               MOVE(
+                  t1027 <-
+                  %r15)), 
+            MOVE(
+               t1021 <-
+               %rdi)), 
+         MOVE(
+            t1022 <-
+            %rsi)), 
+      SEQ(
+         SEQ(
+            MOVE(
+               MEM(BINOP(PLUS,
+                  CONST 24, 
+                  t1021)) <-
+               t1022), 
+            MOVE(
+               %rax <-
+               CONST 1)), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL _bail_335, 
+                        MOVE(
+                           %rbx <-
+                           t1023)), 
+                     MOVE(
+                        %r12 <-
+                        t1024)), 
+                  MOVE(
+                     %r13 <-
+                     t1025)), 
+               MOVE(
+                  %r14 <-
+                  t1026)), 
+            MOVE(
+               %r15 <-
+               t1027))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#SetHas_Right
+      nextLocalOffset = -8
+      formals = List {
+         t1028
          t1029
       }
    }
@@ -482,36 +855,44 @@ MethodFragment {
             SEQ(
                SEQ(
                   SEQ(
+                     SEQ(
+                        MOVE(
+                           t1030 <-
+                           %rbx), 
+                        MOVE(
+                           t1031 <-
+                           %r12)), 
                      MOVE(
-                        t1030 <-
-                        %rbx), 
-                     MOVE(
-                        t1031 <-
-                        %r12)), 
+                        t1032 <-
+                        %r13)), 
                   MOVE(
-                     t1032 <-
-                     %r13)), 
+                     t1033 <-
+                     %r14)), 
                MOVE(
-                  t1033 <-
-                  %r14)), 
+                  t1034 <-
+                  %r15)), 
             MOVE(
-               t1034 <-
-               %r15)), 
+               t1028 <-
+               %rdi)), 
          MOVE(
             t1029 <-
-            %rdi)), 
+            %rsi)), 
       SEQ(
-         MOVE(
-            %rax <-
-            MEM(BINOP(PLUS,
-               CONST 0, 
-               t1029))), 
+         SEQ(
+            MOVE(
+               MEM(BINOP(PLUS,
+                  CONST 32, 
+                  t1028)) <-
+               t1029), 
+            MOVE(
+               %rax <-
+               CONST 1)), 
          SEQ(
             SEQ(
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_334, 
+                        LABEL _bail_336, 
                         MOVE(
                            %rbx <-
                            t1030)), 
@@ -529,10 +910,12 @@ MethodFragment {
                t1034))))
 }
 MethodFragment {
-   X86_64Frame { label = __Tree#GetKey
+   X86_64Frame { label = __Tree#Compare
       nextLocalOffset = -8
       formals = List {
          t1035
+         t1036
+         t1037
       }
    }
    SEQ(
@@ -541,157 +924,88 @@ MethodFragment {
             SEQ(
                SEQ(
                   SEQ(
+                     SEQ(
+                        SEQ(
+                           MOVE(
+                              t1040 <-
+                              %rbx), 
+                           MOVE(
+                              t1041 <-
+                              %r12)), 
+                        MOVE(
+                           t1042 <-
+                           %r13)), 
                      MOVE(
-                        t1036 <-
-                        %rbx), 
-                     MOVE(
-                        t1037 <-
-                        %r12)), 
+                        t1043 <-
+                        %r14)), 
+                  MOVE(
+                     t1044 <-
+                     %r15)), 
+               MOVE(
+                  t1035 <-
+                  %rdi)), 
+            MOVE(
+               t1036 <-
+               %rsi)), 
+         MOVE(
+            t1037 <-
+            %rdx)), 
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
                   MOVE(
                      t1038 <-
-                     %r13)), 
-               MOVE(
-                  t1039 <-
-                  %r14)), 
-            MOVE(
-               t1040 <-
-               %r15)), 
-         MOVE(
-            t1035 <-
-            %rdi)), 
-      SEQ(
-         MOVE(
-            %rax <-
-            MEM(BINOP(PLUS,
-               CONST 16, 
-               t1035))), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_335, 
-                        MOVE(
-                           %rbx <-
-                           t1036)), 
-                     MOVE(
-                        %r12 <-
-                        t1037)), 
+                     CONST 0), 
                   MOVE(
-                     %r13 <-
-                     t1038)), 
-               MOVE(
-                  %r14 <-
-                  t1039)), 
-            MOVE(
-               %r15 <-
-               t1040))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#SetKey
-      nextLocalOffset = -8
-      formals = List {
-         t1041
-         t1042
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
+                     t1039 <-
+                     BINOP(PLUS,
+                        t1037, 
+                        CONST 1))), 
                SEQ(
+                  CJUMP(LT,
+                     t1036,
+                     t1037,
+                     _L_341, _L_342), 
                   SEQ(
+                     LABEL _L_341, 
                      SEQ(
                         MOVE(
-                           t1043 <-
-                           %rbx), 
-                        MOVE(
-                           t1044 <-
-                           %r12)), 
-                     MOVE(
-                        t1045 <-
-                        %r13)), 
-                  MOVE(
-                     t1046 <-
-                     %r14)), 
-               MOVE(
-                  t1047 <-
-                  %r15)), 
-            MOVE(
-               t1041 <-
-               %rdi)), 
-         MOVE(
-            t1042 <-
-            %rsi)), 
-      SEQ(
-         SEQ(
-            MOVE(
-               MEM(BINOP(PLUS,
-                  CONST 16, 
-                  t1041)) <-
-               t1042), 
+                           t1038 <-
+                           CONST 0), 
+                        SEQ(
+                           JUMP(NAME(_L_343)), 
+                           SEQ(
+                              LABEL _L_342, 
+                              SEQ(
+                                 SEQ(
+                                    CJUMP(LT,
+                                       t1036,
+                                       t1039,
+                                       _L_339, _L_338), 
+                                    SEQ(
+                                       LABEL _L_338, 
+                                       SEQ(
+                                          MOVE(
+                                             t1038 <-
+                                             CONST 0), 
+                                          SEQ(
+                                             JUMP(NAME(_L_340)), 
+                                             SEQ(
+                                                LABEL _L_339, 
+                                                SEQ(
+                                                   MOVE(
+                                                      t1038 <-
+                                                      CONST 1), 
+                                                   SEQ(
+                                                      JUMP(NAME(_L_340)), 
+                                                      LABEL _L_340))))))), 
+                                 SEQ(
+                                    JUMP(NAME(_L_343)), 
+                                    LABEL _L_343)))))))), 
             MOVE(
                %rax <-
-               CONST 1)), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_336, 
-                        MOVE(
-                           %rbx <-
-                           t1043)), 
-                     MOVE(
-                        %r12 <-
-                        t1044)), 
-                  MOVE(
-                     %r13 <-
-                     t1045)), 
-               MOVE(
-                  %r14 <-
-                  t1046)), 
-            MOVE(
-               %r15 <-
-               t1047))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#GetHas_Right
-      nextLocalOffset = -8
-      formals = List {
-         t1048
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     MOVE(
-                        t1049 <-
-                        %rbx), 
-                     MOVE(
-                        t1050 <-
-                        %r12)), 
-                  MOVE(
-                     t1051 <-
-                     %r13)), 
-               MOVE(
-                  t1052 <-
-                  %r14)), 
-            MOVE(
-               t1053 <-
-               %r15)), 
-         MOVE(
-            t1048 <-
-            %rdi)), 
-      SEQ(
-         MOVE(
-            %rax <-
-            MEM(BINOP(PLUS,
-               CONST 32, 
-               t1048))), 
+               t1038)), 
          SEQ(
             SEQ(
                SEQ(
@@ -700,340 +1014,26 @@ MethodFragment {
                         LABEL _bail_337, 
                         MOVE(
                            %rbx <-
-                           t1049)), 
+                           t1040)), 
                      MOVE(
                         %r12 <-
-                        t1050)), 
+                        t1041)), 
                   MOVE(
                      %r13 <-
-                     t1051)), 
+                     t1042)), 
                MOVE(
                   %r14 <-
-                  t1052)), 
+                  t1043)), 
             MOVE(
                %r15 <-
-               t1053))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#GetHas_Left
-      nextLocalOffset = -8
-      formals = List {
-         t1054
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     MOVE(
-                        t1055 <-
-                        %rbx), 
-                     MOVE(
-                        t1056 <-
-                        %r12)), 
-                  MOVE(
-                     t1057 <-
-                     %r13)), 
-               MOVE(
-                  t1058 <-
-                  %r14)), 
-            MOVE(
-               t1059 <-
-               %r15)), 
-         MOVE(
-            t1054 <-
-            %rdi)), 
-      SEQ(
-         MOVE(
-            %rax <-
-            MEM(BINOP(PLUS,
-               CONST 24, 
-               t1054))), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_338, 
-                        MOVE(
-                           %rbx <-
-                           t1055)), 
-                     MOVE(
-                        %r12 <-
-                        t1056)), 
-                  MOVE(
-                     %r13 <-
-                     t1057)), 
-               MOVE(
-                  %r14 <-
-                  t1058)), 
-            MOVE(
-               %r15 <-
-               t1059))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#SetHas_Left
-      nextLocalOffset = -8
-      formals = List {
-         t1060
-         t1061
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        MOVE(
-                           t1062 <-
-                           %rbx), 
-                        MOVE(
-                           t1063 <-
-                           %r12)), 
-                     MOVE(
-                        t1064 <-
-                        %r13)), 
-                  MOVE(
-                     t1065 <-
-                     %r14)), 
-               MOVE(
-                  t1066 <-
-                  %r15)), 
-            MOVE(
-               t1060 <-
-               %rdi)), 
-         MOVE(
-            t1061 <-
-            %rsi)), 
-      SEQ(
-         SEQ(
-            MOVE(
-               MEM(BINOP(PLUS,
-                  CONST 24, 
-                  t1060)) <-
-               t1061), 
-            MOVE(
-               %rax <-
-               CONST 1)), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_339, 
-                        MOVE(
-                           %rbx <-
-                           t1062)), 
-                     MOVE(
-                        %r12 <-
-                        t1063)), 
-                  MOVE(
-                     %r13 <-
-                     t1064)), 
-               MOVE(
-                  %r14 <-
-                  t1065)), 
-            MOVE(
-               %r15 <-
-               t1066))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#SetHas_Right
-      nextLocalOffset = -8
-      formals = List {
-         t1067
-         t1068
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        MOVE(
-                           t1069 <-
-                           %rbx), 
-                        MOVE(
-                           t1070 <-
-                           %r12)), 
-                     MOVE(
-                        t1071 <-
-                        %r13)), 
-                  MOVE(
-                     t1072 <-
-                     %r14)), 
-               MOVE(
-                  t1073 <-
-                  %r15)), 
-            MOVE(
-               t1067 <-
-               %rdi)), 
-         MOVE(
-            t1068 <-
-            %rsi)), 
-      SEQ(
-         SEQ(
-            MOVE(
-               MEM(BINOP(PLUS,
-                  CONST 32, 
-                  t1067)) <-
-               t1068), 
-            MOVE(
-               %rax <-
-               CONST 1)), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_340, 
-                        MOVE(
-                           %rbx <-
-                           t1069)), 
-                     MOVE(
-                        %r12 <-
-                        t1070)), 
-                  MOVE(
-                     %r13 <-
-                     t1071)), 
-               MOVE(
-                  %r14 <-
-                  t1072)), 
-            MOVE(
-               %r15 <-
-               t1073))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#Compare
-      nextLocalOffset = -8
-      formals = List {
-         t1074
-         t1075
-         t1076
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        SEQ(
-                           MOVE(
-                              t1079 <-
-                              %rbx), 
-                           MOVE(
-                              t1080 <-
-                              %r12)), 
-                        MOVE(
-                           t1081 <-
-                           %r13)), 
-                     MOVE(
-                        t1082 <-
-                        %r14)), 
-                  MOVE(
-                     t1083 <-
-                     %r15)), 
-               MOVE(
-                  t1074 <-
-                  %rdi)), 
-            MOVE(
-               t1075 <-
-               %rsi)), 
-         MOVE(
-            t1076 <-
-            %rdx)), 
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  MOVE(
-                     t1077 <-
-                     CONST 0), 
-                  MOVE(
-                     t1078 <-
-                     BINOP(PLUS,
-                        t1076, 
-                        CONST 1))), 
-               SEQ(
-                  CJUMP(LT,
-                     t1075,
-                     t1076,
-                     _L_345, _L_346), 
-                  SEQ(
-                     LABEL _L_345, 
-                     SEQ(
-                        MOVE(
-                           t1077 <-
-                           CONST 0), 
-                        SEQ(
-                           JUMP(NAME(_L_347)), 
-                           SEQ(
-                              LABEL _L_346, 
-                              SEQ(
-                                 SEQ(
-                                    CJUMP(LT,
-                                       t1075,
-                                       t1078,
-                                       _L_343, _L_342), 
-                                    SEQ(
-                                       LABEL _L_342, 
-                                       SEQ(
-                                          MOVE(
-                                             t1077 <-
-                                             CONST 0), 
-                                          SEQ(
-                                             JUMP(NAME(_L_344)), 
-                                             SEQ(
-                                                LABEL _L_343, 
-                                                SEQ(
-                                                   MOVE(
-                                                      t1077 <-
-                                                      CONST 1), 
-                                                   SEQ(
-                                                      JUMP(NAME(_L_344)), 
-                                                      LABEL _L_344))))))), 
-                                 SEQ(
-                                    JUMP(NAME(_L_347)), 
-                                    LABEL _L_347)))))))), 
-            MOVE(
-               %rax <-
-               t1077)), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_341, 
-                        MOVE(
-                           %rbx <-
-                           t1079)), 
-                     MOVE(
-                        %r12 <-
-                        t1080)), 
-                  MOVE(
-                     %r13 <-
-                     t1081)), 
-               MOVE(
-                  %r14 <-
-                  t1082)), 
-            MOVE(
-               %r15 <-
-               t1083))))
+               t1044))))
 }
 MethodFragment {
    X86_64Frame { label = __Tree#Insert
       nextLocalOffset = -8
       formals = List {
-         t1084
-         t1085
+         t1045
+         t1046
       }
    }
    SEQ(
@@ -1044,25 +1044,25 @@ MethodFragment {
                   SEQ(
                      SEQ(
                         MOVE(
-                           t1091 <-
+                           t1052 <-
                            %rbx), 
                         MOVE(
-                           t1092 <-
+                           t1053 <-
                            %r12)), 
                      MOVE(
-                        t1093 <-
+                        t1054 <-
                         %r13)), 
                   MOVE(
-                     t1094 <-
+                     t1055 <-
                      %r14)), 
                MOVE(
-                  t1095 <-
+                  t1056 <-
                   %r15)), 
             MOVE(
-               t1084 <-
+               t1045 <-
                %rdi)), 
          MOVE(
-            t1085 <-
+            t1046 <-
             %rsi)), 
       SEQ(
          SEQ(
@@ -1071,137 +1071,137 @@ MethodFragment {
                   SEQ(
                      SEQ(
                         MOVE(
-                           t1086 <-
+                           t1047 <-
                            CALL(
                               NAME(_cs411newobject),
                               CONST 48)), 
                         MOVE(
-                           t1087 <-
+                           t1048 <-
                            CALL(
                               NAME(__Tree#Init),
-                              t1086,
-                              t1085))), 
+                              t1047,
+                              t1046))), 
                      MOVE(
-                        t1090 <-
-                        t1084)), 
+                        t1051 <-
+                        t1045)), 
                   MOVE(
-                     t1088 <-
+                     t1049 <-
                      CONST 1)), 
                SEQ(
-                  LABEL _L_358, 
+                  LABEL _L_354, 
                   SEQ(
                      CJUMP(NE,
-                        t1088,
+                        t1049,
                         CONST 0,
-                        _L_359, _L_360), 
+                        _L_355, _L_356), 
                      SEQ(
-                        LABEL _L_359, 
+                        LABEL _L_355, 
                         SEQ(
                            SEQ(
                               MOVE(
-                                 t1089 <-
+                                 t1050 <-
                                  CALL(
                                     NAME(__Tree#GetKey),
-                                    t1090)), 
+                                    t1051)), 
                               SEQ(
                                  CJUMP(LT,
-                                    t1085,
-                                    t1089,
-                                    _L_355, _L_356), 
+                                    t1046,
+                                    t1050,
+                                    _L_351, _L_352), 
                                  SEQ(
-                                    LABEL _L_355, 
+                                    LABEL _L_351, 
                                     SEQ(
                                        SEQ(
                                           CJUMP(NE,
                                              CALL(
                                                 NAME(__Tree#GetHas_Left),
-                                                t1090),
+                                                t1051),
                                              CONST 0,
-                                             _L_349, _L_350), 
+                                             _L_345, _L_346), 
                                           SEQ(
-                                             LABEL _L_349, 
+                                             LABEL _L_345, 
                                              SEQ(
                                                 MOVE(
-                                                   t1090 <-
+                                                   t1051 <-
                                                    CALL(
                                                       NAME(__Tree#GetLeft),
-                                                      t1090)), 
+                                                      t1051)), 
                                                 SEQ(
-                                                   JUMP(NAME(_L_351)), 
+                                                   JUMP(NAME(_L_347)), 
                                                    SEQ(
-                                                      LABEL _L_350, 
+                                                      LABEL _L_346, 
                                                       SEQ(
                                                          SEQ(
                                                             SEQ(
                                                                MOVE(
-                                                                  t1088 <-
+                                                                  t1049 <-
                                                                   CONST 0), 
                                                                MOVE(
-                                                                  t1087 <-
+                                                                  t1048 <-
                                                                   CALL(
                                                                      NAME(__Tree#SetHas_Left),
-                                                                     t1090,
+                                                                     t1051,
                                                                      CONST 1))), 
                                                             MOVE(
-                                                               t1087 <-
+                                                               t1048 <-
                                                                CALL(
                                                                   NAME(__Tree#SetLeft),
-                                                                  t1090,
-                                                                  t1086))), 
+                                                                  t1051,
+                                                                  t1047))), 
                                                          SEQ(
-                                                            JUMP(NAME(_L_351)), 
-                                                            LABEL _L_351))))))), 
+                                                            JUMP(NAME(_L_347)), 
+                                                            LABEL _L_347))))))), 
                                        SEQ(
-                                          JUMP(NAME(_L_357)), 
+                                          JUMP(NAME(_L_353)), 
                                           SEQ(
-                                             LABEL _L_356, 
+                                             LABEL _L_352, 
                                              SEQ(
                                                 SEQ(
                                                    CJUMP(NE,
                                                       CALL(
                                                          NAME(__Tree#GetHas_Right),
-                                                         t1090),
+                                                         t1051),
                                                       CONST 0,
-                                                      _L_352, _L_353), 
+                                                      _L_348, _L_349), 
                                                    SEQ(
-                                                      LABEL _L_352, 
+                                                      LABEL _L_348, 
                                                       SEQ(
                                                          MOVE(
-                                                            t1090 <-
+                                                            t1051 <-
                                                             CALL(
                                                                NAME(__Tree#GetRight),
-                                                               t1090)), 
+                                                               t1051)), 
                                                          SEQ(
-                                                            JUMP(NAME(_L_354)), 
+                                                            JUMP(NAME(_L_350)), 
                                                             SEQ(
-                                                               LABEL _L_353, 
+                                                               LABEL _L_349, 
                                                                SEQ(
                                                                   SEQ(
                                                                      SEQ(
                                                                         MOVE(
-                                                                           t1088 <-
+                                                                           t1049 <-
                                                                            CONST 0), 
                                                                         MOVE(
-                                                                           t1087 <-
+                                                                           t1048 <-
                                                                            CALL(
                                                                               NAME(__Tree#SetHas_Right),
-                                                                              t1090,
+                                                                              t1051,
                                                                               CONST 1))), 
                                                                      MOVE(
-                                                                        t1087 <-
+                                                                        t1048 <-
                                                                         CALL(
                                                                            NAME(__Tree#SetRight),
-                                                                           t1090,
-                                                                           t1086))), 
+                                                                           t1051,
+                                                                           t1047))), 
                                                                   SEQ(
-                                                                     JUMP(NAME(_L_354)), 
-                                                                     LABEL _L_354))))))), 
+                                                                     JUMP(NAME(_L_350)), 
+                                                                     LABEL _L_350))))))), 
                                                 SEQ(
-                                                   JUMP(NAME(_L_357)), 
-                                                   LABEL _L_357)))))))), 
+                                                   JUMP(NAME(_L_353)), 
+                                                   LABEL _L_353)))))))), 
                            SEQ(
-                              JUMP(NAME(_L_358)), 
-                              LABEL _L_360)))))), 
+                              JUMP(NAME(_L_354)), 
+                              LABEL _L_356)))))), 
             MOVE(
                %rax <-
                CONST 1)), 
@@ -1210,29 +1210,29 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_348, 
+                        LABEL _bail_344, 
                         MOVE(
                            %rbx <-
-                           t1091)), 
+                           t1052)), 
                      MOVE(
                         %r12 <-
-                        t1092)), 
+                        t1053)), 
                   MOVE(
                      %r13 <-
-                     t1093)), 
+                     t1054)), 
                MOVE(
                   %r14 <-
-                  t1094)), 
+                  t1055)), 
             MOVE(
                %r15 <-
-               t1095))))
+               t1056))))
 }
 MethodFragment {
    X86_64Frame { label = __Tree#Delete
       nextLocalOffset = -8
       formals = List {
-         t1096
-         t1097
+         t1057
+         t1058
       }
    }
    SEQ(
@@ -1243,25 +1243,25 @@ MethodFragment {
                   SEQ(
                      SEQ(
                         MOVE(
-                           t1105 <-
+                           t1066 <-
                            %rbx), 
                         MOVE(
-                           t1106 <-
+                           t1067 <-
                            %r12)), 
                      MOVE(
-                        t1107 <-
+                        t1068 <-
                         %r13)), 
                   MOVE(
-                     t1108 <-
+                     t1069 <-
                      %r14)), 
                MOVE(
-                  t1109 <-
+                  t1070 <-
                   %r15)), 
             MOVE(
-               t1096 <-
+               t1057 <-
                %rdi)), 
          MOVE(
-            t1097 <-
+            t1058 <-
             %rsi)), 
       SEQ(
          SEQ(
@@ -1271,132 +1271,132 @@ MethodFragment {
                      SEQ(
                         SEQ(
                            MOVE(
-                              t1098 <-
-                              t1096), 
+                              t1059 <-
+                              t1057), 
                            MOVE(
-                              t1099 <-
-                              t1096)), 
+                              t1060 <-
+                              t1057)), 
                         MOVE(
-                           t1100 <-
+                           t1061 <-
                            CONST 1)), 
                      MOVE(
-                        t1101 <-
+                        t1062 <-
                         CONST 0)), 
                   MOVE(
-                     t1102 <-
+                     t1063 <-
                      CONST 1)), 
                SEQ(
-                  LABEL _L_380, 
+                  LABEL _L_376, 
                   SEQ(
                      CJUMP(NE,
-                        t1100,
+                        t1061,
                         CONST 0,
-                        _L_381, _L_382), 
+                        _L_377, _L_378), 
                      SEQ(
-                        LABEL _L_381, 
+                        LABEL _L_377, 
                         SEQ(
                            SEQ(
                               SEQ(
                                  MOVE(
-                                    t1103 <-
+                                    t1064 <-
                                     CALL(
                                        NAME(__Tree#GetKey),
-                                       t1098)), 
+                                       t1059)), 
                                  SEQ(
                                     CJUMP(LT,
-                                       t1097,
-                                       t1103,
-                                       _L_377, _L_378), 
+                                       t1058,
+                                       t1064,
+                                       _L_373, _L_374), 
                                     SEQ(
-                                       LABEL _L_377, 
+                                       LABEL _L_373, 
                                        SEQ(
                                           SEQ(
                                              CJUMP(NE,
                                                 CALL(
                                                    NAME(__Tree#GetHas_Left),
-                                                   t1098),
+                                                   t1059),
                                                 CONST 0,
-                                                _L_362, _L_363), 
+                                                _L_358, _L_359), 
                                              SEQ(
-                                                LABEL _L_362, 
+                                                LABEL _L_358, 
                                                 SEQ(
                                                    SEQ(
                                                       MOVE(
-                                                         t1099 <-
-                                                         t1098), 
+                                                         t1060 <-
+                                                         t1059), 
                                                       MOVE(
-                                                         t1098 <-
+                                                         t1059 <-
                                                          CALL(
                                                             NAME(__Tree#GetLeft),
-                                                            t1098))), 
+                                                            t1059))), 
                                                    SEQ(
-                                                      JUMP(NAME(_L_364)), 
+                                                      JUMP(NAME(_L_360)), 
                                                       SEQ(
-                                                         LABEL _L_363, 
+                                                         LABEL _L_359, 
                                                          SEQ(
                                                             MOVE(
-                                                               t1100 <-
+                                                               t1061 <-
                                                                CONST 0), 
                                                             SEQ(
-                                                               JUMP(NAME(_L_364)), 
-                                                               LABEL _L_364))))))), 
+                                                               JUMP(NAME(_L_360)), 
+                                                               LABEL _L_360))))))), 
                                           SEQ(
-                                             JUMP(NAME(_L_379)), 
+                                             JUMP(NAME(_L_375)), 
                                              SEQ(
-                                                LABEL _L_378, 
+                                                LABEL _L_374, 
                                                 SEQ(
                                                    SEQ(
                                                       CJUMP(LT,
-                                                         t1103,
-                                                         t1097,
-                                                         _L_374, _L_375), 
+                                                         t1064,
+                                                         t1058,
+                                                         _L_370, _L_371), 
                                                       SEQ(
-                                                         LABEL _L_374, 
+                                                         LABEL _L_370, 
                                                          SEQ(
                                                             SEQ(
                                                                CJUMP(NE,
                                                                   CALL(
                                                                      NAME(__Tree#GetHas_Right),
-                                                                     t1098),
+                                                                     t1059),
                                                                   CONST 0,
-                                                                  _L_365, _L_366), 
+                                                                  _L_361, _L_362), 
                                                                SEQ(
-                                                                  LABEL _L_365, 
+                                                                  LABEL _L_361, 
                                                                   SEQ(
                                                                      SEQ(
                                                                         MOVE(
-                                                                           t1099 <-
-                                                                           t1098), 
+                                                                           t1060 <-
+                                                                           t1059), 
                                                                         MOVE(
-                                                                           t1098 <-
+                                                                           t1059 <-
                                                                            CALL(
                                                                               NAME(__Tree#GetRight),
-                                                                              t1098))), 
+                                                                              t1059))), 
                                                                      SEQ(
-                                                                        JUMP(NAME(_L_367)), 
+                                                                        JUMP(NAME(_L_363)), 
                                                                         SEQ(
-                                                                           LABEL _L_366, 
+                                                                           LABEL _L_362, 
                                                                            SEQ(
                                                                               MOVE(
-                                                                                 t1100 <-
+                                                                                 t1061 <-
                                                                                  CONST 0), 
                                                                               SEQ(
-                                                                                 JUMP(NAME(_L_367)), 
-                                                                                 LABEL _L_367))))))), 
+                                                                                 JUMP(NAME(_L_363)), 
+                                                                                 LABEL _L_363))))))), 
                                                             SEQ(
-                                                               JUMP(NAME(_L_376)), 
+                                                               JUMP(NAME(_L_372)), 
                                                                SEQ(
-                                                                  LABEL _L_375, 
+                                                                  LABEL _L_371, 
                                                                   SEQ(
                                                                      SEQ(
                                                                         SEQ(
                                                                            SEQ(
                                                                               CJUMP(NE,
-                                                                                 t1102,
+                                                                                 t1063,
                                                                                  CONST 0,
-                                                                                 _L_371, _L_372), 
+                                                                                 _L_367, _L_368), 
                                                                               SEQ(
-                                                                                 LABEL _L_371, 
+                                                                                 LABEL _L_367, 
                                                                                  SEQ(
                                                                                     SEQ(
                                                                                        CJUMP(EQ,
@@ -1404,99 +1404,99 @@ MethodFragment {
                                                                                              CONST 1, 
                                                                                              CALL(
                                                                                                 NAME(__Tree#GetHas_Right),
-                                                                                                t1098)),
+                                                                                                t1059)),
                                                                                           BINOP(MINUS,
                                                                                              CONST 1, 
                                                                                              CALL(
                                                                                                 NAME(__Tree#GetHas_Left),
-                                                                                                t1098)),
-                                                                                          _L_368, _L_369), 
+                                                                                                t1059)),
+                                                                                          _L_364, _L_365), 
+                                                                                       SEQ(
+                                                                                          LABEL _L_364, 
+                                                                                          SEQ(
+                                                                                             MOVE(
+                                                                                                t1065 <-
+                                                                                                CONST 1), 
+                                                                                             SEQ(
+                                                                                                JUMP(NAME(_L_366)), 
+                                                                                                SEQ(
+                                                                                                   LABEL _L_365, 
+                                                                                                   SEQ(
+                                                                                                      MOVE(
+                                                                                                         t1065 <-
+                                                                                                         CALL(
+                                                                                                            NAME(__Tree#Remove),
+                                                                                                            t1057,
+                                                                                                            t1060,
+                                                                                                            t1059)), 
+                                                                                                      SEQ(
+                                                                                                         JUMP(NAME(_L_366)), 
+                                                                                                         LABEL _L_366))))))), 
+                                                                                    SEQ(
+                                                                                       JUMP(NAME(_L_369)), 
                                                                                        SEQ(
                                                                                           LABEL _L_368, 
                                                                                           SEQ(
                                                                                              MOVE(
-                                                                                                t1104 <-
-                                                                                                CONST 1), 
-                                                                                             SEQ(
-                                                                                                JUMP(NAME(_L_370)), 
-                                                                                                SEQ(
-                                                                                                   LABEL _L_369, 
-                                                                                                   SEQ(
-                                                                                                      MOVE(
-                                                                                                         t1104 <-
-                                                                                                         CALL(
-                                                                                                            NAME(__Tree#Remove),
-                                                                                                            t1096,
-                                                                                                            t1099,
-                                                                                                            t1098)), 
-                                                                                                      SEQ(
-                                                                                                         JUMP(NAME(_L_370)), 
-                                                                                                         LABEL _L_370))))))), 
-                                                                                    SEQ(
-                                                                                       JUMP(NAME(_L_373)), 
-                                                                                       SEQ(
-                                                                                          LABEL _L_372, 
-                                                                                          SEQ(
-                                                                                             MOVE(
-                                                                                                t1104 <-
+                                                                                                t1065 <-
                                                                                                 CALL(
                                                                                                    NAME(__Tree#Remove),
-                                                                                                   t1096,
-                                                                                                   t1099,
-                                                                                                   t1098)), 
+                                                                                                   t1057,
+                                                                                                   t1060,
+                                                                                                   t1059)), 
                                                                                              SEQ(
-                                                                                                JUMP(NAME(_L_373)), 
-                                                                                                LABEL _L_373))))))), 
+                                                                                                JUMP(NAME(_L_369)), 
+                                                                                                LABEL _L_369))))))), 
                                                                            MOVE(
-                                                                              t1101 <-
+                                                                              t1062 <-
                                                                               CONST 1)), 
                                                                         MOVE(
-                                                                           t1100 <-
+                                                                           t1061 <-
                                                                            CONST 0)), 
                                                                      SEQ(
-                                                                        JUMP(NAME(_L_376)), 
-                                                                        LABEL _L_376))))))), 
+                                                                        JUMP(NAME(_L_372)), 
+                                                                        LABEL _L_372))))))), 
                                                    SEQ(
-                                                      JUMP(NAME(_L_379)), 
-                                                      LABEL _L_379)))))))), 
+                                                      JUMP(NAME(_L_375)), 
+                                                      LABEL _L_375)))))))), 
                               MOVE(
-                                 t1102 <-
+                                 t1063 <-
                                  CONST 0)), 
                            SEQ(
-                              JUMP(NAME(_L_380)), 
-                              LABEL _L_382)))))), 
+                              JUMP(NAME(_L_376)), 
+                              LABEL _L_378)))))), 
             MOVE(
                %rax <-
-               t1101)), 
+               t1062)), 
          SEQ(
             SEQ(
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_361, 
+                        LABEL _bail_357, 
                         MOVE(
                            %rbx <-
-                           t1105)), 
+                           t1066)), 
                      MOVE(
                         %r12 <-
-                        t1106)), 
+                        t1067)), 
                   MOVE(
                      %r13 <-
-                     t1107)), 
+                     t1068)), 
                MOVE(
                   %r14 <-
-                  t1108)), 
+                  t1069)), 
             MOVE(
                %r15 <-
-               t1109))))
+               t1070))))
 }
 MethodFragment {
    X86_64Frame { label = __Tree#Remove
       nextLocalOffset = -8
       formals = List {
-         t1110
-         t1111
-         t1112
+         t1071
+         t1072
+         t1073
       }
    }
    SEQ(
@@ -1508,28 +1508,28 @@ MethodFragment {
                      SEQ(
                         SEQ(
                            MOVE(
-                              t1116 <-
+                              t1077 <-
                               %rbx), 
                            MOVE(
-                              t1117 <-
+                              t1078 <-
                               %r12)), 
                         MOVE(
-                           t1118 <-
+                           t1079 <-
                            %r13)), 
                      MOVE(
-                        t1119 <-
+                        t1080 <-
                         %r14)), 
                   MOVE(
-                     t1120 <-
+                     t1081 <-
                      %r15)), 
                MOVE(
-                  t1110 <-
+                  t1071 <-
                   %rdi)), 
             MOVE(
-               t1111 <-
+               t1072 <-
                %rsi)), 
          MOVE(
-            t1112 <-
+            t1073 <-
             %rdx)), 
       SEQ(
          SEQ(
@@ -1537,116 +1537,116 @@ MethodFragment {
                CJUMP(NE,
                   CALL(
                      NAME(__Tree#GetHas_Left),
-                     t1112),
+                     t1073),
                   CONST 0,
-                  _L_390, _L_391), 
+                  _L_386, _L_387), 
                SEQ(
-                  LABEL _L_390, 
+                  LABEL _L_386, 
                   SEQ(
                      MOVE(
-                        t1113 <-
+                        t1074 <-
                         CALL(
                            NAME(__Tree#RemoveLeft),
-                           t1110,
-                           t1111,
-                           t1112)), 
+                           t1071,
+                           t1072,
+                           t1073)), 
                      SEQ(
-                        JUMP(NAME(_L_392)), 
+                        JUMP(NAME(_L_388)), 
                         SEQ(
-                           LABEL _L_391, 
+                           LABEL _L_387, 
                            SEQ(
                               SEQ(
                                  CJUMP(NE,
                                     CALL(
                                        NAME(__Tree#GetHas_Right),
-                                       t1112),
+                                       t1073),
                                     CONST 0,
-                                    _L_387, _L_388), 
+                                    _L_383, _L_384), 
                                  SEQ(
-                                    LABEL _L_387, 
+                                    LABEL _L_383, 
                                     SEQ(
                                        MOVE(
-                                          t1113 <-
+                                          t1074 <-
                                           CALL(
                                              NAME(__Tree#RemoveRight),
-                                             t1110,
-                                             t1111,
-                                             t1112)), 
+                                             t1071,
+                                             t1072,
+                                             t1073)), 
                                        SEQ(
-                                          JUMP(NAME(_L_389)), 
+                                          JUMP(NAME(_L_385)), 
                                           SEQ(
-                                             LABEL _L_388, 
+                                             LABEL _L_384, 
                                              SEQ(
                                                 SEQ(
                                                    SEQ(
                                                       MOVE(
-                                                         t1114 <-
+                                                         t1075 <-
                                                          CALL(
                                                             NAME(__Tree#GetKey),
-                                                            t1112)), 
+                                                            t1073)), 
                                                       MOVE(
-                                                         t1115 <-
+                                                         t1076 <-
                                                          CALL(
                                                             NAME(__Tree#GetKey),
                                                             CALL(
                                                                NAME(__Tree#GetLeft),
-                                                               t1111)))), 
+                                                               t1072)))), 
                                                    SEQ(
                                                       CJUMP(NE,
                                                          CALL(
                                                             NAME(__Tree#Compare),
-                                                            t1110,
-                                                            t1114,
-                                                            t1115),
+                                                            t1071,
+                                                            t1075,
+                                                            t1076),
                                                          CONST 0,
-                                                         _L_384, _L_385), 
+                                                         _L_380, _L_381), 
                                                       SEQ(
-                                                         LABEL _L_384, 
+                                                         LABEL _L_380, 
                                                          SEQ(
                                                             SEQ(
                                                                MOVE(
-                                                                  t1113 <-
+                                                                  t1074 <-
                                                                   CALL(
                                                                      NAME(__Tree#SetLeft),
-                                                                     t1111,
+                                                                     t1072,
                                                                      MEM(BINOP(PLUS,
                                                                         CONST 40, 
-                                                                        t1110)))), 
+                                                                        t1071)))), 
                                                                MOVE(
-                                                                  t1113 <-
+                                                                  t1074 <-
                                                                   CALL(
                                                                      NAME(__Tree#SetHas_Left),
-                                                                     t1111,
+                                                                     t1072,
                                                                      CONST 0))), 
                                                             SEQ(
-                                                               JUMP(NAME(_L_386)), 
+                                                               JUMP(NAME(_L_382)), 
                                                                SEQ(
-                                                                  LABEL _L_385, 
+                                                                  LABEL _L_381, 
                                                                   SEQ(
                                                                      SEQ(
                                                                         MOVE(
-                                                                           t1113 <-
+                                                                           t1074 <-
                                                                            CALL(
                                                                               NAME(__Tree#SetRight),
-                                                                              t1111,
+                                                                              t1072,
                                                                               MEM(BINOP(PLUS,
                                                                                  CONST 40, 
-                                                                                 t1110)))), 
+                                                                                 t1071)))), 
                                                                         MOVE(
-                                                                           t1113 <-
+                                                                           t1074 <-
                                                                            CALL(
                                                                               NAME(__Tree#SetHas_Right),
-                                                                              t1111,
+                                                                              t1072,
                                                                               CONST 0))), 
                                                                      SEQ(
-                                                                        JUMP(NAME(_L_386)), 
-                                                                        LABEL _L_386)))))))), 
+                                                                        JUMP(NAME(_L_382)), 
+                                                                        LABEL _L_382)))))))), 
                                                 SEQ(
-                                                   JUMP(NAME(_L_389)), 
-                                                   LABEL _L_389))))))), 
+                                                   JUMP(NAME(_L_385)), 
+                                                   LABEL _L_385))))))), 
                               SEQ(
-                                 JUMP(NAME(_L_392)), 
-                                 LABEL _L_392))))))), 
+                                 JUMP(NAME(_L_388)), 
+                                 LABEL _L_388))))))), 
             MOVE(
                %rax <-
                CONST 1)), 
@@ -1655,30 +1655,30 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_383, 
+                        LABEL _bail_379, 
                         MOVE(
                            %rbx <-
-                           t1116)), 
+                           t1077)), 
                      MOVE(
                         %r12 <-
-                        t1117)), 
+                        t1078)), 
                   MOVE(
                      %r13 <-
-                     t1118)), 
+                     t1079)), 
                MOVE(
                   %r14 <-
-                  t1119)), 
+                  t1080)), 
             MOVE(
                %r15 <-
-               t1120))))
+               t1081))))
 }
 MethodFragment {
    X86_64Frame { label = __Tree#RemoveRight
       nextLocalOffset = -8
       formals = List {
-         t1121
-         t1122
-         t1123
+         t1082
+         t1083
+         t1084
       }
    }
    SEQ(
@@ -1690,28 +1690,147 @@ MethodFragment {
                      SEQ(
                         SEQ(
                            MOVE(
-                              t1125 <-
+                              t1086 <-
                               %rbx), 
                            MOVE(
-                              t1126 <-
+                              t1087 <-
                               %r12)), 
                         MOVE(
-                           t1127 <-
+                           t1088 <-
                            %r13)), 
                      MOVE(
-                        t1128 <-
+                        t1089 <-
                         %r14)), 
                   MOVE(
-                     t1129 <-
+                     t1090 <-
                      %r15)), 
                MOVE(
-                  t1121 <-
+                  t1082 <-
                   %rdi)), 
             MOVE(
-               t1122 <-
+               t1083 <-
                %rsi)), 
          MOVE(
-            t1123 <-
+            t1084 <-
+            %rdx)), 
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     LABEL _L_390, 
+                     SEQ(
+                        CJUMP(NE,
+                           CALL(
+                              NAME(__Tree#GetHas_Right),
+                              t1084),
+                           CONST 0,
+                           _L_391, _L_392), 
+                        SEQ(
+                           LABEL _L_391, 
+                           SEQ(
+                              SEQ(
+                                 SEQ(
+                                    MOVE(
+                                       t1085 <-
+                                       CALL(
+                                          NAME(__Tree#SetKey),
+                                          t1084,
+                                          CALL(
+                                             NAME(__Tree#GetKey),
+                                             CALL(
+                                                NAME(__Tree#GetRight),
+                                                t1084)))), 
+                                    MOVE(
+                                       t1083 <-
+                                       t1084)), 
+                                 MOVE(
+                                    t1084 <-
+                                    CALL(
+                                       NAME(__Tree#GetRight),
+                                       t1084))), 
+                              SEQ(
+                                 JUMP(NAME(_L_390)), 
+                                 LABEL _L_392))))), 
+                  MOVE(
+                     t1085 <-
+                     CALL(
+                        NAME(__Tree#SetRight),
+                        t1083,
+                        MEM(BINOP(PLUS,
+                           CONST 40, 
+                           t1082))))), 
+               MOVE(
+                  t1085 <-
+                  CALL(
+                     NAME(__Tree#SetHas_Right),
+                     t1083,
+                     CONST 0))), 
+            MOVE(
+               %rax <-
+               CONST 1)), 
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        LABEL _bail_389, 
+                        MOVE(
+                           %rbx <-
+                           t1086)), 
+                     MOVE(
+                        %r12 <-
+                        t1087)), 
+                  MOVE(
+                     %r13 <-
+                     t1088)), 
+               MOVE(
+                  %r14 <-
+                  t1089)), 
+            MOVE(
+               %r15 <-
+               t1090))))
+}
+MethodFragment {
+   X86_64Frame { label = __Tree#RemoveLeft
+      nextLocalOffset = -8
+      formals = List {
+         t1091
+         t1092
+         t1093
+      }
+   }
+   SEQ(
+      SEQ(
+         SEQ(
+            SEQ(
+               SEQ(
+                  SEQ(
+                     SEQ(
+                        SEQ(
+                           MOVE(
+                              t1095 <-
+                              %rbx), 
+                           MOVE(
+                              t1096 <-
+                              %r12)), 
+                        MOVE(
+                           t1097 <-
+                           %r13)), 
+                     MOVE(
+                        t1098 <-
+                        %r14)), 
+                  MOVE(
+                     t1099 <-
+                     %r15)), 
+               MOVE(
+                  t1091 <-
+                  %rdi)), 
+            MOVE(
+               t1092 <-
+               %rsi)), 
+         MOVE(
+            t1093 <-
             %rdx)), 
       SEQ(
          SEQ(
@@ -1722,8 +1841,8 @@ MethodFragment {
                      SEQ(
                         CJUMP(NE,
                            CALL(
-                              NAME(__Tree#GetHas_Right),
-                              t1123),
+                              NAME(__Tree#GetHas_Left),
+                              t1093),
                            CONST 0,
                            _L_395, _L_396), 
                         SEQ(
@@ -1732,39 +1851,39 @@ MethodFragment {
                               SEQ(
                                  SEQ(
                                     MOVE(
-                                       t1124 <-
+                                       t1094 <-
                                        CALL(
                                           NAME(__Tree#SetKey),
-                                          t1123,
+                                          t1093,
                                           CALL(
                                              NAME(__Tree#GetKey),
                                              CALL(
-                                                NAME(__Tree#GetRight),
-                                                t1123)))), 
+                                                NAME(__Tree#GetLeft),
+                                                t1093)))), 
                                     MOVE(
-                                       t1122 <-
-                                       t1123)), 
+                                       t1092 <-
+                                       t1093)), 
                                  MOVE(
-                                    t1123 <-
+                                    t1093 <-
                                     CALL(
-                                       NAME(__Tree#GetRight),
-                                       t1123))), 
+                                       NAME(__Tree#GetLeft),
+                                       t1093))), 
                               SEQ(
                                  JUMP(NAME(_L_394)), 
                                  LABEL _L_396))))), 
                   MOVE(
-                     t1124 <-
+                     t1094 <-
                      CALL(
-                        NAME(__Tree#SetRight),
-                        t1122,
+                        NAME(__Tree#SetLeft),
+                        t1092,
                         MEM(BINOP(PLUS,
                            CONST 40, 
-                           t1121))))), 
+                           t1091))))), 
                MOVE(
-                  t1124 <-
+                  t1094 <-
                   CALL(
-                     NAME(__Tree#SetHas_Right),
-                     t1122,
+                     NAME(__Tree#SetHas_Left),
+                     t1092,
                      CONST 0))), 
             MOVE(
                %rax <-
@@ -1777,27 +1896,26 @@ MethodFragment {
                         LABEL _bail_393, 
                         MOVE(
                            %rbx <-
-                           t1125)), 
+                           t1095)), 
                      MOVE(
                         %r12 <-
-                        t1126)), 
+                        t1096)), 
                   MOVE(
                      %r13 <-
-                     t1127)), 
+                     t1097)), 
                MOVE(
                   %r14 <-
-                  t1128)), 
+                  t1098)), 
             MOVE(
                %r15 <-
-               t1129))))
+               t1099))))
 }
 MethodFragment {
-   X86_64Frame { label = __Tree#RemoveLeft
+   X86_64Frame { label = __Tree#Search
       nextLocalOffset = -8
       formals = List {
-         t1130
-         t1131
-         t1132
+         t1100
+         t1101
       }
    }
    SEQ(
@@ -1807,87 +1925,154 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        SEQ(
-                           MOVE(
-                              t1134 <-
-                              %rbx), 
-                           MOVE(
-                              t1135 <-
-                              %r12)), 
                         MOVE(
-                           t1136 <-
-                           %r13)), 
+                           t1106 <-
+                           %rbx), 
+                        MOVE(
+                           t1107 <-
+                           %r12)), 
                      MOVE(
-                        t1137 <-
-                        %r14)), 
+                        t1108 <-
+                        %r13)), 
                   MOVE(
-                     t1138 <-
-                     %r15)), 
+                     t1109 <-
+                     %r14)), 
                MOVE(
-                  t1130 <-
-                  %rdi)), 
+                  t1110 <-
+                  %r15)), 
             MOVE(
-               t1131 <-
-               %rsi)), 
+               t1100 <-
+               %rdi)), 
          MOVE(
-            t1132 <-
-            %rdx)), 
+            t1101 <-
+            %rsi)), 
       SEQ(
          SEQ(
             SEQ(
                SEQ(
                   SEQ(
-                     LABEL _L_398, 
-                     SEQ(
-                        CJUMP(NE,
-                           CALL(
-                              NAME(__Tree#GetHas_Left),
-                              t1132),
-                           CONST 0,
-                           _L_399, _L_400), 
-                        SEQ(
-                           LABEL _L_399, 
-                           SEQ(
-                              SEQ(
-                                 SEQ(
-                                    MOVE(
-                                       t1133 <-
-                                       CALL(
-                                          NAME(__Tree#SetKey),
-                                          t1132,
-                                          CALL(
-                                             NAME(__Tree#GetKey),
-                                             CALL(
-                                                NAME(__Tree#GetLeft),
-                                                t1132)))), 
-                                    MOVE(
-                                       t1131 <-
-                                       t1132)), 
-                                 MOVE(
-                                    t1132 <-
-                                    CALL(
-                                       NAME(__Tree#GetLeft),
-                                       t1132))), 
-                              SEQ(
-                                 JUMP(NAME(_L_398)), 
-                                 LABEL _L_400))))), 
+                     MOVE(
+                        t1104 <-
+                        t1100), 
+                     MOVE(
+                        t1102 <-
+                        CONST 1)), 
                   MOVE(
-                     t1133 <-
-                     CALL(
-                        NAME(__Tree#SetLeft),
-                        t1131,
-                        MEM(BINOP(PLUS,
-                           CONST 40, 
-                           t1130))))), 
-               MOVE(
-                  t1133 <-
-                  CALL(
-                     NAME(__Tree#SetHas_Left),
-                     t1131,
-                     CONST 0))), 
+                     t1103 <-
+                     CONST 0)), 
+               SEQ(
+                  LABEL _L_410, 
+                  SEQ(
+                     CJUMP(NE,
+                        t1102,
+                        CONST 0,
+                        _L_411, _L_412), 
+                     SEQ(
+                        LABEL _L_411, 
+                        SEQ(
+                           SEQ(
+                              MOVE(
+                                 t1105 <-
+                                 CALL(
+                                    NAME(__Tree#GetKey),
+                                    t1104)), 
+                              SEQ(
+                                 CJUMP(LT,
+                                    t1101,
+                                    t1105,
+                                    _L_407, _L_408), 
+                                 SEQ(
+                                    LABEL _L_407, 
+                                    SEQ(
+                                       SEQ(
+                                          CJUMP(NE,
+                                             CALL(
+                                                NAME(__Tree#GetHas_Left),
+                                                t1104),
+                                             CONST 0,
+                                             _L_398, _L_399), 
+                                          SEQ(
+                                             LABEL _L_398, 
+                                             SEQ(
+                                                MOVE(
+                                                   t1104 <-
+                                                   CALL(
+                                                      NAME(__Tree#GetLeft),
+                                                      t1104)), 
+                                                SEQ(
+                                                   JUMP(NAME(_L_400)), 
+                                                   SEQ(
+                                                      LABEL _L_399, 
+                                                      SEQ(
+                                                         MOVE(
+                                                            t1102 <-
+                                                            CONST 0), 
+                                                         SEQ(
+                                                            JUMP(NAME(_L_400)), 
+                                                            LABEL _L_400))))))), 
+                                       SEQ(
+                                          JUMP(NAME(_L_409)), 
+                                          SEQ(
+                                             LABEL _L_408, 
+                                             SEQ(
+                                                SEQ(
+                                                   CJUMP(LT,
+                                                      t1105,
+                                                      t1101,
+                                                      _L_404, _L_405), 
+                                                   SEQ(
+                                                      LABEL _L_404, 
+                                                      SEQ(
+                                                         SEQ(
+                                                            CJUMP(NE,
+                                                               CALL(
+                                                                  NAME(__Tree#GetHas_Right),
+                                                                  t1104),
+                                                               CONST 0,
+                                                               _L_401, _L_402), 
+                                                            SEQ(
+                                                               LABEL _L_401, 
+                                                               SEQ(
+                                                                  MOVE(
+                                                                     t1104 <-
+                                                                     CALL(
+                                                                        NAME(__Tree#GetRight),
+                                                                        t1104)), 
+                                                                  SEQ(
+                                                                     JUMP(NAME(_L_403)), 
+                                                                     SEQ(
+                                                                        LABEL _L_402, 
+                                                                        SEQ(
+                                                                           MOVE(
+                                                                              t1102 <-
+                                                                              CONST 0), 
+                                                                           SEQ(
+                                                                              JUMP(NAME(_L_403)), 
+                                                                              LABEL _L_403))))))), 
+                                                         SEQ(
+                                                            JUMP(NAME(_L_406)), 
+                                                            SEQ(
+                                                               LABEL _L_405, 
+                                                               SEQ(
+                                                                  SEQ(
+                                                                     MOVE(
+                                                                        t1103 <-
+                                                                        CONST 1), 
+                                                                     MOVE(
+                                                                        t1102 <-
+                                                                        CONST 0)), 
+                                                                  SEQ(
+                                                                     JUMP(NAME(_L_406)), 
+                                                                     LABEL _L_406))))))), 
+                                                SEQ(
+                                                   JUMP(NAME(_L_409)), 
+                                                   LABEL _L_409)))))))), 
+                           SEQ(
+                              JUMP(NAME(_L_410)), 
+                              LABEL _L_412)))))), 
             MOVE(
                %rax <-
-               CONST 1)), 
+               t1103)), 
          SEQ(
             SEQ(
                SEQ(
@@ -1896,210 +2081,25 @@ MethodFragment {
                         LABEL _bail_397, 
                         MOVE(
                            %rbx <-
-                           t1134)), 
+                           t1106)), 
                      MOVE(
                         %r12 <-
-                        t1135)), 
+                        t1107)), 
                   MOVE(
                      %r13 <-
-                     t1136)), 
+                     t1108)), 
                MOVE(
                   %r14 <-
-                  t1137)), 
+                  t1109)), 
             MOVE(
                %r15 <-
-               t1138))))
-}
-MethodFragment {
-   X86_64Frame { label = __Tree#Search
-      nextLocalOffset = -8
-      formals = List {
-         t1139
-         t1140
-      }
-   }
-   SEQ(
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        MOVE(
-                           t1145 <-
-                           %rbx), 
-                        MOVE(
-                           t1146 <-
-                           %r12)), 
-                     MOVE(
-                        t1147 <-
-                        %r13)), 
-                  MOVE(
-                     t1148 <-
-                     %r14)), 
-               MOVE(
-                  t1149 <-
-                  %r15)), 
-            MOVE(
-               t1139 <-
-               %rdi)), 
-         MOVE(
-            t1140 <-
-            %rsi)), 
-      SEQ(
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     MOVE(
-                        t1143 <-
-                        t1139), 
-                     MOVE(
-                        t1141 <-
-                        CONST 1)), 
-                  MOVE(
-                     t1142 <-
-                     CONST 0)), 
-               SEQ(
-                  LABEL _L_414, 
-                  SEQ(
-                     CJUMP(NE,
-                        t1141,
-                        CONST 0,
-                        _L_415, _L_416), 
-                     SEQ(
-                        LABEL _L_415, 
-                        SEQ(
-                           SEQ(
-                              MOVE(
-                                 t1144 <-
-                                 CALL(
-                                    NAME(__Tree#GetKey),
-                                    t1143)), 
-                              SEQ(
-                                 CJUMP(LT,
-                                    t1140,
-                                    t1144,
-                                    _L_411, _L_412), 
-                                 SEQ(
-                                    LABEL _L_411, 
-                                    SEQ(
-                                       SEQ(
-                                          CJUMP(NE,
-                                             CALL(
-                                                NAME(__Tree#GetHas_Left),
-                                                t1143),
-                                             CONST 0,
-                                             _L_402, _L_403), 
-                                          SEQ(
-                                             LABEL _L_402, 
-                                             SEQ(
-                                                MOVE(
-                                                   t1143 <-
-                                                   CALL(
-                                                      NAME(__Tree#GetLeft),
-                                                      t1143)), 
-                                                SEQ(
-                                                   JUMP(NAME(_L_404)), 
-                                                   SEQ(
-                                                      LABEL _L_403, 
-                                                      SEQ(
-                                                         MOVE(
-                                                            t1141 <-
-                                                            CONST 0), 
-                                                         SEQ(
-                                                            JUMP(NAME(_L_404)), 
-                                                            LABEL _L_404))))))), 
-                                       SEQ(
-                                          JUMP(NAME(_L_413)), 
-                                          SEQ(
-                                             LABEL _L_412, 
-                                             SEQ(
-                                                SEQ(
-                                                   CJUMP(LT,
-                                                      t1144,
-                                                      t1140,
-                                                      _L_408, _L_409), 
-                                                   SEQ(
-                                                      LABEL _L_408, 
-                                                      SEQ(
-                                                         SEQ(
-                                                            CJUMP(NE,
-                                                               CALL(
-                                                                  NAME(__Tree#GetHas_Right),
-                                                                  t1143),
-                                                               CONST 0,
-                                                               _L_405, _L_406), 
-                                                            SEQ(
-                                                               LABEL _L_405, 
-                                                               SEQ(
-                                                                  MOVE(
-                                                                     t1143 <-
-                                                                     CALL(
-                                                                        NAME(__Tree#GetRight),
-                                                                        t1143)), 
-                                                                  SEQ(
-                                                                     JUMP(NAME(_L_407)), 
-                                                                     SEQ(
-                                                                        LABEL _L_406, 
-                                                                        SEQ(
-                                                                           MOVE(
-                                                                              t1141 <-
-                                                                              CONST 0), 
-                                                                           SEQ(
-                                                                              JUMP(NAME(_L_407)), 
-                                                                              LABEL _L_407))))))), 
-                                                         SEQ(
-                                                            JUMP(NAME(_L_410)), 
-                                                            SEQ(
-                                                               LABEL _L_409, 
-                                                               SEQ(
-                                                                  SEQ(
-                                                                     MOVE(
-                                                                        t1142 <-
-                                                                        CONST 1), 
-                                                                     MOVE(
-                                                                        t1141 <-
-                                                                        CONST 0)), 
-                                                                  SEQ(
-                                                                     JUMP(NAME(_L_410)), 
-                                                                     LABEL _L_410))))))), 
-                                                SEQ(
-                                                   JUMP(NAME(_L_413)), 
-                                                   LABEL _L_413)))))))), 
-                           SEQ(
-                              JUMP(NAME(_L_414)), 
-                              LABEL _L_416)))))), 
-            MOVE(
-               %rax <-
-               t1142)), 
-         SEQ(
-            SEQ(
-               SEQ(
-                  SEQ(
-                     SEQ(
-                        LABEL _bail_401, 
-                        MOVE(
-                           %rbx <-
-                           t1145)), 
-                     MOVE(
-                        %r12 <-
-                        t1146)), 
-                  MOVE(
-                     %r13 <-
-                     t1147)), 
-               MOVE(
-                  %r14 <-
-                  t1148)), 
-            MOVE(
-               %r15 <-
-               t1149))))
+               t1110))))
 }
 MethodFragment {
    X86_64Frame { label = __Tree#Print
       nextLocalOffset = -8
       formals = List {
-         t1150
+         t1111
       }
    }
    SEQ(
@@ -2109,35 +2109,35 @@ MethodFragment {
                SEQ(
                   SEQ(
                      MOVE(
-                        t1153 <-
+                        t1114 <-
                         %rbx), 
                      MOVE(
-                        t1154 <-
+                        t1115 <-
                         %r12)), 
                   MOVE(
-                     t1155 <-
+                     t1116 <-
                      %r13)), 
                MOVE(
-                  t1156 <-
+                  t1117 <-
                   %r14)), 
             MOVE(
-               t1157 <-
+               t1118 <-
                %r15)), 
          MOVE(
-            t1150 <-
+            t1111 <-
             %rdi)), 
       SEQ(
          SEQ(
             SEQ(
                MOVE(
-                  t1151 <-
-                  t1150), 
+                  t1112 <-
+                  t1111), 
                MOVE(
-                  t1152 <-
+                  t1113 <-
                   CALL(
                      NAME(__Tree#RecPrint),
-                     t1150,
-                     t1151))), 
+                     t1111,
+                     t1112))), 
             MOVE(
                %rax <-
                CONST 1)), 
@@ -2146,29 +2146,29 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_417, 
+                        LABEL _bail_413, 
                         MOVE(
                            %rbx <-
-                           t1153)), 
+                           t1114)), 
                      MOVE(
                         %r12 <-
-                        t1154)), 
+                        t1115)), 
                   MOVE(
                      %r13 <-
-                     t1155)), 
+                     t1116)), 
                MOVE(
                   %r14 <-
-                  t1156)), 
+                  t1117)), 
             MOVE(
                %r15 <-
-               t1157))))
+               t1118))))
 }
 MethodFragment {
    X86_64Frame { label = __Tree#RecPrint
       nextLocalOffset = -8
       formals = List {
-         t1158
-         t1159
+         t1119
+         t1120
       }
    }
    SEQ(
@@ -2179,25 +2179,25 @@ MethodFragment {
                   SEQ(
                      SEQ(
                         MOVE(
-                           t1161 <-
+                           t1122 <-
                            %rbx), 
                         MOVE(
-                           t1162 <-
+                           t1123 <-
                            %r12)), 
                      MOVE(
-                        t1163 <-
+                        t1124 <-
                         %r13)), 
                   MOVE(
-                     t1164 <-
+                     t1125 <-
                      %r14)), 
                MOVE(
-                  t1165 <-
+                  t1126 <-
                   %r15)), 
             MOVE(
-               t1158 <-
+               t1119 <-
                %rdi)), 
          MOVE(
-            t1159 <-
+            t1120 <-
             %rsi)), 
       SEQ(
          SEQ(
@@ -2207,65 +2207,65 @@ MethodFragment {
                      CJUMP(NE,
                         CALL(
                            NAME(__Tree#GetHas_Left),
-                           t1159),
+                           t1120),
                         CONST 0,
-                        _L_419, _L_420), 
+                        _L_415, _L_416), 
                      SEQ(
-                        LABEL _L_419, 
+                        LABEL _L_415, 
                         SEQ(
                            MOVE(
-                              t1160 <-
+                              t1121 <-
                               CALL(
                                  NAME(__Tree#RecPrint),
-                                 t1158,
+                                 t1119,
                                  CALL(
                                     NAME(__Tree#GetLeft),
-                                    t1159))), 
+                                    t1120))), 
                            SEQ(
-                              JUMP(NAME(_L_421)), 
+                              JUMP(NAME(_L_417)), 
                               SEQ(
-                                 LABEL _L_420, 
+                                 LABEL _L_416, 
                                  SEQ(
                                     MOVE(
-                                       t1160 <-
+                                       t1121 <-
                                        CONST 1), 
                                     SEQ(
-                                       JUMP(NAME(_L_421)), 
-                                       LABEL _L_421))))))), 
+                                       JUMP(NAME(_L_417)), 
+                                       LABEL _L_417))))))), 
                   EXP(CALL(
                      NAME(_cs411println),
                      CALL(
                         NAME(__Tree#GetKey),
-                        t1159)))), 
+                        t1120)))), 
                SEQ(
                   CJUMP(NE,
                      CALL(
                         NAME(__Tree#GetHas_Right),
-                        t1159),
+                        t1120),
                      CONST 0,
-                     _L_422, _L_423), 
+                     _L_418, _L_419), 
                   SEQ(
-                     LABEL _L_422, 
+                     LABEL _L_418, 
                      SEQ(
                         MOVE(
-                           t1160 <-
+                           t1121 <-
                            CALL(
                               NAME(__Tree#RecPrint),
-                              t1158,
+                              t1119,
                               CALL(
                                  NAME(__Tree#GetRight),
-                                 t1159))), 
+                                 t1120))), 
                         SEQ(
-                           JUMP(NAME(_L_424)), 
+                           JUMP(NAME(_L_420)), 
                            SEQ(
-                              LABEL _L_423, 
+                              LABEL _L_419, 
                               SEQ(
                                  MOVE(
-                                    t1160 <-
+                                    t1121 <-
                                     CONST 1), 
                                  SEQ(
-                                    JUMP(NAME(_L_424)), 
-                                    LABEL _L_424)))))))), 
+                                    JUMP(NAME(_L_420)), 
+                                    LABEL _L_420)))))))), 
             MOVE(
                %rax <-
                CONST 1)), 
@@ -2274,22 +2274,22 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_418, 
+                        LABEL _bail_414, 
                         MOVE(
                            %rbx <-
-                           t1161)), 
+                           t1122)), 
                      MOVE(
                         %r12 <-
-                        t1162)), 
+                        t1123)), 
                   MOVE(
                      %r13 <-
-                     t1163)), 
+                     t1124)), 
                MOVE(
                   %r14 <-
-                  t1164)), 
+                  t1125)), 
             MOVE(
                %r15 <-
-               t1165))))
+               t1126))))
 }
 MethodFragment {
    X86_64Frame { label = _cs411main
@@ -2303,19 +2303,19 @@ MethodFragment {
             SEQ(
                SEQ(
                   MOVE(
-                     t1166 <-
+                     t1127 <-
                      %rbx), 
                   MOVE(
-                     t1167 <-
+                     t1128 <-
                      %r12)), 
                MOVE(
-                  t1168 <-
+                  t1129 <-
                   %r13)), 
             MOVE(
-               t1169 <-
+               t1130 <-
                %r14)), 
          MOVE(
-            t1170 <-
+            t1131 <-
             %r15)), 
       SEQ(
          EXP(CALL(
@@ -2330,20 +2330,20 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_328, 
+                        LABEL _bail_324, 
                         MOVE(
                            %rbx <-
-                           t1166)), 
+                           t1127)), 
                      MOVE(
                         %r12 <-
-                        t1167)), 
+                        t1128)), 
                   MOVE(
                      %r13 <-
-                     t1168)), 
+                     t1129)), 
                MOVE(
                   %r14 <-
-                  t1169)), 
+                  t1130)), 
             MOVE(
                %r15 <-
-               t1170))))
+               t1131))))
 }

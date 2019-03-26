@@ -108,99 +108,64 @@ public class X86_64Muncher extends Muncher {
         };
 
         // =====================================================================
+        // Pattern variables created by William
+
+        final Pat<Integer> _offset_ = Pat.any();
+
+        // =====================================================================
         // Larger tiles created by William
 
         // x = x + 1
-        sm.add(new MunchRule<IRStm, Void>(
-                MOVE(MEM(_e_), PLUS(MEM(_e_), CONST(1)))
+        dm.add(new MunchRule<IRExp, Void>(
+                PLUS(_l_, CONST(1))
         ) {
             @Override
             protected Void trigger(Muncher m, Matched c) {
-                Temp ptr = m.munch(c.get(_e_));
-                Temp value = new Temp();
-
-                m.emit(A_MOV_FROM_MEM(value, ptr));
+                Temp value = m.munch(c.get(_l_));
                 m.emit(A_INC(value));
-                m.emit(A_MOV_TO_MEM(ptr, value));
 
                 return null;
             }
         });
 
         // x = x - 1
-        sm.add(new MunchRule<IRStm, Void>(
-                MOVE(MEM(_e_), MINUS(MEM(_e_), CONST(1)))
+        dm.add(new MunchRule<IRExp, Void>(
+                MINUS(_l_, CONST(1))
         ) {
             @Override
             protected Void trigger(Muncher m, Matched c) {
-                Temp ptr = m.munch(c.get(_e_));
-                Temp value = new Temp();
-
-                m.emit(A_MOV_FROM_MEM(value, ptr));
+                Temp value = m.munch(c.get(_l_));
                 m.emit(A_DEC(value));
-                m.emit(A_MOV_TO_MEM(ptr, value));
 
                 return null;
             }
         });
 
         // x = 0 - x
-        sm.add(new MunchRule<IRStm, Void>(
-                MOVE(MEM(_e_), MINUS(CONST(0), MEM(_e_)))
+        dm.add(new MunchRule<IRExp, Void>(
+                MINUS(CONST(0), _r_)
         ) {
             @Override
             protected Void trigger(Muncher m, Matched c) {
-                emitNeg(m, c, _e_);
+                Temp value = m.munch(c.get(_r_));
+                m.emit(A_NEG(value));
+
                 return null;
             }
         });
 
         // x = -1 * x
-        sm.add(new MunchRule<IRStm, Void>(
-                MOVE(MEM(_e_), MUL(CONST(-1), MEM(_e_)))
+        dm.add(new MunchRule<IRExp, Void>(
+                MUL(CONST(-1), _r_)
         ) {
             @Override
             protected Void trigger(Muncher m, Matched c) {
-                emitNeg(m, c, _e_);
-                return null;
-            }
-        });
-
-
-        /*
-        // a[i] = e
-        sm.add(new MunchRule<IRStm, Void>(
-                MOVE(MEM(PLUS(_l_, MUL(_r_, CONST(8)))), _e_)
-        ) {
-            @Override
-            protected Void trigger(Muncher m, Matched c) {
-                m.emit(A)
+                Temp value = m.munch(c.get(_r_));
+                m.emit(A_NEG(value));
 
                 return null;
             }
         });
-
-        // e = a[i]
-        sm.add(new MunchRule<IRStm, Void>(
-                MOVE(_e_, MEM(PLUS(_l_, MUL(_r_, CONST(8)))))
-        ) {
-            @Override
-            protected Void trigger(Muncher m, Matched c) {
-                return null;
-            }
-        });
-
-        // push x
-        // pushq %r10      %rsp--   M[%rsp] = %r10
-        sm.add(new MunchRule<IRStm, Void>(
-                null
-        ) {
-            @Override
-            protected Void trigger(Muncher m, Matched c) {
-                return null;
-            }
-        });
-        */
 
         // x = 0
         sm.add(new MunchRule<IRStm, Void>(
@@ -208,11 +173,110 @@ public class X86_64Muncher extends Muncher {
         ) {
             @Override
             protected Void trigger(Muncher m, Matched c) {
-                Temp ptr = m.munch(c.get(_e_));
-                Temp value = new Temp();
-
+                Temp value = m.munch(c.get(_e_));
                 m.emit(A_XOR(value, value));
-                m.emit(A_MOV_TO_MEM(ptr, value));
+
+                return null;
+            }
+        });
+
+        // x = a[i]
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(_e_, MEM(PLUS(_l_, MUL(CONST(_scale_), CONST(_i_)))))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp receiver = m.munch(c.get(_e_));
+                Temp base = m.munch(c.get(_l_));
+                int scale = c.get(_scale_);
+                int index = c.get(_i_);
+
+                m.emit(A_MOVE_IM2R_index(base, index, scale, receiver));
+
+                return null;
+            }
+        });
+
+        // a[i] = x
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(MEM(PLUS(_l_, MUL(CONST(_scale_), CONST(_i_)))), _e_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp base = m.munch(c.get(_l_));
+                int scale = c.get(_scale_);
+                int index = c.get(_i_);
+                Temp value = m.munch(c.get(_e_));
+
+                m.emit(A_MOVE_R2IM_index(base, index, scale, value));
+
+                return null;
+            }
+        });
+
+        // x = y.z
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(_e_, MEM(PLUS(_l_, CONST(_offset_))))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp receiver = m.munch(c.get(_e_));
+                Temp base = m.munch(c.get(_l_));
+                int offset = c.get(_offset_);
+
+                m.emit(A_MOVE_M2R(base, offset, receiver));
+
+                return null;
+            }
+        });
+
+        // y.z = x
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(MEM(PLUS(_l_, CONST(_offset_))), _e_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp base = m.munch(c.get(_l_));
+                int offset = c.get(_offset_);
+                Temp value = m.munch(c.get(_e_));
+
+                m.emit(A_MOVE_R2M(base, offset, value));
+
+                return null;
+            }
+        });
+
+        // x = y.a[i]
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(_e_, MEM(PLUS(_l_, CONST(_offset_), MUL(CONST(_scale_), CONST(_i_)))))
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp receiver = m.munch(c.get(_e_));
+                Temp base = m.munch(c.get(_l_));
+                int offset = c.get(_offset_);
+                int scale = c.get(_scale_);
+                int index = c.get(_i_);
+
+                m.emit(A_MOVE_IM2R_offset(base, offset, index, scale, receiver));
+
+                return null;
+            }
+        });
+
+        // y.a[i] = x
+        sm.add(new MunchRule<IRStm, Void>(
+                MOVE(MEM(PLUS(_l_, CONST(_offset_), MUL(CONST(_scale_), CONST(_i_)))), _e_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                Temp base = m.munch(c.get(_l_));
+                int offset = c.get(_offset_);
+                int scale = c.get(_scale_);
+                int index = c.get(_i_);
+                Temp value = m.munch(c.get(_e_));
+
+                m.emit(A_MOVE_R2IM_offset(base, offset, index, scale, value));
 
                 return null;
             }
@@ -383,52 +447,83 @@ public class X86_64Muncher extends Muncher {
     // =========================================================================
     // Helper methods created by William
 
-    private static void emitNeg(Muncher m, Matched c, Pat<IRExp> _e_) {
-        Temp ptr = m.munch(c.get(_e_));
-        Temp value = new Temp();
-
-        m.emit(A_MOV_FROM_MEM(value, ptr));
-        m.emit(A_NEG(value));
-        m.emit(A_MOV_TO_MEM(ptr, value));
-    }
-
-    private static Instr A_INC(Temp value) {
+    private static Instr A_DEC(Temp value) {
         return new A_OPER(
-                "inc    `s0",
+                "\tdecq\t" + value,
                 list(value),
                 list(value)
         );
     }
 
-    private static Instr A_DEC(Temp value) {
+    private static Instr A_INC(Temp value) {
         return new A_OPER(
-                "dec    `s0",
+                "\tincq\t" + value,
                 list(value),
+                list(value)
+        );
+    }
+
+    private static Instr A_MOVE_IM2R_index(Temp base, int index, int scale, Temp receiver) {
+        return new A_OPER(
+                "\tmovq\t" + "(" + base + ", " + index + ", " + scale + "), " + receiver,
+                list(receiver),
+                list(base)
+        );
+    }
+
+    private static Instr A_MOVE_IM2R_offset(Temp base, int offset, int index, int scale, Temp receiver) {
+        return new A_OPER(
+                "\tmovq\t" + (offset == 0 ? "" : offset) + "(" + base + ", " + index + ", " + scale + "), " + receiver,
+                list(receiver),
+                list(base)
+        );
+    }
+
+    private static Instr A_MOVE_M2R(Temp base, int offset, Temp receiver) {
+        return new A_OPER(
+                "\tmovq\t" + (offset == 0 ? "" : offset) + "(" + base + "), " + receiver,
+                list(receiver),
+                list(base)
+        );
+    }
+
+    private static Instr A_MOVE_R2IM_index(Temp base, int index, int scale, Temp value) {
+        return new A_OPER(
+                "\tmovq\t" + value + ", (" + base + ", " + index + ", " + scale + ")",
+                list(base),
+                list(value)
+        );
+    }
+
+    private static Instr A_MOVE_R2IM_offset(Temp base, int offset, int index, int scale, Temp value) {
+        return new A_OPER(
+                "\tmovq\t" + value + ", " + (offset == 0 ? "" : offset) + "(" + base + ", " + index + ", " + scale + ")",
+                list(value),
+                list(base)
+        );
+    }
+
+    private static Instr A_MOVE_R2M(Temp base, int offset, Temp value) {
+        return new A_OPER(
+                "\tmovq\t" + value + ", " + (offset == 0 ? "" : offset) + "(" + base + ")",
+                list(base),
                 list(value)
         );
     }
 
     private static Instr A_NEG(Temp value) {
         return new A_OPER(
-                "neg    `s0",   // TODO: how are these represented?
+                "\tnegq\t" + value,
                 list(value),
                 list(value)
         );
     }
 
-    /*
-    private static Instr A_MOVE_INDEX(Temp ptr, int index, int offset, Temp value) {
-        return new A_OPER(   // TODO: how to represent a MoveI2IM instruction?
-
-       )
-    }
-    */   // TODO
-
-    private static Instr A_XOR(Temp dest, Temp src) {
+    private static Instr A_XOR(Temp source, Temp target) {
         return new A_OPER(
-                "xorq    `s0, `d0",
-                list(dest),
-                list(src, dest)
+                "\txorq\t" + source + ", " + target,
+                list(target),
+                list(source, target)
         );
     }
 
