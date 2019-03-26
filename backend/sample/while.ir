@@ -2,8 +2,8 @@ MethodFragment {
    X86_64Frame { label = __Foo#doit
       nextLocalOffset = -8
       formals = List {
-         t3808
-         t3809
+         t3337
+         t3338
       }
    }
    SEQ(
@@ -14,63 +14,63 @@ MethodFragment {
                   SEQ(
                      SEQ(
                         MOVE(
-                           t3812 <-
+                           t3341 <-
                            %rbx), 
                         MOVE(
-                           t3813 <-
+                           t3342 <-
                            %r12)), 
                      MOVE(
-                        t3814 <-
+                        t3343 <-
                         %r13)), 
                   MOVE(
-                     t3815 <-
+                     t3344 <-
                      %r14)), 
                MOVE(
-                  t3816 <-
+                  t3345 <-
                   %r15)), 
             MOVE(
-               t3808 <-
+               t3337 <-
                %rdi)), 
          MOVE(
-            t3809 <-
+            t3338 <-
             %rsi)), 
       SEQ(
          SEQ(
             SEQ(
                SEQ(
                   MOVE(
-                     t3810 <-
+                     t3339 <-
                      CONST 0), 
                   MOVE(
-                     t3811 <-
+                     t3340 <-
                      CONST 1)), 
                SEQ(
                   LABEL _L_1191, 
                   SEQ(
                      CJUMP(LT,
-                        t3811,
-                        t3809,
+                        t3340,
+                        t3338,
                         _L_1192, _L_1193), 
                      SEQ(
                         LABEL _L_1192, 
                         SEQ(
                            SEQ(
                               MOVE(
-                                 t3810 <-
+                                 t3339 <-
                                  BINOP(PLUS,
-                                    t3810, 
-                                    t3811)), 
+                                    t3339, 
+                                    t3340)), 
                               MOVE(
-                                 t3811 <-
+                                 t3340 <-
                                  BINOP(PLUS,
-                                    t3811, 
+                                    t3340, 
                                     CONST 1))), 
                            SEQ(
                               JUMP(NAME(_L_1191)), 
                               LABEL _L_1193)))))), 
             MOVE(
                %rax <-
-               t3810)), 
+               t3339)), 
          SEQ(
             SEQ(
                SEQ(
@@ -79,19 +79,19 @@ MethodFragment {
                         LABEL _bail_1190, 
                         MOVE(
                            %rbx <-
-                           t3812)), 
+                           t3341)), 
                      MOVE(
                         %r12 <-
-                        t3813)), 
+                        t3342)), 
                   MOVE(
                      %r13 <-
-                     t3814)), 
+                     t3343)), 
                MOVE(
                   %r14 <-
-                  t3815)), 
+                  t3344)), 
             MOVE(
                %r15 <-
-               t3816))))
+               t3345))))
 }
 MethodFragment {
    X86_64Frame { label = _cs411main
@@ -105,19 +105,19 @@ MethodFragment {
             SEQ(
                SEQ(
                   MOVE(
-                     t3817 <-
+                     t3346 <-
                      %rbx), 
                   MOVE(
-                     t3818 <-
+                     t3347 <-
                      %r12)), 
                MOVE(
-                  t3819 <-
+                  t3348 <-
                   %r13)), 
             MOVE(
-               t3820 <-
+               t3349 <-
                %r14)), 
          MOVE(
-            t3821 <-
+            t3350 <-
             %r15)), 
       SEQ(
          EXP(CALL(
@@ -136,17 +136,17 @@ MethodFragment {
                         LABEL _bail_1189, 
                         MOVE(
                            %rbx <-
-                           t3817)), 
+                           t3346)), 
                      MOVE(
                         %r12 <-
-                        t3818)), 
+                        t3347)), 
                   MOVE(
                      %r13 <-
-                     t3819)), 
+                     t3348)), 
                MOVE(
                   %r14 <-
-                  t3820)), 
+                  t3349)), 
             MOVE(
                %r15 <-
-               t3821))))
+               t3350))))
 }
