@@ -283,6 +283,8 @@ public class X86_64Muncher extends Muncher {
             }
         });
 
+        /*
+
         // compare immediate and memory (CJUMP case)
         sm.add(new MunchRule<IRStm, Void>(
                 CJUMP(_relOp_, CONST(_i_), MEM(PLUS(_r_, CONST(_offset_))), _thn_, _els_)
@@ -415,6 +417,8 @@ public class X86_64Muncher extends Muncher {
                 return null;
             }
         });
+
+        */
 
         // =====================================================================
 
