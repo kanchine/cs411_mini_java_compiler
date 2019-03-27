@@ -177,7 +177,6 @@ public class TestTranslate {
 
     }
 
-    /*   // TODO
     @Test
     public void simpleArrays() throws Exception {
         test("99\n",
@@ -235,7 +234,6 @@ public class TestTranslate {
                         "   }\n" +
                         "}");
     }
-    */
 
     @Test
     public void printArg() throws Exception {
@@ -297,7 +295,6 @@ public class TestTranslate {
         );
     }
 
-    /*   // TODO
     @Test
     public void arrayLoop() throws Exception {
         test((11 * 10 / 2) + "\n",
@@ -334,7 +331,6 @@ public class TestTranslate {
                         "}"
         );
     }
-    */
 
     @Test
     public void ifThenElse() throws Exception {
