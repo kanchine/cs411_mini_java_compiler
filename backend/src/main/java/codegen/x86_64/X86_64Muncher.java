@@ -114,7 +114,7 @@ public class X86_64Muncher extends Muncher {
 
         // =====================================================================
         // Larger tiles created by William
-        
+
         // x = x + 1
         dm.add(new MunchRule<IRExp, Void>(
                 PLUS(_l_, CONST(1))
@@ -277,6 +277,139 @@ public class X86_64Muncher extends Muncher {
                 Temp value = m.munch(c.get(_e_));
 
                 m.emit(A_MOVE_R2IM_offset(base, offset, index, scale, value));
+
+                return null;
+            }
+        });
+
+        // compare immediate and memory (CJUMP case)
+        sm.add(new MunchRule<IRStm, Void>(
+                CJUMP(_relOp_, CONST(_i_), MEM(PLUS(_r_, CONST(_offset_))), _thn_, _els_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                RelOp relOp = c.get(_relOp_);
+                int immediate = c.get(_i_);
+
+                Temp base = m.munch(c.get(_r_));
+                int offset = c.get(_offset_);
+
+                Label thn = c.get(_thn_);
+                Label els = c.get(_els_);
+
+                m.emit(A_CMP_I2M(immediate, base, offset));
+                m.emit(A_CJUMP(relOp, thn, els));
+
+                return null;
+            }
+        });
+
+        // compare immediate and memory (CMOVE case)
+        sm.add(new MunchRule<IRStm, Void>(
+                CMOVE(_relOp_, CONST(_i_), MEM(PLUS(_r_, CONST(_offset_))), TEMP(_t_), _e_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                RelOp relOp = c.get(_relOp_);
+                int immediate = c.get(_i_);
+
+                Temp base = m.munch(c.get(_r_));
+                int offset = c.get(_offset_);
+
+                Temp receiver = c.get(_t_);
+                Temp value = m.munch(c.get(_e_));
+
+                m.emit(A_CMP_I2M(immediate, base, offset));
+                m.emit(A_CMOV(relOp, receiver, value));
+
+                return null;
+            }
+        });
+
+        // compare memory and register (CJUMP case)
+        sm.add(new MunchRule<IRStm, Void>(
+                CJUMP(_relOp_, MEM(PLUS(_l_, CONST(_offset_))), _r_, _thn_, _els_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                RelOp relOp = c.get(_relOp_);
+
+                Temp base = m.munch(c.get(_l_));
+                int offset = c.get(_offset_);
+
+                Temp register = m.munch(c.get(_r_));
+
+                Label thn = c.get(_thn_);
+                Label els = c.get(_els_);
+
+                m.emit(A_CMP_M2R(base, offset, register));
+                m.emit(A_CJUMP(relOp, thn, els));
+
+                return null;
+            }
+        });
+
+        // compare memory and register (CMOVE case)
+        sm.add(new MunchRule<IRStm, Void>(
+                CMOVE(_relOp_, MEM(PLUS(_l_, CONST(_offset_))), _r_, TEMP(_t_), _e_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                RelOp relOp = c.get(_relOp_);
+
+                Temp base = m.munch(c.get(_l_));
+                int offset = c.get(_offset_);
+
+                Temp register = m.munch(c.get(_r_));
+
+                Temp receiver = c.get(_t_);
+                Temp value = m.munch(c.get(_e_));
+
+                m.emit(A_CMP_M2R(base, offset, register));
+                m.emit(A_CMOV(relOp, receiver, value));
+
+                return null;
+            }
+        });
+
+        // compare register and memory (CJUMP)
+        sm.add(new MunchRule<IRStm, Void>(
+                CJUMP(_relOp_, _l_, MEM(PLUS(_r_, CONST(_offset_))), _thn_, _els_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                RelOp relOp = c.get(_relOp_);
+                Temp register = m.munch(c.get(_l_));
+
+                Temp base = m.munch(c.get(_r_));
+                int offset = c.get(_offset_);
+
+                Label thn = c.get(_thn_);
+                Label els = c.get(_els_);
+
+                m.emit(A_CMP_R2M(base, offset, register));
+                m.emit(A_CJUMP(relOp, thn, els));
+
+                return null;
+            }
+        });
+
+        sm.add(new MunchRule<IRStm, Void>(
+                CMOVE(_relOp_, _l_, MEM(PLUS(_r_, CONST(_offset_))), TEMP(_t_), _e_)
+        ) {
+            @Override
+            protected Void trigger(Muncher m, Matched c) {
+                RelOp relOp = c.get(_relOp_);
+                Temp register = m.munch(c.get(_l_));
+
+                Temp base = m.munch(c.get(_r_));
+                int offset = c.get(_offset_);
+
+                Temp receiver = c.get(_t_);
+                Temp value = m.munch(c.get(_e_));
+
+                m.emit(A_CMP_R2M(base, offset, register));
+                m.emit(A_CMOV(relOp, receiver, value));
 
                 return null;
             }
@@ -446,6 +579,30 @@ public class X86_64Muncher extends Muncher {
 
     // =========================================================================
     // Helper methods created by William
+
+    private static Instr A_CMP_I2M(int immediate, Temp base, int offset) {
+        return new A_OPER(
+                "\tcmpq\t$" + immediate + ", " + offset + "(" + base + ")",
+                noTemps,
+                list(base)
+        );
+    }
+
+    private static Instr A_CMP_M2R(Temp base, int offset, Temp register) {
+        return new A_OPER(
+                "\tcmpq\t" + offset + "(" + base + "), " + register,
+                noTemps,
+                list(base, register)
+        );
+    }
+
+    private static Instr A_CMP_R2M(Temp base, int offset, Temp register) {
+        return new A_OPER(
+                "\tcmpq\t" + register + ", " + offset + "(" + base + ")",
+                noTemps,
+                list(register, base)
+        );
+    }
 
     private static Instr A_DEC(Temp value) {
         return new A_OPER(
