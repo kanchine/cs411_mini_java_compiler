@@ -48,6 +48,7 @@ import static util.List.list;
  *
  * @author kdvolder
  */
+// Note: making a trivial change to verify scoreboard
 public class X86_64Muncher extends Muncher {
 
     /**
