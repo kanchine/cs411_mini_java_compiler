@@ -615,6 +615,72 @@ public class TestTranslate {
                         "}");
     }
 
+    // Jerry's tests
+
+    @Test
+    public void nullCheck() throws Exception {
+        test("10\n",
+                "class Main {\n" +
+                        "  public static void main(String[] args) {\n" +
+                        "      System.out.println(new Point().doit());\n" +
+                        "  }\n" +
+                        "}\n" +
+                        "class Point {\n " +
+                        "   int x;\n" +
+                        "   Point p;\n" +
+                        "   public int foo() {\n" +
+                        "      return 0;\n" +
+                        "   }\n" +
+                        "   public int doit() {\n" +
+                        "      int y;\n" +
+                        "      y = p.foo();\n" +
+                        "      return 10;\n" +
+                        "   }\n" +
+                        "}"
+        );
+    }
+
+    // William's tests
+
+    @Test
+    public void arrayLookup() throws Exception {
+        test(
+                "0\n",
+                "class Main {\n"
+                + "    public static void main(String[] args) {\n"
+                + "        System.out.println(new C().f());\n"
+                + "    }\n"
+                + "}\n"
+                + "class C {\n"
+                + "    public int f() {\n"
+                + "        int[] array;\n"
+                + "        array = new int[5];\n"
+                + "        return array[2];"
+                + "    }\n"
+                + "}\n"
+        );
+    }
+
+    @Test
+    public void arrayAssign() throws Exception {
+        test(
+                "0\n",
+                "class Main {\n"
+                        + "    public static void main(String[] args) {\n"
+                        + "        System.out.println(new C().f());\n"
+                        + "    }\n"
+                        + "}\n"
+                        + "class C {\n"
+                        + "    public int f() {\n"
+                        + "        int[] array;\n"
+                        + "        array = new int[5];\n"
+                        + "        array[2] = 2435;\n"
+                        + "        return 0;"
+                        + "    }\n"
+                        + "}\n"
+        );
+    }
+
     //////////////// Sample code //////////////////////////////////
 
     @Test

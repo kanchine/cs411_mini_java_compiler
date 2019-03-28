@@ -79,7 +79,11 @@ public class Label {
      * Makes a new (unique) label with a generated name.
      */
     public static Label gen() {
-        return generate("L");
+        Label result = generate("L");
+        System.out.println(result.name);
+        return result;
+
+        //return generate("L");
     }
 
     /**

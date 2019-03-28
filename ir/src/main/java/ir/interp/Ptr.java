@@ -12,4 +12,13 @@ public abstract class Ptr extends Word {
     @Override
     public abstract Ptr add(int bytesOffset);
 
+    // TODO
+    public boolean isEQ(Word r) {
+        if (r.asInt() == 0) {
+            return false;
+        } else {
+            throw new Error("EQ on " + this + " only works to compare to 0, not " + r);
+        }
+    }
+
 }
