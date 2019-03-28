@@ -388,7 +388,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
             currClass = (ClassType) allClasses.lookup(currClass.superName);
         }
 
-        String name = recType + "#" + n.name;
+        String name = recType + "$" + n.name;
         Label label = functionLabel(name);
 
         List<IRExp> arguments = List.list();
@@ -436,7 +436,7 @@ public class TranslateVisitor implements Visitor<TRExp> {
     @Override
     public TRExp visit(MethodDecl n) {
         Frame oldFrame = frame;
-        frame = newFrame(functionLabel(currClass.name + "#" + n.name), n.formals.size() + 1);
+        frame = newFrame(functionLabel(currClass.name + "$" + n.name), n.formals.size() + 1);
         FunTable<IRExp> saveEnv = currentEnv;
 
         //Get the access information for each regular formal and add it to the environment.
