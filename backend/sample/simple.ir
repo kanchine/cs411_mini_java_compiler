@@ -1,9 +1,9 @@
 MethodFragment {
-   X86_64Frame { label = __Test#go
+   X86_64Frame { label = _Test$go
       nextLocalOffset = -8
       formals = List {
-         t2788
-         t2789
+         t2765
+         t2766
       }
    }
    SEQ(
@@ -14,58 +14,58 @@ MethodFragment {
                   SEQ(
                      SEQ(
                         MOVE(
-                           t2790 <-
+                           t2767 <-
                            %rbx), 
                         MOVE(
-                           t2791 <-
+                           t2768 <-
                            %r12)), 
                      MOVE(
-                        t2792 <-
+                        t2769 <-
                         %r13)), 
                   MOVE(
-                     t2793 <-
+                     t2770 <-
                      %r14)), 
                MOVE(
-                  t2794 <-
+                  t2771 <-
                   %r15)), 
             MOVE(
-               t2788 <-
+               t2765 <-
                %rdi)), 
          MOVE(
-            t2789 <-
+            t2766 <-
             %rsi)), 
       SEQ(
          SEQ(
             EXP(CALL(
-               NAME(_cs411println),
-               t2789)), 
+               NAME(cs411println),
+               t2766)), 
             MOVE(
                %rax <-
-               t2789)), 
+               t2766)), 
          SEQ(
             SEQ(
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_1103, 
+                        LABEL bail_976, 
                         MOVE(
                            %rbx <-
-                           t2790)), 
+                           t2767)), 
                      MOVE(
                         %r12 <-
-                        t2791)), 
+                        t2768)), 
                   MOVE(
                      %r13 <-
-                     t2792)), 
+                     t2769)), 
                MOVE(
                   %r14 <-
-                  t2793)), 
+                  t2770)), 
             MOVE(
                %r15 <-
-               t2794))))
+               t2771))))
 }
 MethodFragment {
-   X86_64Frame { label = _cs411main
+   X86_64Frame { label = cs411main
       nextLocalOffset = -8
       formals = List {
       }
@@ -76,27 +76,27 @@ MethodFragment {
             SEQ(
                SEQ(
                   MOVE(
-                     t2795 <-
+                     t2772 <-
                      %rbx), 
                   MOVE(
-                     t2796 <-
+                     t2773 <-
                      %r12)), 
                MOVE(
-                  t2797 <-
+                  t2774 <-
                   %r13)), 
             MOVE(
-               t2798 <-
+               t2775 <-
                %r14)), 
          MOVE(
-            t2799 <-
+            t2776 <-
             %r15)), 
       SEQ(
          EXP(CALL(
-            NAME(_cs411println),
+            NAME(cs411println),
             CALL(
-               NAME(__Test#go),
+               NAME(_Test$go),
                CALL(
-                  NAME(_cs411newobject),
+                  NAME(cs411newobject),
                   CONST 0),
                CONST 6))), 
          SEQ(
@@ -104,20 +104,20 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL _bail_1102, 
+                        LABEL bail_977, 
                         MOVE(
                            %rbx <-
-                           t2795)), 
+                           t2772)), 
                      MOVE(
                         %r12 <-
-                        t2796)), 
+                        t2773)), 
                   MOVE(
                      %r13 <-
-                     t2797)), 
+                     t2774)), 
                MOVE(
                   %r14 <-
-                  t2798)), 
+                  t2775)), 
             MOVE(
                %r15 <-
-               t2799))))
+               t2776))))
 }

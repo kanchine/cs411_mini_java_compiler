@@ -22,7 +22,7 @@ import util.List;
 public class Graph<N> extends DefaultIndentable {
 
     protected int nodecount = 0;
-    protected List<Node<N>> mynodes = empty();
+    protected List<Node<N>> mynodes = empty(); // the graph is represented as adjacency list
 
     /**
      * Maps objects to their respective nodes. This map is not constructed

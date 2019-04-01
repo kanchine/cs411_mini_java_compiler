@@ -11,10 +11,10 @@ import static util.List.*;
  */
 public class Node<N> {
 
-    Graph<N> mygraph;
+    Graph<N> mygraph; // tell which graph this node is in
 
-    private int mykey;
-    private N info;
+    private int mykey; // each graph node has a unique key in its graph
+    private N info; // the object represented by this graph node
 
     public Node(Graph<N> g, N content) {
         this.info = content;
@@ -76,6 +76,10 @@ public class Node<N> {
 
     public N wrappee() {
         return info;
+    }
+
+    public Graph<N> getGraph() {
+        return mygraph;
     }
 
 }

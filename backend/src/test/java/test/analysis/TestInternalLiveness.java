@@ -5,6 +5,7 @@ import codegen.AssemProc;
 import codegen.assem.Instr;
 import analysis.FlowGraph;
 import analysis.implementation.LivenessImplementation;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unfortunately, there's no good way that I can think of to test this phase
@@ -37,4 +38,13 @@ public class TestInternalLiveness extends TestFlowGraphs {
         System.out.println(liveness);
     }
 
+    // Jerry's test
+    @Test
+    public void simpleProgram() throws Exception {
+        test("",
+                "class Main {\n" +
+                        "  public static void main(String[] args) { {} }\n" +
+                        "}"
+        );
+    }
 }
