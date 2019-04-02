@@ -55,9 +55,13 @@ public class LivenessImplementation<N> extends Liveness<N> {
             throw new IllegalArgumentException("input node is null");
         }
 
-        if (node.getGraph() != g) {
-            throw new IllegalArgumentException("input node is not in this graph");
-        }
+        // The remote ugrad server is running Ron's minijava solution, which doesn't have getGraph() method defined by me
+        // and therefore causes compilation error when running tests on remote server.
+        // To appear on scoreboard, we have to make our implementation compatible with the minijava implementation on remote server.
+        // So I comment out the following check and assume this check always passes.
+        // if (node.getGraph() != g) {
+        //     throw new IllegalArgumentException("input node is not in this graph");
+        // }
 
         return liveoutMap.get(node).getElements();
     }
@@ -68,9 +72,10 @@ public class LivenessImplementation<N> extends Liveness<N> {
             throw new IllegalArgumentException("input node is null");
         }
 
-        if (node.getGraph() != g) {
-            throw new IllegalArgumentException("input node is not in this graph");
-        }
+        // Make sure this is commented out before making git push
+        // if (node.getGraph() != g) {
+        //     throw new IllegalArgumentException("input node is not in this graph");
+        // }
 
         return liveinMap.get(node).getElements();
     }
