@@ -1,17 +1,18 @@
 package analysis.implementation;
 
+import analysis.FlowGraph;
+import analysis.InterferenceGraph;
+import codegen.assem.A_MOVE;
+import ir.temp.Color;
+import ir.temp.Temp;
+import util.IndentingWriter;
+import util.List;
+import util.graph.Node;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import util.IndentingWriter;
-import util.List;
-import ir.temp.Color;
-import ir.temp.Temp;
-import analysis.FlowGraph;
-import analysis.InterferenceGraph;
-import util.graph.Node;
 
 public class InterferenceGraphImplementation<N> extends InterferenceGraph {
 
@@ -22,15 +23,68 @@ public class InterferenceGraphImplementation<N> extends InterferenceGraph {
     public InterferenceGraphImplementation(FlowGraph<N> fg) {
         this.fg = fg;
         this.liveness = new LivenessImplementation<N>(fg);
-        // This "dummy" implementation just adds nodes, but no edges
+
+        initInterferenceGraph();
+    }
+
+    private void initInterferenceGraph() {
         for (Node<N> node : fg.nodes()) {
-            for (Temp def : fg.def(node)) {
-                Node<Temp> n = nodeFor(def);
-            }
-            for (Temp use : fg.use(node)) {
-                Node<Temp> n = nodeFor(use);
+            handleNode(node);
+        }
+    }
+
+    private void handleNode(Node<N> node) {
+        if (isMoveNode(node)) {
+            addMove(node);
+            addMoveEdges(node);
+        } else {
+            addNonMoveEdges(node);
+        }
+    }
+
+    private boolean isMoveNode(Node<N> node) {
+        return node.wrappee() instanceof A_MOVE;
+    }
+
+    private void addMove(Node<N> node) {
+        A_MOVE aMove = (A_MOVE) node.wrappee();
+        Node<Temp> dst = nodeFor(aMove.dst);
+        Node<Temp> src = nodeFor(aMove.src);
+
+        Move move = new Move(dst, src);
+        moves.add(move);
+    }
+
+    private void addMoveEdges(Node<N> node) {
+        A_MOVE aMove = (A_MOVE) node.wrappee();
+        Temp dst = aMove.dst;
+        Temp src = aMove.src;
+
+        for (Temp out : liveness.liveOut(node)) {
+            if (!out.equals(src)) {
+                linkTemps(out, dst);
             }
         }
+    }
+
+    private void addNonMoveEdges(Node<N> node) {
+        for (Temp def : fg.def(node)) {
+            for (Temp out : liveness.liveOut(node)) {
+                linkTemps(def, out);
+            }
+        }
+    }
+
+    private void linkTemps(Temp x, Temp y) {
+        if (x.equals(y)) {
+            return;   // never add a self-cycle
+        }
+
+        Node<Temp> xNode = nodeFor(x);
+        Node<Temp> yNode = nodeFor(y);
+
+        addEdge(xNode, yNode);
+        addEdge(yNode, xNode);
     }
 
     @Override
