@@ -2,7 +2,7 @@ MethodFragment {
    X86_64Frame { label = _Foo$doit
       nextLocalOffset = -8
       formals = List {
-         t2226
+         t2902
       }
    }
    SEQ(
@@ -12,29 +12,29 @@ MethodFragment {
                SEQ(
                   SEQ(
                      MOVE(
-                        t2227 <-
+                        t2903 <-
                         %rbx), 
                      MOVE(
-                        t2228 <-
+                        t2904 <-
                         %r12)), 
                   MOVE(
-                     t2229 <-
+                     t2905 <-
                      %r13)), 
                MOVE(
-                  t2230 <-
+                  t2906 <-
                   %r14)), 
             MOVE(
-               t2231 <-
+               t2907 <-
                %r15)), 
          MOVE(
-            t2226 <-
+            t2902 <-
             %rdi)), 
       SEQ(
          SEQ(
             MOVE(
                MEM(BINOP(PLUS,
                   CONST 0, 
-                  t2226)) <-
+                  t2902)) <-
                CONST 10), 
             MOVE(
                %rax <-
@@ -42,36 +42,36 @@ MethodFragment {
                   NAME(_Foo$getField),
                   CALL(
                      NAME(_Foo$ident),
-                     t2226,
-                     t2226)))), 
+                     t2902,
+                     t2902)))), 
          SEQ(
             SEQ(
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL bail_820, 
+                        LABEL bail_928, 
                         MOVE(
                            %rbx <-
-                           t2227)), 
+                           t2903)), 
                      MOVE(
                         %r12 <-
-                        t2228)), 
+                        t2904)), 
                   MOVE(
                      %r13 <-
-                     t2229)), 
+                     t2905)), 
                MOVE(
                   %r14 <-
-                  t2230)), 
+                  t2906)), 
             MOVE(
                %r15 <-
-               t2231))))
+               t2907))))
 }
 MethodFragment {
    X86_64Frame { label = _Foo$ident
       nextLocalOffset = -8
       formals = List {
-         t2232
-         t2233
+         t2908
+         t2909
       }
    }
    SEQ(
@@ -82,57 +82,57 @@ MethodFragment {
                   SEQ(
                      SEQ(
                         MOVE(
-                           t2234 <-
+                           t2910 <-
                            %rbx), 
                         MOVE(
-                           t2235 <-
+                           t2911 <-
                            %r12)), 
                      MOVE(
-                        t2236 <-
+                        t2912 <-
                         %r13)), 
                   MOVE(
-                     t2237 <-
+                     t2913 <-
                      %r14)), 
                MOVE(
-                  t2238 <-
+                  t2914 <-
                   %r15)), 
             MOVE(
-               t2232 <-
+               t2908 <-
                %rdi)), 
          MOVE(
-            t2233 <-
+            t2909 <-
             %rsi)), 
       SEQ(
          MOVE(
             %rax <-
-            t2233), 
+            t2909), 
          SEQ(
             SEQ(
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL bail_821, 
+                        LABEL bail_929, 
                         MOVE(
                            %rbx <-
-                           t2234)), 
+                           t2910)), 
                      MOVE(
                         %r12 <-
-                        t2235)), 
+                        t2911)), 
                   MOVE(
                      %r13 <-
-                     t2236)), 
+                     t2912)), 
                MOVE(
                   %r14 <-
-                  t2237)), 
+                  t2913)), 
             MOVE(
                %r15 <-
-               t2238))))
+               t2914))))
 }
 MethodFragment {
    X86_64Frame { label = _Foo$getField
       nextLocalOffset = -8
       formals = List {
-         t2239
+         t2915
       }
    }
    SEQ(
@@ -142,50 +142,50 @@ MethodFragment {
                SEQ(
                   SEQ(
                      MOVE(
-                        t2240 <-
+                        t2916 <-
                         %rbx), 
                      MOVE(
-                        t2241 <-
+                        t2917 <-
                         %r12)), 
                   MOVE(
-                     t2242 <-
+                     t2918 <-
                      %r13)), 
                MOVE(
-                  t2243 <-
+                  t2919 <-
                   %r14)), 
             MOVE(
-               t2244 <-
+               t2920 <-
                %r15)), 
          MOVE(
-            t2239 <-
+            t2915 <-
             %rdi)), 
       SEQ(
          MOVE(
             %rax <-
             MEM(BINOP(PLUS,
                CONST 0, 
-               t2239))), 
+               t2915))), 
          SEQ(
             SEQ(
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL bail_822, 
+                        LABEL bail_930, 
                         MOVE(
                            %rbx <-
-                           t2240)), 
+                           t2916)), 
                      MOVE(
                         %r12 <-
-                        t2241)), 
+                        t2917)), 
                   MOVE(
                      %r13 <-
-                     t2242)), 
+                     t2918)), 
                MOVE(
                   %r14 <-
-                  t2243)), 
+                  t2919)), 
             MOVE(
                %r15 <-
-               t2244))))
+               t2920))))
 }
 MethodFragment {
    X86_64Frame { label = cs411main
@@ -199,19 +199,19 @@ MethodFragment {
             SEQ(
                SEQ(
                   MOVE(
-                     t2245 <-
+                     t2921 <-
                      %rbx), 
                   MOVE(
-                     t2246 <-
+                     t2922 <-
                      %r12)), 
                MOVE(
-                  t2247 <-
+                  t2923 <-
                   %r13)), 
             MOVE(
-               t2248 <-
+               t2924 <-
                %r14)), 
          MOVE(
-            t2249 <-
+            t2925 <-
             %r15)), 
       SEQ(
          EXP(CALL(
@@ -226,20 +226,20 @@ MethodFragment {
                SEQ(
                   SEQ(
                      SEQ(
-                        LABEL bail_823, 
+                        LABEL bail_931, 
                         MOVE(
                            %rbx <-
-                           t2245)), 
+                           t2921)), 
                      MOVE(
                         %r12 <-
-                        t2246)), 
+                        t2922)), 
                   MOVE(
                      %r13 <-
-                     t2247)), 
+                     t2923)), 
                MOVE(
                   %r14 <-
-                  t2248)), 
+                  t2924)), 
             MOVE(
                %r15 <-
-               t2249))))
+               t2925))))
 }

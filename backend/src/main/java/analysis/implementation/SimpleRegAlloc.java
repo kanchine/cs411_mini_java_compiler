@@ -21,6 +21,8 @@ import analysis.InterferenceGraph;
 import analysis.RegAlloc;
 import util.graph.Node;
 
+import static util.List.cons;
+
 public class SimpleRegAlloc extends RegAlloc {
 
     private AssemProc proc;
@@ -109,7 +111,7 @@ public class SimpleRegAlloc extends RegAlloc {
         if (!success) {
             //Create a new spill slot and use that.
             SpillColor color = new SpillColor(frame);
-            spillColors.add(color);
+            spillColors = cons(color, spillColors); // see https://piazza.com/class/jqczq8eyb2usy?cid=389
             setColor(t, color);
         }
         color(toColor.tail());
@@ -143,8 +145,8 @@ public class SimpleRegAlloc extends RegAlloc {
     /**
      * Returns a List of Temp's (a stack really) which suggest the order
      * in which nodes should be assigned colors.
-     * <p>
-     * This version just returns an arbitrary order.
+     *
+     * The computed ordering follow the algorithm in textbook
      */
     private List<Temp> simplify() {
         List<Node<Temp>> toColor = List.empty();
@@ -152,15 +154,22 @@ public class SimpleRegAlloc extends RegAlloc {
         int simplified = 0;
 
         // Separate pre-colored nodes from other nodes.
-        for (Node<Temp> node : ig.nodes())
-            if (!isColored(node))
+        for (Node<Temp> node : ig.nodes()) {
+            if (!isColored(node)) {
                 toColor.add(node);
+            }
+        }
 
+        // Compute an ordering for the toColor nodes
         while (!toColor.isEmpty()) {
-            Node<Temp> node = toColor.head();
+            Node<Temp> node = pickLowDegreeNode(toColor);
+            if (node == null) {
+                node = pickSpillNode(toColor);
+            }
             toColor = toColor.delete(node);
-            ordering = List.cons(node.wrappee(), ordering);
-            // this.ig.rmNode(node);
+            ordering = cons(node.wrappee(), ordering);
+            ig.rmNode(node); // remove this node from graph
+
             if (generateDotFiles) {
                 File out = new File("simplify-" + incarnation + "-" + simplified + ".dot");
                 try {
@@ -176,6 +185,72 @@ public class SimpleRegAlloc extends RegAlloc {
         incarnation++;
         return ordering;
     }
+
+    // pick a node with degrees less than k
+    private Node<Temp> pickLowDegreeNode(List<Node<Temp>> nodes) {
+        for (Node<Temp> node : nodes) {
+            // # of colors available equals to # of register available
+            if (node.outDegree() < registers.size()) {
+                return node;
+            }
+        }
+
+        return null;
+    }
+
+    // pick a node with degrees >= k
+    // We try to pick the temp that interferes with most number of temps,
+    // because spilling it will help avoid more spills.
+    private Node<Temp> pickSpillNode(List<Node<Temp>> nodes) {
+        double minSpillCost = ig.spillCost(nodes.head());
+        Node<Temp> spillNode = nodes.head();
+
+        for (Node<Temp> node : nodes) {
+            double currSpillCost = ig.spillCost(node);
+            if (currSpillCost < minSpillCost) {
+                minSpillCost = currSpillCost;
+                spillNode = node;
+            }
+        }
+
+        return spillNode;
+    }
+
+    /* This version (provided by starter code) just returns an arbitrary order. */
+
+    // private List<Temp> simplify() {
+    //     List<Node<Temp>> toColor = List.empty();
+    //     List<Temp> ordering = List.empty();
+    //     int simplified = 0;
+    //
+    //     // Separate pre-colored nodes from other nodes.
+    //     for (Node<Temp> node : ig.nodes()) {
+    //         if (!isColored(node)) {
+    //             toColor.add(node);
+    //         }
+    //     }
+    //
+    //     // Compute an ordering for the toColor nodes
+    //     while (!toColor.isEmpty()) {
+    //         Node<Temp> node = toColor.head();
+    //         toColor = toColor.delete(node);
+    //         ordering = cons(node.wrappee(), ordering);
+    //         // this.ig.rmNode(node);
+    //         if (generateDotFiles) {
+    //             File out = new File("simplify-" + incarnation + "-" + simplified + ".dot");
+    //             try {
+    //                 PrintStream outb = new PrintStream(out);
+    //                 outb.print(ig.dotString(registers.size(), null));
+    //                 outb.close();
+    //             } catch (IOException e) {
+    //                 e.printStackTrace();
+    //             }
+    //         }
+    //         simplified++;
+    //     }
+    //     incarnation++;
+    //     return ordering;
+    // }
 
     private boolean isColored(Node<Temp> node) {
         return getColor(node) != null;
