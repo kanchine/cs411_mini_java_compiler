@@ -1,25 +1,22 @@
 package analysis.implementation;
 
+import analysis.FlowGraph;
+import analysis.InterferenceGraph;
+import analysis.RegAlloc;
+import codegen.AssemProc;
+import codegen.assem.Instr;
 import ir.frame.Frame;
 import ir.temp.Color;
 import ir.temp.Temp;
+import util.IndentingWriter;
+import util.List;
+import util.graph.Node;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import util.IndentingWriter;
-import util.List;
-
-import codegen.AssemProc;
-import codegen.assem.Instr;
-
-import analysis.FlowGraph;
-import analysis.InterferenceGraph;
-import analysis.RegAlloc;
-import util.graph.Node;
 
 import static util.List.cons;
 
@@ -185,6 +182,7 @@ public class SimpleRegAlloc extends RegAlloc {
         incarnation++;
         return ordering;
     }
+
 
     // pick a node with degrees less than k
     private Node<Temp> pickLowDegreeNode(List<Node<Temp>> nodes) {
