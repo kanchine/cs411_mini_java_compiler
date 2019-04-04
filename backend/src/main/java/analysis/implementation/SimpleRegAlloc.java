@@ -184,6 +184,7 @@ public class SimpleRegAlloc extends RegAlloc {
     }
 
 
+
     // pick a node with degrees less than k
     private Node<Temp> pickLowDegreeNode(List<Node<Temp>> nodes) {
         for (Node<Temp> node : nodes) {
