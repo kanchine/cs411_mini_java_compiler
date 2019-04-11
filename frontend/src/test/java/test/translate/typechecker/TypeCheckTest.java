@@ -103,7 +103,7 @@ public class TypeCheckTest {
     }
 
 
-    private static final String defaultMainClass = mainClass("{}"); // used in composing test program for convenience
+    public static final String defaultMainClass = mainClass("{}"); // used in composing test program for convenience
     private static String mainClass(String stm) {
         return
                 "class Main { \n" +

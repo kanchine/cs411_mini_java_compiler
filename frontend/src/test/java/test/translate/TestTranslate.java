@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import translate.Fragment;
 import translate.Fragments;
 import translate.Translator;
+import typechecker.TypeChecker;
 import typechecker.TypeCheckerException;
 import util.SampleCode;
 import util.Utils;
@@ -17,6 +18,10 @@ import util.Utils;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+
+import static junit.framework.TestCase.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static test.translate.typechecker.TypeCheckTest.defaultMainClass;
 
 /**
  * Test the minijava translation phase that takes a (type-checked) program and turns
@@ -741,6 +746,128 @@ public class TestTranslate {
         }
         System.out.println("=================================");
         return translated;
+    }
+
+
+    // ------- Jerry's new tests -------
+
+    // a helper method that expect input program to produce some type error
+    // but doesn't care what the error is
+    private void expectError(String program) {
+        System.out.println("Translating program: ");
+        System.out.println(program);
+        try {
+            Fragments translated = Translator.translate(architecture, program);
+            fail("Exception is expected, but not found");
+        } catch (Exception e) {
+            // succeed
+            System.out.println(e);
+        }
+    }
+
+
+    @Test
+    public void MethodCallNullReceiver1() {
+        expectError(defaultMainClass+
+                "class A {\n" +
+                "    A a;\n" +
+                "    public int test() {\n" +
+                "        return a.test();\n" +
+                "    }\n" +
+                "}\n"
+        );
+    }
+
+    @Test
+    public void ArrayNullReceiver1() {
+        expectError(defaultMainClass+
+                "class A {\n" +
+                "    int[] array;\n" +
+                "    public int test() {\n" +
+                "        array[0] = 0;\n" +
+                "        return 0;\n" +
+                "    }\n" +
+                "}\n"
+        );
+    }
+
+    @Test
+    public void ArrayNullReceiver2() {
+        expectError(defaultMainClass+
+                "class A {\n" +
+                "    int[] array;\n" +
+                "    public int test() { return array[0]; }\n" +
+                "}\n"
+        );
+    }
+
+
+    @Test
+    public void ArrayBadInitialization() throws Exception {
+        expectError(defaultMainClass+
+                "class A {\n" +
+                "    public int test() {\n" +
+                "       int[] array;\n" +
+                "       array = new int[0-50];\n" +
+                "       return array[0];\n" +
+                "    }\n" +
+                "}\n"
+        );
+    }
+
+    @Test
+    public void ArrayAssignOutOfBound1() throws Exception {
+        expectError(defaultMainClass+
+                "class A {\n" +
+                "    public int test() {\n" +
+                "       int[] array;\n" +
+                "       array = new int[0];\n" +
+                "       array[0] = 9;\n" +
+                "       return 0;\n" +
+                "    }\n" +
+                "}\n"
+        );
+    }
+
+    @Test
+    public void ArrayAssignOutOfBound2() throws Exception {
+        expectError(defaultMainClass+
+                "class A {\n" +
+                "    public int test() {\n" +
+                "       int[] array;\n" +
+                "       array = new int[50];\n" +
+                "       array[1-2] = 1;\n" +
+                "       return 0;\n" +
+                "    }\n" +
+                "}\n"
+        );
+    }
+
+
+    @Test
+    public void ArrayLookupOutOfBound1() throws Exception {
+        expectError(defaultMainClass+
+                "class A {\n" +
+                "    public int test() {\n" +
+                "       int[] array;\n" +
+                "       array = new int[1000];\n" +
+                "       return array[1000];\n" +
+                "    }\n" +
+                "}\n"
+        );
+    }
+
+    @Test
+    public void ArrayLookupOutOfBound2() throws Exception {
+        expectError(defaultMainClass+
+                "class A {\n" +
+                "    public int test() {\n" +
+                "       int[] array;\n" +
+                "       array = new int[1];\n" +
+                "       return array[0-1];\n" +
+                "    }\n" +
+                "}\n"
+        );
     }
 
 }
