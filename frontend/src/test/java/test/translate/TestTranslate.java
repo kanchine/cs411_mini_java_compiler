@@ -758,11 +758,20 @@ public class TestTranslate {
         System.out.println(program);
         try {
             Fragments translated = Translator.translate(architecture, program);
-            fail("Exception is expected, but not found");
-        } catch (Exception e) {
+            System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+            System.out.println(translated);
+            System.out.println();
+        } catch (Error e) {
             // succeed
             System.out.println(e);
+            return;
+        } catch (Exception e) {
+            fail("Error is expected, but found exception");
+            e.printStackTrace();
+            return;
         }
+
+        fail("Error is expected, but not found");
     }
 
 
