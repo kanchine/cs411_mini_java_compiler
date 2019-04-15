@@ -63,16 +63,7 @@ import visitor.Visitor;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static ir.tree.IR.CALL;
-import static ir.tree.IR.CMOVE;
-import static ir.tree.IR.ESEQ;
-import static ir.tree.IR.FALSE;
-import static ir.tree.IR.JUMP;
-import static ir.tree.IR.LABEL;
-import static ir.tree.IR.MOVE;
-import static ir.tree.IR.SEQ;
-import static ir.tree.IR.TEMP;
-import static ir.tree.IR.TRUE;
+import static ir.tree.IR.*;
 import static translate.TranslatorLabels.L_ERROR;
 import static translate.TranslatorLabels.L_MAIN;
 import static translate.TranslatorLabels.L_NEW_ARRAY;
@@ -535,19 +526,21 @@ public class TranslateVisitor implements Visitor<TRExp> {
         IRExp value = n.value.accept(this).unEx();
         IRExp size = IR.MEM(getMemLocation(var, IR.CONST(-1)));
 
-        Label validIndex = Label.gen();
+        Label validUpperBound = Label.gen();
+        Label validLowerBound = Label.gen();
         Label invalidIndex = Label.gen();
         Label done = Label.gen();
-
         Temp temp = new Temp();
         return new Nx(
-                SEQ(IR.CJUMP(RelOp.LT, index, size, validIndex, invalidIndex),
+                SEQ(IR.CJUMP(RelOp.LT, index, size, validUpperBound, invalidIndex),
 
                         LABEL(invalidIndex),
                         MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
                         JUMP(done),
 
-                        LABEL(validIndex),
+                        LABEL(validUpperBound),
+                        IR.CJUMP(RelOp.GE, index, IR.CONST(0), validLowerBound, invalidIndex),
+                        LABEL(validLowerBound),
                         MOVE(IR.MEM(getMemLocation(var, index)), value),
                         LABEL(done)
                 )
@@ -565,20 +558,23 @@ public class TranslateVisitor implements Visitor<TRExp> {
         IRExp base = n.array.accept(this).unEx();
         IRExp size = IR.MEM(getMemLocation(base, IR.CONST(-1)));
 
-        Label validIndex = Label.gen();
+        Label validUpperBound = Label.gen();
+        Label validLowerBound = Label.gen();
         Label invalidIndex = Label.gen();
         Label done = Label.gen();
 
         Temp temp = new Temp();
         return new Ex(
                     ESEQ(
-                        SEQ(IR.CJUMP(RelOp.LT, offset, size, validIndex, invalidIndex),
+                        SEQ(IR.CJUMP(RelOp.LT, offset, size, validUpperBound, invalidIndex),
 
                             LABEL(invalidIndex),
                             MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
                             JUMP(done),
 
-                            LABEL(validIndex),
+                            LABEL(validUpperBound),
+                            IR.CJUMP(RelOp.GE, offset, IR.CONST(0), validLowerBound, invalidIndex),
+                            LABEL(validLowerBound),
                             MOVE(TEMP(temp), IR.MEM(getMemLocation(base, offset))),
                             LABEL(done)
                         ),
