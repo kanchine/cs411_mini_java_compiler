@@ -7,6 +7,7 @@ import ir.interp.InterpMode;
 import ir.semantic.SemanticChecker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import test.translate.typechecker.TypeCheckTest;
 import translate.Fragment;
 import translate.Fragments;
 import translate.Translator;
@@ -761,6 +762,14 @@ public class TestTranslate {
             System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
             System.out.println(translated);
             System.out.println();
+
+            SemanticChecker.run(translated);
+            if (getSimulationMode() != null) {
+                System.out.println("Simulating IR code:");
+                Interp interp = new Interp(translated, getSimulationMode());
+                String result = interp.run();
+                System.out.print(result);
+            }
         } catch (Error e) {
             // succeed
             System.out.println(e);
@@ -774,10 +783,11 @@ public class TestTranslate {
         fail("Error is expected, but not found");
     }
 
+    public static final String defaultMainWithMethodCall = TypeCheckTest.mainClass("{ System.out.println(new A().test());}");
 
     @Test
     public void MethodCallNullReceiver1() {
-        expectError(defaultMainClass+
+        expectError(defaultMainWithMethodCall+
                 "class A {\n" +
                 "    A a;\n" +
                 "    public int test() {\n" +
@@ -789,7 +799,7 @@ public class TestTranslate {
 
     @Test
     public void ArrayNullReceiver1() {
-        expectError(defaultMainClass+
+        expectError(defaultMainWithMethodCall+
                 "class A {\n" +
                 "    int[] array;\n" +
                 "    public int test() {\n" +
@@ -802,7 +812,7 @@ public class TestTranslate {
 
     @Test
     public void ArrayNullReceiver2() {
-        expectError(defaultMainClass+
+        expectError(defaultMainWithMethodCall+
                 "class A {\n" +
                 "    int[] array;\n" +
                 "    public int test() { return array[0]; }\n" +
@@ -813,7 +823,7 @@ public class TestTranslate {
 
     @Test
     public void ArrayBadInitialization() throws Exception {
-        expectError(defaultMainClass+
+        expectError(defaultMainWithMethodCall+
                 "class A {\n" +
                 "    public int test() {\n" +
                 "       int[] array;\n" +
@@ -826,7 +836,7 @@ public class TestTranslate {
 
     @Test
     public void ArrayAssignOutOfBound1() throws Exception {
-        expectError(defaultMainClass+
+        expectError(defaultMainWithMethodCall+
                 "class A {\n" +
                 "    public int test() {\n" +
                 "       int[] array;\n" +
@@ -840,7 +850,7 @@ public class TestTranslate {
 
     @Test
     public void ArrayAssignOutOfBound2() throws Exception {
-        expectError(defaultMainClass+
+        expectError(defaultMainWithMethodCall+
                 "class A {\n" +
                 "    public int test() {\n" +
                 "       int[] array;\n" +
@@ -855,7 +865,7 @@ public class TestTranslate {
 
     @Test
     public void ArrayLookupOutOfBound1() throws Exception {
-        expectError(defaultMainClass+
+        expectError(defaultMainWithMethodCall+
                 "class A {\n" +
                 "    public int test() {\n" +
                 "       int[] array;\n" +
@@ -868,7 +878,7 @@ public class TestTranslate {
 
     @Test
     public void ArrayLookupOutOfBound2() throws Exception {
-        expectError(defaultMainClass+
+        expectError(defaultMainWithMethodCall+
                 "class A {\n" +
                 "    public int test() {\n" +
                 "       int[] array;\n" +
