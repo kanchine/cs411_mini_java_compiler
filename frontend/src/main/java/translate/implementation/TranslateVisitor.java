@@ -607,7 +607,26 @@ public class TranslateVisitor implements Visitor<TRExp> {
     @Override
     public TRExp visit(NewArray n) {
         TRExp size = n.size.accept(this);
-        return new Ex(IR.CALL(L_NEW_ARRAY, size.unEx()));
+        Label invalidSize = Label.gen();
+        Temp temp = new Temp();
+        Label done = Label.gen();
+        Label good = Label.gen();
+        return new Ex(
+                ESEQ(
+                        SEQ(
+                                IR.CJUMP(RelOp.LT, size.unEx(), CONST(0), invalidSize, good),
+
+                                LABEL(invalidSize),
+                                MOVE(TEMP(temp), CALL(L_ERROR, IR.CONST(1))),
+                                JUMP(done),
+
+                                LABEL(good),
+                                MOVE(TEMP(temp), IR.CALL(L_NEW_ARRAY, size.unEx())),
+                                LABEL(done)
+                        ),
+                        TEMP(temp)
+                )
+        );
     }
 
     @Override
